@@ -1,5 +1,6 @@
 package com.zj.business.po;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -19,7 +20,11 @@ import com.zj.bigdefine.GlobalParam;
 @Entity
 @Table(name="BUS_HOMEPAGER" , catalog = GlobalParam.CATALOG_DB)
 @SequenceGenerator(name="commSEQ" , catalog=GlobalParam.CATALOG_DB ,allocationSize=1,initialValue=1)
-public class HomePager {
+public class HomePager implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1141542814176827229L;
 	private Long homeId;
 	private String imageDir;
 	private Set<Designer> designers;

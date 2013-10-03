@@ -1,6 +1,7 @@
 package com.zj.business.action;
 
 import java.io.File;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -331,6 +332,23 @@ public class DesignerAction extends BaseAction {
 		menu = treenode.generateNode();
 		jsonArray = JSONUtil.sendArray(menu, null);
 		return "generate_menutree_success";
+	}
+	
+	public void fetchInfo(){
+		try {
+			Designer fetchFeaturedDesigner = designerService.fetchFeaturedDesigner();
+			Blob contentENBlob = fetchFeaturedDesigner.getDetailContentEN();
+			String contentEN = StringUtil.getStrFromBlob(contentENBlob);
+			Blob contentCHBlob = fetchFeaturedDesigner.getDetailContentCH();
+			String contentCH = StringUtil.getStrFromBlob(contentCHBlob);
+			List<String> contents = new ArrayList<String>();
+			contents.add(contentCH);
+			contents.add(contentEN);
+			String json = JSONUtil.listToJson(contents);
+			sendJSONdata(json);
+		} catch (ServiceException e) {
+			
+		}
 	}
 	
 	public Designer getDesigner() {

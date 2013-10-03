@@ -4,13 +4,17 @@ package com.zj.business.service.impl;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zj.bigdefine.GlobalParam;
 import com.zj.business.po.Designer;
+import com.zj.business.po.HomePager;
 import com.zj.business.service.IDesignerService;
+import com.zj.common.cache.EHCacheService;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.utils.PageInfo;
 import com.zj.core.service.impl.CommonServiceImpl;
@@ -18,7 +22,10 @@ import com.zj.core.service.impl.CommonServiceImpl;
 @Component("designerService")
 public class DesignerServiceImpl extends CommonServiceImpl implements
 		IDesignerService {
-
+	
+	@Resource
+	private EHCacheService ehCacheService;
+	
 	@Override
 	public PageInfo<Designer> loadDesignersForPage(int pageSize,
 			int pageNum) {
@@ -60,5 +67,21 @@ public class DesignerServiceImpl extends CommonServiceImpl implements
 		}else{
 			return null;
 		}
+	}
+
+	@Override
+	public Designer fetchFeaturedDesigner() throws ServiceException {
+		Designer featuredDesigner = null;
+		HomePager homepager = ehCacheService.getHomepagerCache().get(1L);
+		Long featuredDesingerId = homepager.getFeaturedDesigner();
+		if(featuredDesingerId == null || featuredDesingerId == 0){
+			throw new ServiceException("The featured designer hasn't been set");
+		}
+		try{
+			featuredDesigner = dao.get(Designer.class, featuredDesingerId);
+		}catch(Exception e){
+			throw new ServiceException("get featured designer error!",e);
+		}
+		return featuredDesigner;
 	}
 }

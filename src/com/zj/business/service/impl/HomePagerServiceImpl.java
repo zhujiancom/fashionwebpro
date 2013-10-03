@@ -7,5 +7,4 @@ import com.zj.core.service.impl.CommonServiceImpl;
 
 @Component("homepagerService")
 public class HomePagerServiceImpl extends CommonServiceImpl implements IHomePagerService {
-	
 }

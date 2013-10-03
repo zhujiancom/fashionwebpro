@@ -42,57 +42,57 @@ public class BrandVO extends AbstractVO {
 	}
 
 	public void setEnglishValue(){
-		setName(brand.getBrandEname());
-		setPricerange(ApplicationInitialize.categoryMap.get(ReferenceKey.PRICE_RANGE).get(brand.getPricerange()).getCategoryEname());
-		setTargetcustomer(brand.getTargetcustomerEn());
-		setBrandmission(brand.getBrandmissionEn());
-		setEstimate(ApplicationInitialize.categoryMap.get(ReferenceKey.SALES_VOLUME).get(brand.getEstimatedanto()).getCategoryEname());
-		setLatest(ApplicationInitialize.categoryMap.get(ReferenceKey.SALES_VOLUME).get(brand.getLastestanto()).getCategoryEname());
-		setSellingpoint(brand.getUniquespEn());
-		setOperationmodel(ApplicationInitialize.categoryMap.get(ReferenceKey.OPERATION_MODE).get(brand.getPrimaryomEn()).getCategoryEname());
-		setCountries(brand.getSellincountryEn());
-		if(brand.getDesigner() != null){
-			setDesignername(brand.getDesigner().getEname());
-		}
-		
-		Set<Style> styleSet = brand.getStyles();
-		Iterator<Style> it = styleSet.iterator();
-		StringBuilder sb = new StringBuilder();
-		while(it.hasNext()){
-			Style style = it.next();
-			sb.append(style.getStyleEname()).append(",");
-		}
-		if(sb.length()>0){
-			sb.setCharAt(sb.length()-1, ' ');
-		}
-		setStyles(sb.toString());
+//		setName(brand.getBrandEname());
+//		setPricerange(ApplicationInitialize.categoryMap.get(ReferenceKey.PRICE_RANGE).get(brand.getPricerange()).getCategoryEname());
+//		setTargetcustomer(brand.getTargetcustomerEn());
+//		setBrandmission(brand.getBrandmissionEn());
+//		setEstimate(ApplicationInitialize.categoryMap.get(ReferenceKey.SALES_VOLUME).get(brand.getEstimatedanto()).getCategoryEname());
+//		setLatest(ApplicationInitialize.categoryMap.get(ReferenceKey.SALES_VOLUME).get(brand.getLastestanto()).getCategoryEname());
+//		setSellingpoint(brand.getUniquespEn());
+//		setOperationmodel(ApplicationInitialize.categoryMap.get(ReferenceKey.OPERATION_MODE).get(brand.getPrimaryomEn()).getCategoryEname());
+//		setCountries(brand.getSellincountryEn());
+//		if(brand.getDesigner() != null){
+//			setDesignername(brand.getDesigner().getEname());
+//		}
+//		
+//		Set<Style> styleSet = brand.getStyles();
+//		Iterator<Style> it = styleSet.iterator();
+//		StringBuilder sb = new StringBuilder();
+//		while(it.hasNext()){
+//			Style style = it.next();
+//			sb.append(style.getStyleEname()).append(",");
+//		}
+//		if(sb.length()>0){
+//			sb.setCharAt(sb.length()-1, ' ');
+//		}
+//		setStyles(sb.toString());
 	}
 	
 	private void setChineseValue(String language){
-		setName(convertTCSC(brand.getBrandCname(),language));
-		setPricerange(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.PRICE_RANGE).get(brand.getPricerange()).getCategoryCname(),language));
-		setTargetcustomer(convertTCSC(brand.getTargetcustomerZh(),language));
-		setBrandmission(convertTCSC(brand.getBrandmissionZh(),language));
-		setEstimate(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.SALES_VOLUME).get(brand.getEstimatedanto()).getCategoryCname(),language));
-		setLatest(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.SALES_VOLUME).get(brand.getLastestanto()).getCategoryCname(),language));
-		setSellingpoint(convertTCSC(brand.getUniquespZh(),language));
-		setOperationmodel(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.OPERATION_MODE).get(brand.getPrimaryomEn()).getCategoryCname(),language));
-		setCountries(convertTCSC(brand.getSellincountryZh(),language));
-		if(brand.getDesigner()!=null){
-			setDesignername(convertTCSC(brand.getDesigner().getCname(),language));
-		}
-		
-		Set<Style> styleSet = brand.getStyles();
-		Iterator<Style> it = styleSet.iterator();
-		StringBuilder sb = new StringBuilder();
-		while(it.hasNext()){
-			Style style = it.next();
-			sb.append(style.getStyleCname()).append(",");
-		}
-		if(sb.length()>0){
-			sb.setCharAt(sb.length()-1, ' ');
-		}
-		setStyles(convertTCSC(sb.toString(),language));
+//		setName(convertTCSC(brand.getBrandCname(),language));
+//		setPricerange(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.PRICE_RANGE).get(brand.getPricerange()).getCategoryCname(),language));
+//		setTargetcustomer(convertTCSC(brand.getTargetcustomerZh(),language));
+//		setBrandmission(convertTCSC(brand.getBrandmissionZh(),language));
+//		setEstimate(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.SALES_VOLUME).get(brand.getEstimatedanto()).getCategoryCname(),language));
+//		setLatest(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.SALES_VOLUME).get(brand.getLastestanto()).getCategoryCname(),language));
+//		setSellingpoint(convertTCSC(brand.getUniquespZh(),language));
+//		setOperationmodel(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.OPERATION_MODE).get(brand.getPrimaryomEn()).getCategoryCname(),language));
+//		setCountries(convertTCSC(brand.getSellincountryZh(),language));
+//		if(brand.getDesigner()!=null){
+//			setDesignername(convertTCSC(brand.getDesigner().getCname(),language));
+//		}
+//		
+//		Set<Style> styleSet = brand.getStyles();
+//		Iterator<Style> it = styleSet.iterator();
+//		StringBuilder sb = new StringBuilder();
+//		while(it.hasNext()){
+//			Style style = it.next();
+//			sb.append(style.getStyleCname()).append(",");
+//		}
+//		if(sb.length()>0){
+//			sb.setCharAt(sb.length()-1, ' ');
+//		}
+//		setStyles(convertTCSC(sb.toString(),language));
 	}
 	
 //	public void setTWChineseValue(){

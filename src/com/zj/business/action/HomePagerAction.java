@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -25,9 +24,7 @@ import com.zj.business.service.IDesignerService;
 import com.zj.business.service.IHomePagerService;
 import com.zj.business.service.ILookbookService;
 import com.zj.business.service.INewsSerivce;
-import com.zj.business.vo.DesignerVO;
-import com.zj.business.vo.LookbookVO;
-import com.zj.business.vo.NewsVO;
+import com.zj.common.cache.EHCacheService;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
 import com.zj.common.log.Log;
@@ -60,6 +57,8 @@ public class HomePagerAction extends BaseAction {
 	private INewsSerivce newsService;
 	@Resource
 	private ILookbookService lookbookService;
+	@Resource
+	private EHCacheService ehCacheService;
 	
 	//multiple file upload
 	private File[] imageFiles;
@@ -79,8 +78,8 @@ public class HomePagerAction extends BaseAction {
 	
 	public String modify(){
 		try {
-			HomePager homepager = homepagerService.get(HomePager.class, 1L);
-			
+//			HomePager homepager = homepagerService.get(HomePager.class, 1L);
+			HomePager homepager = ehCacheService.getHomepagerCache().get(1L);
 			boolean hasImageFile = false;
 			if(imageFiles != null && imageFiles.length > 0){
 				hasImageFile = true;
@@ -137,6 +136,8 @@ public class HomePagerAction extends BaseAction {
 				homepager.setLookbooks(lookbooks);
 			}
 			homepagerService.update(homepager);
+			
+			ehCacheService.getHomepagerCache().put(1L, homepager);
 			
 			if(hasImageFile){
 				String dirPath = getBasePath()+homepager.getImageDir();
@@ -215,23 +216,23 @@ public class HomePagerAction extends BaseAction {
 			}
 			HomePager homepager = homepagerService.get(HomePager.class, 1L);
 			//load designer
-			Set<Designer> designers = homepager.getDesigners();
-			List<DesignerVO> designerVOs = new ArrayList<DesignerVO>();
-			Iterator<Designer> iter = designers.iterator();
-			while(iter.hasNext()){
-				Designer d = iter.next();
-				DesignerVO vo = new DesignerVO(d);
-				vo.process(language);
-				designerVOs.add(vo);
-			}
-			getValueStack().set("designerlist", designerVOs);
+//			Set<Designer> designers = homepager.getDesigners();
+//			List<DesignerVO> designerVOs = new ArrayList<DesignerVO>();
+//			Iterator<Designer> iter = designers.iterator();
+//			while(iter.hasNext()){
+//				Designer d = iter.next();
+//				DesignerVO vo = new DesignerVO(d);
+//				vo.process(language);
+//				designerVOs.add(vo);
+//			}
+//			getValueStack().set("designerlist", designerVOs);
 			//load featured designer
-			if(homepager.getFeaturedDesigner() != null){
-				Designer featuredDesigner = designerService.get(Designer.class, homepager.getFeaturedDesigner());
-				DesignerVO designerVo = new DesignerVO(featuredDesigner);
-				designerVo.process(language);
-				getValueStack().set("featuredDesigner", designerVo);
-			}
+//			if(homepager.getFeaturedDesigner() != null){
+//				Designer featuredDesigner = designerService.get(Designer.class, homepager.getFeaturedDesigner());
+//				DesignerVO designerVo = new DesignerVO(featuredDesigner);
+//				designerVo.process(language);
+//				getValueStack().set("featuredDesigner", designerVo);
+//			}
 			
 			//load image
 			String imageDirPath = getBasePath()+homepager.getImageDir();
@@ -252,28 +253,28 @@ public class HomePagerAction extends BaseAction {
 			}
 			
 			//load news
-			Set<News> news = homepager.getNews();
-			List<NewsVO> newslist = new ArrayList<NewsVO>(); 
-			Iterator<News> newskey = news.iterator();
-			while(newskey.hasNext()){
-				News n = newskey.next();
-				NewsVO nvo = new NewsVO(n,getBasePath());
-				nvo.process(language);
-				newslist.add(nvo);
-			}
-			getValueStack().set("newslist", newslist);
+//			Set<News> news = homepager.getNews();
+//			List<NewsVO> newslist = new ArrayList<NewsVO>(); 
+//			Iterator<News> newskey = news.iterator();
+//			while(newskey.hasNext()){
+//				News n = newskey.next();
+//				NewsVO nvo = new NewsVO(n,getBasePath());
+//				nvo.process(language);
+//				newslist.add(nvo);
+//			}
+//			getValueStack().set("newslist", newslist);
 			
 			//load collection
-			Set<Lookbook> lookbooks = homepager.getLookbooks();
-			List<LookbookVO> lookbookvos = new ArrayList<LookbookVO>();
-			Iterator<Lookbook> lookbookkey = lookbooks.iterator();
-			while(lookbookkey.hasNext()){
-				Lookbook po = lookbookkey.next();
-				LookbookVO vo = new LookbookVO(po,getBasePath());
-				vo.process(language);
-				lookbookvos.add(vo);
-			}
-			getValueStack().set("lookbooklist", lookbookvos);
+//			Set<Lookbook> lookbooks = homepager.getLookbooks();
+//			List<LookbookVO> lookbookvos = new ArrayList<LookbookVO>();
+//			Iterator<Lookbook> lookbookkey = lookbooks.iterator();
+//			while(lookbookkey.hasNext()){
+//				Lookbook po = lookbookkey.next();
+//				LookbookVO vo = new LookbookVO(po,getBasePath());
+//				vo.process(language);
+//				lookbookvos.add(vo);
+//			}
+//			getValueStack().set("lookbooklist", lookbookvos);
 			
 			//load video
 			getValueStack().set("videourl", homepager.getVideoUrl());

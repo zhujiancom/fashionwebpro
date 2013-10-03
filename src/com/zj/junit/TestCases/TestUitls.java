@@ -25,14 +25,6 @@ public class TestUitls extends AbstractTestCase {
 	}
 	
 	@Test
-	public void testInitCategory() throws Exception{
-		ApplicationInitialize ai = context.getBean("applicationInitialize", ApplicationInitialize.class);
-		Map<String,CategoryMap> map = ai.categoryMap;
-		System.out.println(map.get(ReferenceKey.SEX).get("男").getCategoryCd());
-		System.out.println(map.get(ReferenceKey.SEX).get("#1003").getCategoryEname());
-	}
-	
-	@Test
 	public void testNodeType() throws Exception{
 		NodeType n = NodeType.BRAND;
 		System.out.println(n);

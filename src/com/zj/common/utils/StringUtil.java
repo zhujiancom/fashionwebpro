@@ -1,5 +1,6 @@
 package com.zj.common.utils;
 
+import java.io.ByteArrayInputStream;
 import java.sql.Blob;
 import java.sql.Clob;
 
@@ -142,6 +143,22 @@ public class StringUtil extends StringUtils {
 			str = clob != null ? clob.getSubString(1, (int) clob.length())
 					: null;
 		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return str;
+	}
+	
+	public static String getStrFromBlob(Blob blob){
+		if(blob == null){
+			return "";
+		}
+		String str = "";
+		try{
+			ByteArrayInputStream  stream = (ByteArrayInputStream) blob.getBinaryStream();
+			byte[] byte_data = new byte[stream.available()];
+			stream.read(byte_data, 0, byte_data.length);
+			str = new String(byte_data);
+		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return str;

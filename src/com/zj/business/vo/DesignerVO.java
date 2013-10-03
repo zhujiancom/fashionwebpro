@@ -42,14 +42,14 @@ public class DesignerVO extends AbstractVO {
 		setName(po.getEname());
 		setBorncity(po.getBorncity_en());
 		setBorncountry(po.getBorncountry_en());
-		setNationality(ApplicationInitialize.categoryMap.get(ReferenceKey.NATIONALITY).get(po.getNationality_en()).getCategoryEname());
+//		setNationality(ApplicationInitialize.categoryMap.get(ReferenceKey.NATIONALITY).get(po.getNationality_en()).getCategoryEname());
 		setLivingcountry(po.getLivingcountry_en());
 		setLivingcity(po.getLivingcity_en());
 		setIdealclient(po.getIdealclient_en());
 		setTrademarkpiece(po.getTrademarkpiece_en());
 		setEducationbg(po.getEducationbg_en());
 		setPersonalcareerexpr(po.getPersonalcareerexpr_en());
-		setGender(ApplicationInitialize.categoryMap.get(ReferenceKey.SEX).get(po.getGender()).getCategoryEname());
+//		setGender(ApplicationInitialize.categoryMap.get(ReferenceKey.SEX).get(po.getGender()).getCategoryEname());
 		
 		Set<Brand> brandSet = po.getBrands();
 		Iterator<Brand> it = brandSet.iterator();
@@ -68,14 +68,14 @@ public class DesignerVO extends AbstractVO {
 		setName(convertTCSC(po.getCname(),language));
 		setBorncity(convertTCSC(po.getBorncity_zh(),language));
 		setBorncountry(convertTCSC(po.getBorncountry_zh(),language));
-		setNationality(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.NATIONALITY).get(po.getNationality_zh()).getCategoryCname(),language));
+//		setNationality(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.NATIONALITY).get(po.getNationality_zh()).getCategoryCname(),language));
 		setLivingcountry(convertTCSC(po.getLivingcountry_zh(),language));
 		setLivingcity(convertTCSC(po.getLivingcity_zh(),language));
 		setIdealclient(convertTCSC(po.getIdealclient_zh(),language));
 		setTrademarkpiece(convertTCSC(po.getTrademarkpiece_zh(),language));
 		setEducationbg(convertTCSC(po.getEducationbg_zh(),language));
 		setPersonalcareerexpr(convertTCSC(po.getPersonalcareerexpr_zh(),language));
-		setGender(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.SEX).get(po.getGender()).getCategoryCname(),language));
+//		setGender(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.SEX).get(po.getGender()).getCategoryCname(),language));
 		Set<Brand> brandSet = po.getBrands();
 		Iterator<Brand> it = brandSet.iterator();
 		StringBuilder sb = new StringBuilder();

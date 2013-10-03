@@ -7,7 +7,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
-    <base href="<%=basePath%>frontend/">
     
     <title>My JSP 'footer.jsp' starting page</title>
     
@@ -15,7 +14,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link href="<%=basePath%>frontend/css/footer.css" type="text/css" rel="stylesheet"/>
 
   </head>
-  	<div style="width:1000px;top:40px;position:relative;float:left">
+  	<div style="width:895px;height:50px;margin:0 auto;">
   		<hr/>
         <div id="information">
         	<ul>
