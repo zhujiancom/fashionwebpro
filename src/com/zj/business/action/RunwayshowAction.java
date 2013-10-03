@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +15,10 @@ import com.zj.bigdefine.GlobalParam;
 import com.zj.business.playlist.RunwayshowPlayList;
 import com.zj.business.po.Brand;
 import com.zj.business.po.Runwayshow;
-import com.zj.business.service.IBrandService;
 import com.zj.business.service.IRunwayshowService;
 import com.zj.business.vo.RunwayshowVO;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
-import com.zj.common.log.Log;
 import com.zj.common.utils.JSONUtil;
 import com.zj.common.utils.PageInfo;
 import com.zj.common.utils.StringUtil;
@@ -35,13 +34,11 @@ public class RunwayshowAction extends BaseAction {
 	 * 
 	 */
 	private static final long serialVersionUID = -4694223633325668341L;
-
+	private static final Logger log = Logger.getLogger(RunwayshowAction.class);
 	private Runwayshow runwayshow;
 	private Brand brand;
 	@Resource
 	private IRunwayshowService runwayshowService;
-	@Resource
-	private IBrandService brandService;
 	private int rp; // page size
 	private int page; // page num
 	private String ids; // users id which need to be deleted
@@ -78,16 +75,9 @@ public class RunwayshowAction extends BaseAction {
 				posterurl = "upload/runwayshow/video"+"/"+posterFileName;
 				runwayshow.setPoster(getWebRootPath()+posterurl);
 			}
-			if(brand != null && !"".equals(brand.getBrandEname())){
-				brand = brandService.searchByName(brand.getBrandEname());
-				if(brand != null){
-					runwayshow.setBrand(brand);
-					brand.getRunwayshows().add(runwayshow);
-				}
-			}
 			runwayshow.setCreater(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
 			runwayshow.setCreateTime(new Date());
-			runwayshowService.insert(runwayshow);
+			runwayshowService.save(runwayshow,brand);
 			if(isAddPoster){
 				String absoluteUrl = getBasePath()+posterurl;
 				File destFile = new File(absoluteUrl);
@@ -108,19 +98,19 @@ public class RunwayshowAction extends BaseAction {
 			return "save_success";
 		}catch(ServiceException se){
 			se.printStackTrace();
-			Log.debug(InterviewAction.class,se.getMessage());
+			log.debug("create runwayshow error!",se);
 			getValueStack().set("msg", "create RunwayShow ["+runwayshow.getRunwayshowEname()+"] Failure! ");
 			return "save_failure";
 		}catch(UploadFileException ue){
 			ue.printStackTrace();
-			Log.debug(InterviewAction.class,ue.getMessage());
-			getValueStack().set("msg", "create RunwayShow ["+runwayshow.getRunwayshowEname()+"] Failure! ");
+			log.debug("uploade attachemnts error!",ue);
+			getValueStack().set("msg", "create RunwayShow ["+runwayshow.getRunwayshowEname()+"] Success, but upload attachments occured error! ");
 			return "save_failure";
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			Log.debug(InterviewAction.class,e.getMessage());
-			getValueStack().set("msg", "create RunwayShow ["+runwayshow.getRunwayshowEname()+"] Failure! ");
+			log.debug(e);
+			getValueStack().set("msg", "create RunwayShow ["+runwayshow.getRunwayshowEname()+"] Failed, because of session time out ,please relogin! ");
 			return "save_failure";
 		}
 	}
@@ -145,8 +135,8 @@ public class RunwayshowAction extends BaseAction {
 		} catch (ServiceException e) {
 			String msg = "Delete Runway Shows Failure !";
 			String json = JSONUtil.stringToJson(msg);
+			log.debug(e);
 			sendJSONdata(json);
-			Log.debug(RunwayshowAction.class, e.getMessage());
 		}
 	}
 
@@ -184,13 +174,18 @@ public class RunwayshowAction extends BaseAction {
 			return "modify_forward_successful";
 		} catch (ServiceException e) {
 			e.printStackTrace();
-			Log.debug(BrandAction.class, "The brand is not exist!");
+			log.debug("The brand is not exist!",e);
 			getValueStack().set("msg", "the object is not exist in DataBase, then cannot forward to modify page!");
 			return "modify_forward_failure";
 		}
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String update(){
+		int prefixLen = getWebRootPath().length();
 		String oldPosterurl = runwayshow.getPoster();
 		String oldVideourl = runwayshow.getRunwayshowUrl();
 		String posterurl = "";
@@ -210,26 +205,14 @@ public class RunwayshowAction extends BaseAction {
 				runwayshow.setPoster(getWebRootPath()+posterurl);
 				isUpdatePoster = true;
 			}
-			if(brand != null && !"".equals(brand.getBrandEname())){
-				brand = brandService.searchByName(brand.getBrandEname());
-				if(brand != null){
-					runwayshow.setBrand(brand);
-					brand.getRunwayshows().add(runwayshow);
-				}
-			}
 			runwayshow.setModifiedTime(new Date());
 			runwayshow.setModifier(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
-			boolean isSuccess = runwayshowService.updateRunwayshowAttachInfo(runwayshow, isUpdatePoster, isUpdateVideo);
-			if(!isSuccess){
-				throw new ServiceException();
-			}
+			runwayshowService.update(runwayshow,brand);
 			if(isUpdatePoster){
 				if(oldPosterurl != null){
+					oldPosterurl = oldPosterurl.substring(prefixLen);
 					String absoluteUrl = getBasePath()+oldPosterurl;
-					File oldFile = new File(absoluteUrl);
-					if(oldFile.exists()){
-						oldFile.delete();
-					}
+					preDeleteFile(absoluteUrl);
 				}
 				String absoluteUrl = getBasePath()+posterurl;
 				File destFile = new File(absoluteUrl);
@@ -240,11 +223,9 @@ public class RunwayshowAction extends BaseAction {
 			}
 			if(isUpdateVideo){
 				if(oldVideourl != null){
+					oldVideourl = oldVideourl.substring(prefixLen);
 					String absoluteUrl = getBasePath()+oldVideourl;
-					File oldFile = new File(absoluteUrl);
-					if(oldFile.exists()){
-						oldFile.delete();
-					}
+					preDeleteFile(absoluteUrl);
 				}
 				String absoluteUrl = getBasePath()+videourl;
 				File destFile = new File(absoluteUrl);
@@ -253,25 +234,22 @@ public class RunwayshowAction extends BaseAction {
 				}
 				copyByChannel(videoFile,destFile);
 			}
-			getValueStack().set("msg", "Object save success,update runwayshow ["+runwayshow.getRunwayshowEname()+"] successfully!");
-			return "modify";
-		}catch(ServiceException e1){
-			e1.printStackTrace();
-			Log.debug(Runwayshow.class, e1.getMessage());
-			getValueStack().set("msg", "Object save error,update interview ["+runwayshow.getRunwayshowEname()+"] failure!");
-			return "modify";
-		}catch(UploadFileException e2){
-			e2.printStackTrace();
-			Log.debug(Runwayshow.class, e2.getMessage());
-			getValueStack().set("msg", "Object save success,but attactments upload failure!");
-			return "modify";
+			getValueStack().set("msg", "update runwayshow ["+runwayshow.getRunwayshowEname()+"] successfully!");
+		}catch(ServiceException se){
+			se.printStackTrace();
+			log.debug("update runwayshow error!",se);
+			getValueStack().set("msg", "update runwayshow ["+runwayshow.getRunwayshowEname()+"] failure!");
+		}catch(UploadFileException ue){
+			ue.printStackTrace();
+			log.debug("upload attachments error!", ue);
+			getValueStack().set("msg", "update runwayshow [ "+runwayshow.getRunwayshowEname()+"] success,but upload attachments occured error!");
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			Log.debug(Runwayshow.class, e.getMessage());
-			getValueStack().set("msg", "update interview ["+runwayshow.getRunwayshowEname()+"] failure!");
-			return "modify";
+			log.debug(e);
+			getValueStack().set("msg", "update runwayshow ["+runwayshow.getRunwayshowEname()+"] failed,because of session time out , please relogin!");
 		}
+		return "modify";
 	}
 	
 	//below methods for frontend

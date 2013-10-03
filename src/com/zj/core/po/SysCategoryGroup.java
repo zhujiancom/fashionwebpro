@@ -113,7 +113,7 @@ public class SysCategoryGroup extends AbstractEntity implements Serializable {
 		this.categoryGroupCd = categoryGroupCd;
 	}
 
-	@OneToMany(mappedBy="parent",cascade={CascadeType.ALL},fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="parent",cascade={CascadeType.ALL},fetch=FetchType.EAGER)
 	@JsonData(type=GlobalParam.JSONTYPE_COLLECTION)
 	public Set<SysCategory> getSubCategories() {
 		return subCategories;

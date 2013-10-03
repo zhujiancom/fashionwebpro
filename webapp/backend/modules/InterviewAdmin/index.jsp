@@ -31,7 +31,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		$(function(){
 			var msg = "${msg}";
 			if(msg != ""){
-				$.dialog.tips(msg);			
+				feedbackInfo(msg);			
 			}
 		});
 	</script>

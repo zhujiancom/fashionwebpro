@@ -92,7 +92,7 @@ public class Lookbook extends AbstractEntity implements Serializable {
 	public void setLookbookdate(Date lookbookdate) {
 		this.lookbookdate = lookbookdate;
 	}
-	@ManyToOne(optional = true, fetch = FetchType.LAZY)
+	@ManyToOne(optional = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "BRAND_ID",referencedColumnName="BRAND_ID")
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	public Brand getBrand() {

@@ -13,7 +13,7 @@ public abstract class AbstractEHCache<K, V> {
 	private static final Logger log = Logger.getLogger(AbstractEHCache.class);
 	
 	private Cache cache;
-	private final CacheConfiguration cacheConfig;
+	private CacheConfiguration cacheConfig;
 	
 	public AbstractEHCache(String cacheName,int maxElementInHeap){
 		this.cacheConfig = new CacheConfiguration(cacheName, maxElementInHeap)
@@ -29,6 +29,10 @@ public abstract class AbstractEHCache<K, V> {
 	public AbstractEHCache(CacheConfiguration cacheConfig){
 		this.cacheConfig = cacheConfig;
 		this.cache = new Cache(cacheConfig);
+	}
+	
+	public AbstractEHCache(Cache cache){
+		this.cache = cache;
 	}
 	
 	public String getCacheName(){

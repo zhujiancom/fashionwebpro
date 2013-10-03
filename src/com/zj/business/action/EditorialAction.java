@@ -89,7 +89,7 @@ public class EditorialAction extends BaseAction {
 		}catch(Exception e){
 			e.printStackTrace();
 			log.debug(e);
-			getValueStack().set("msg", "Add Editorial ["+editorial.getEditorialEname()+"] failed , because session timeout!" );
+			getValueStack().set("msg", "Add Editorial ["+editorial.getEditorialEname()+"] failed , because session timeout, please relogin!" );
 			return "save_failure";
 		}
 	}

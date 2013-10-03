@@ -3,12 +3,18 @@ package com.zj.business.service.impl;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zj.bigdefine.GlobalParam;
+import com.zj.business.po.Designer;
 import com.zj.business.po.Interview;
+import com.zj.business.service.IDesignerService;
 import com.zj.business.service.IInterviewService;
-import com.zj.common.annotation.UpdateMode;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.utils.PageInfo;
 import com.zj.core.service.impl.CommonServiceImpl;
@@ -16,7 +22,10 @@ import com.zj.core.service.impl.CommonServiceImpl;
 @Component("interviewService")
 public class InterviewServiceImpl extends CommonServiceImpl implements
 		IInterviewService {
-
+	private static final Logger log = Logger.getLogger(EditorialServiceImpl.class);
+	
+	@Resource
+	private IDesignerService designerService;
 	@Override
 	public PageInfo<Interview> loadInterviewsForPage(int pageSize, int pageNum)
 			throws ServiceException {
@@ -40,19 +49,6 @@ public class InterviewServiceImpl extends CommonServiceImpl implements
 		return dao.queryHQLForPage("from Interview interview where interview."+queryKey+" like '%"+queryValue+"%'",pageSize,pageNum);
 	}
 
-	public boolean updateInterviewAttachInfo(Interview interview, boolean isUpdatePoster,boolean isUpdateVideo) throws ServiceException{
-		UpdateMode mode = UpdateMode.NORMAL;
-		if(!isUpdatePoster && !isUpdateVideo){
-			mode = UpdateMode.MINI;
-		}
-		try{
-			merge(interview, interview.getInterviewid(), mode);
-			return true;
-		}catch(Exception e){
-			return false;
-		}
-	}
-
 	@Override
 	public List<Interview> getInterviewsByDesingerAndType(long designerId,
 			String type) throws ServiceException {
@@ -62,5 +58,37 @@ public class InterviewServiceImpl extends CommonServiceImpl implements
 			throw new ServiceException("there are no interviews in db! ");
 		}
 		return interviews;
+	}
+
+	@Transactional(propagation=Propagation.REQUIRED)
+	@Override
+	public void save(Interview interview, Designer designer) throws ServiceException {
+		if(designer != null && !"".equals(designer.getEname())){
+			log.debug("read related designer info in <interview save> transaction");
+			designer = designerService.searchByName(designer.getEname());
+			if(designer != null){
+				interview.setDesigner(designer);
+				designer.getInterviews().add(interview);
+			}
+		}
+		insert(interview);
+		log.debug("out of <interview save> transaction");
+	}
+
+	@Transactional(propagation=Propagation.REQUIRED)
+	@Override
+	public void update(Interview interview, Designer designer)
+			throws ServiceException {
+		if(designer != null && !"".equals(designer.getEname())){
+			log.debug("read related designer info in <interview update> transaction");
+			designer = designerService.searchByName(designer.getEname());
+			if(designer != null){
+				interview.setDesigner(designer);
+				designer.getInterviews().add(interview);
+			}
+		}
+		update(interview);
+		log.debug("out of <interview update> transaction");
+		
 	}
 }

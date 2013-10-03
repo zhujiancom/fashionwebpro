@@ -357,7 +357,7 @@ public class Designer extends AbstractEntity implements Serializable{
 		this.brands = brands;
 	}
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinColumn(name="DESIGNER_ID")
 	public Set<Interview> getInterviews() {
 		return interviews;
@@ -366,7 +366,7 @@ public class Designer extends AbstractEntity implements Serializable{
 		this.interviews = interviews;
 	}
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinColumn(name="DESIGNER_ID")
 	public Set<Report> getReports() {
 		return reports;

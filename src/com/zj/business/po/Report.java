@@ -128,7 +128,7 @@ public class Report extends AbstractEntity implements Serializable {
 	public void setReportEcontent(String reportEcontent) {
 		this.reportEcontent = reportEcontent;
 	}
-	@ManyToOne(optional = true, fetch = FetchType.LAZY)
+	@ManyToOne(optional = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "DESIGNER_ID",referencedColumnName="DESIGNER_ID")
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	public Designer getDesigner() {

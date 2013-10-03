@@ -3,10 +3,17 @@ package com.zj.business.service.impl;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zj.bigdefine.GlobalParam;
+import com.zj.business.po.Brand;
 import com.zj.business.po.Lookbook;
+import com.zj.business.service.IBrandService;
 import com.zj.business.service.ILookbookService;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.utils.PageInfo;
@@ -15,7 +22,11 @@ import com.zj.core.service.impl.CommonServiceImpl;
 @Component("lookbookService")
 public class LookbookServiceImpl extends CommonServiceImpl implements
 		ILookbookService {
-
+	private static final Logger log = Logger.getLogger(EditorialServiceImpl.class);
+	
+	@Resource
+	private IBrandService brandService;
+	
 	@Override
 	public PageInfo<Lookbook> loadLookbooksForPage(int pageSize, int pageNum)
 			throws ServiceException {
@@ -48,6 +59,36 @@ public class LookbookServiceImpl extends CommonServiceImpl implements
 			throw new ServiceException("there are no match data !");
 		}
 		return lookbooks;
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRED)
+	@Override
+	public void save(Lookbook lookbook, Brand brand) throws ServiceException {
+		if(brand != null && !"".equals(brand.getBrandEname())){
+			log.debug("read related brand info in <lookbook save> transaction");
+			brand = brandService.searchByName(brand.getBrandEname());
+			if(brand != null){
+				lookbook.setBrand(brand);
+				brand.getLookbooks().add(lookbook);
+			}
+		}
+		insert(lookbook);
+		log.debug("out of <lookbook save> transaction");
+	}
+
+	@Transactional(propagation=Propagation.REQUIRED)
+	@Override
+	public void update(Lookbook lookbook, Brand brand) throws ServiceException{
+		if(brand != null && !"".equals(brand.getBrandEname())){
+			log.debug("read related brand info in <lookbook update> transaction");
+			brand = brandService.searchByName(brand.getBrandEname());
+			if(brand != null){
+				lookbook.setBrand(brand);
+				brand.getLookbooks().add(lookbook);
+			}
+		}
+		update(lookbook);
+		log.debug("out of <lookbook update> transaction");
 	}
 
 }

@@ -143,7 +143,7 @@ public class Interview extends AbstractEntity implements Serializable {
 	public void setPoster(String poster) {
 		this.poster = poster;
 	}
-	@ManyToOne(optional = true, fetch = FetchType.LAZY)
+	@ManyToOne(optional = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "DESIGNER_ID",referencedColumnName="DESIGNER_ID")
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	public Designer getDesigner() {

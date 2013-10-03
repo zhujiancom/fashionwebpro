@@ -2701,7 +2701,8 @@ function delItem(ids,url,flexTableName,winFrame){
 		},
 		dataType:'json',
 		success:function(data){
-			$.dialog.tips(data.msg);
+//			$.dialog.tips(data.msg);
+			feedbackInfo(data.msg);
 			$(flexTableName).flexReload();
 			if(winFrame){
 				winFrame.location.reload();

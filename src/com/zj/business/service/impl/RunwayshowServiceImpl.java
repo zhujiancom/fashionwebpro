@@ -3,12 +3,18 @@ package com.zj.business.service.impl;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zj.bigdefine.GlobalParam;
+import com.zj.business.po.Brand;
 import com.zj.business.po.Runwayshow;
+import com.zj.business.service.IBrandService;
 import com.zj.business.service.IRunwayshowService;
-import com.zj.common.annotation.UpdateMode;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.utils.PageInfo;
 import com.zj.core.service.impl.CommonServiceImpl;
@@ -16,7 +22,10 @@ import com.zj.core.service.impl.CommonServiceImpl;
 @Component("runwayshowService")
 public class RunwayshowServiceImpl extends CommonServiceImpl implements
 		IRunwayshowService {
-
+	private static final Logger log = Logger.getLogger(EditorialServiceImpl.class);
+	
+	@Resource
+	private IBrandService brandService;
 	@Override
 	public PageInfo<Runwayshow> loadRunwayshowsForPage(int pageSize, int pageNum)
 			throws ServiceException {
@@ -41,31 +50,6 @@ public class RunwayshowServiceImpl extends CommonServiceImpl implements
 	}
 
 	@Override
-	public boolean updateRunwayshowAttachInfo(Runwayshow runwayshow,
-			boolean isUpdatePoster, boolean isUpdateVideo)
-			throws ServiceException {
-		UpdateMode mode = UpdateMode.NORMAL;
-		if(!isUpdatePoster && !isUpdateVideo){
-			mode = UpdateMode.MINI;
-		}
-//		else if(isUpdatePoster && !isUpdateVideo){
-//			//update poster, but not update video info, then need query db runwayshow ,and set the video url in db to new runwayshow
-//			Runwayshow dbrunwayshow = dao.get(Runwayshow.class, runwayshow.getRunwayshowid());
-//			runwayshow.setRunwayshowUrl(dbrunwayshow.getRunwayshowUrl());
-//		}else if(!isUpdatePoster && isUpdateVideo){
-//			//update video, but not update poster info, then need query db runwayshow, and set the poster url in db to new runwayshow
-//			Runwayshow dbrunwayshow = dao.get(Runwayshow.class, runwayshow.getRunwayshowid());
-//			runwayshow.setPoster(dbrunwayshow.getPoster());
-//		}
-		try{
-			merge(runwayshow, runwayshow.getRunwayshowid(), mode);
-			return true;
-		}catch(Exception e){
-			return false;
-		}
-	}
-
-	@Override
 	public List<Runwayshow> getRunwayShowByBrand(long brandId)
 			throws ServiceException {
 		String hql = "from Runwayshow where brand.brandid="+brandId;
@@ -74,6 +58,38 @@ public class RunwayshowServiceImpl extends CommonServiceImpl implements
 			throw new ServiceException("there are no runwayshows in db! ");
 		}
 		return runwayshows;
+	}
+
+	@Transactional(propagation=Propagation.REQUIRED)
+	@Override
+	public void save(Runwayshow runwayshow, Brand brand)
+			throws ServiceException {
+		if(brand != null && !"".equals(brand.getBrandEname())){
+			log.debug("read related brand info in <runwayshow save> transaction");
+			brand = brandService.searchByName(brand.getBrandEname());
+			if(brand != null){
+				runwayshow.setBrand(brand);
+				brand.getRunwayshows().add(runwayshow);
+			}
+		}
+		insert(runwayshow);
+		log.debug("out of <editorial save> transaction");
+	}
+
+	@Transactional(propagation=Propagation.REQUIRED)
+	@Override
+	public void update(Runwayshow runwayshow, Brand brand)
+			throws ServiceException {
+		if(brand != null && !"".equals(brand.getBrandEname())){
+			log.debug("read related brand info in <runwayshow update> transaction");
+			brand = brandService.searchByName(brand.getBrandEname());
+			if(brand != null){
+				runwayshow.setBrand(brand);
+				brand.getRunwayshows().add(runwayshow);
+			}
+		}
+		update(runwayshow);
+		log.debug("out of <runwayshow update> transaction");
 	}
 
 

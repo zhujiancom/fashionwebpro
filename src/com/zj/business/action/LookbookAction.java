@@ -8,20 +8,19 @@ import java.util.Locale;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.zj.bigdefine.GlobalParam;
 import com.zj.business.po.Brand;
 import com.zj.business.po.Lookbook;
-import com.zj.business.service.IBrandService;
 import com.zj.business.service.ILookbookService;
 import com.zj.business.vo.LookbookVO;
-import com.zj.common.annotation.UpdateMode;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
-import com.zj.common.log.Log;
 import com.zj.common.utils.DateUtil;
+import com.zj.common.utils.FileUtil;
 import com.zj.common.utils.JSONUtil;
 import com.zj.common.utils.PageInfo;
 import com.zj.common.utils.StringUtil;
@@ -36,13 +35,11 @@ public class LookbookAction extends BaseAction {
 	 * 
 	 */
 	private static final long serialVersionUID = 8914523696124281679L;
-
+	private static final Logger log = Logger.getLogger(LookbookAction.class);
 	private Lookbook lookbook;
 	private Brand brand;
 	@Resource
 	private ILookbookService lookbookService;
-	@Resource
-	private IBrandService brandService;
 	private String errorMsg;
 	private int rp; // page size
 	private int page; // page num
@@ -56,30 +53,18 @@ public class LookbookAction extends BaseAction {
 	private String[] imageFilesFileName;
 	
 	public String save(){
-		boolean hasAttatchment = false;
-		String attachmentDirPath = "";
 		try{
-			if(imageFiles != null){
-				hasAttatchment = true;
-				attachmentDirPath = "upload/lookbook/"+DateUtil.date2Str(new Date(),"yyyyMMdd")+"_"+System.currentTimeMillis();
-				lookbook.setImgs(attachmentDirPath);
+			String attachmentDirPath = "upload/lookbook/"+DateUtil.date2Str(new Date(),"yyyyMMdd")+"_"+System.currentTimeMillis();
+			String absoluteUrl = getBasePath()+attachmentDirPath;
+			File dir = new File(absoluteUrl);
+			if(!dir.exists()){
+				dir.mkdirs();
 			}
-			if(brand != null && !"".equals(brand.getBrandEname())){
-				brand = brandService.searchByName(brand.getBrandEname());
-				if(brand != null){
-					lookbook.setBrand(brand);
-					brand.getLookbooks().add(lookbook);
-				}
-			}
+			lookbook.setImgs(attachmentDirPath);
 			lookbook.setCreater(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
 			lookbook.setCreateTime(new Date());
-			lookbookService.insert(lookbook);
-			if(hasAttatchment){
-				String absoluteUrl = getBasePath()+attachmentDirPath;
-				File dir = new File(absoluteUrl);
-				if(!dir.exists()){
-					dir.mkdirs();
-				}
+			lookbookService.save(lookbook,brand);
+			if(imageFiles != null){
 				for(int i=0;i<imageFiles.length;i++){
 					String attachFileName = (i+1)+getExtention(imageFilesFileName[i]);
 					String filePath = absoluteUrl+"/"+attachFileName;
@@ -91,18 +76,18 @@ public class LookbookAction extends BaseAction {
 			return "save_success";
 		}catch(ServiceException se){
 			se.printStackTrace();
-			Log.info(EditorialAction.class, se.getMessage());
+			log.info("Add lookbook error!",se);
 			getValueStack().set("msg", "Add Lookbook ["+lookbook.getLookbookEname()+"] failure!" );
 			return "save_failure";
 		}catch(UploadFileException ue){
 			ue.printStackTrace();
-			Log.info(EditorialAction.class, ue.getMessage());
-			getValueStack().set("msg", "Add Lookbook ["+lookbook.getLookbookEname()+"] failure!" );
+			log.info("upload attachments error", ue);
+			getValueStack().set("msg", "Add Lookbook ["+lookbook.getLookbookEname()+"] success,but upload attachments occured error!" );
 			return "save_failure";
 		}catch(Exception e){
 			e.printStackTrace();
-			Log.debug(EditorialAction.class,e.getMessage());
-			getValueStack().set("msg", "Add Lookbook ["+lookbook.getLookbookEname()+"] failure!" );
+			log.debug(e);
+			getValueStack().set("msg", "Add Lookbook ["+lookbook.getLookbookEname()+"] failed, because session time out, please relogin!" );
 			return "save_failure";
 		}
 	}
@@ -126,8 +111,8 @@ public class LookbookAction extends BaseAction {
 		} catch (ServiceException e) {
 			String msg = "Delete Lookbook Images Failure !";
 			String json = JSONUtil.stringToJson(msg);
+			log.debug(e);
 			sendJSONdata(json);
-			Log.debug(LookbookAction.class, e.getMessage());
 		}
 	}
 
@@ -149,73 +134,46 @@ public class LookbookAction extends BaseAction {
 			return "modify_forward_successful";
 		} catch (ServiceException e) {
 			e.printStackTrace();
-			Log.debug(EditorialAction.class, "cannot find this lookbook in db");
+			log.debug("cannot find this lookbook in db",e);
 			getValueStack().setValue("msg", "there occurred some error! please attempt again!");
 			return "modify_forward_failure";
 		}
 	}
 	
 	public String update(){
-		UpdateMode mode = UpdateMode.MINI;
-		boolean hasAttachment = false;
 		String attachmentDirPath = lookbook.getImgs();
 		try{
-			if(imageFiles != null){
-				hasAttachment = true;
-				mode = UpdateMode.NORMAL;
-				if(attachmentDirPath == null || "".equals(attachmentDirPath)){
-					attachmentDirPath = "/upload/lookbook/"+DateUtil.date2Str(new Date(),"yyyyMMdd")+"_"+System.currentTimeMillis();
-					lookbook.setImgs(attachmentDirPath);
-				}
-			}
-			if(brand != null && !"".equals(brand.getBrandEname())){
-				brand = brandService.searchByName(brand.getBrandEname());
-				if(brand != null){
-					lookbook.setBrand(brand);
-					brand.getLookbooks().add(lookbook);
-				}
-			}
 			lookbook.setModifier(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
 			lookbook.setModifiedTime(new Date());
-			lookbookService.merge(lookbook, lookbook.getLookbookid(), mode);
-			if(hasAttachment){
+			lookbookService.update(lookbook, brand);
+			if(imageFiles != null){
 				String absoluteUrl = getBasePath()+attachmentDirPath;
-				File dir = new File(absoluteUrl);
-				if(!dir.exists()){
-					dir.mkdirs();
-				}
-				File[] listFile = dir.listFiles();
-				if(listFile != null){
-					for(File file:listFile){
-						file.delete();
+				if(FileUtil.isDirectory(absoluteUrl)){
+					File directory = new File(absoluteUrl);
+					preDeleteDirectory(directory);
+					//add new files
+					for(int i=0;i<imageFiles.length;i++){
+						String imageFileName = (i+1)+getExtention(imageFilesFileName[i]);
+						String fileUrl = absoluteUrl+"/"+imageFileName;
+						File destFile = new File(fileUrl);
+						FileUtil.copyFile(imageFiles[i], destFile);
 					}
-				}
-				//add new files
-				for(int i=0;i<imageFiles.length;i++){
-					String imageFileName = (i+1)+getExtention(imageFilesFileName[i]);
-					String saveUrl = absoluteUrl+"/"+imageFileName;
-					File destFile = new File(saveUrl);
-					copyByChannel(imageFiles[i],destFile);
 				}
 			}
 			getValueStack().set("msg", "update lookbook ["+lookbook.getLookbookEname()+"] successfully");
-			return "modify";
 		}catch(ServiceException se){
 			se.printStackTrace();
-			Log.info(NewsAction.class, se.getMessage());
+			log.info("update lookbook error!", se);
 			getValueStack().set("msg", "update lookbook ["+lookbook.getLookbookEname()+"] failure!" );
-			return "modify";
 		}catch(UploadFileException ue){
-			getValueStack().set("msg", "update lookbook ["+lookbook.getLookbookEname()+"] failure!" );
-			ue.printStackTrace();
-			Log.debug(NewsAction.class, ue.getMessage());
-			return "modify";
+			log.debug("upload attachments error!",ue);
+			getValueStack().set("msg", "update lookbook ["+lookbook.getLookbookEname()+"] success,but upload attactments occured error!" );
 		}catch(Exception e){
 			e.printStackTrace();
-			Log.debug(NewsAction.class, e.getMessage());
-			getValueStack().set("msg", "update lookbook ["+lookbook.getLookbookEname()+"] failure!");
-			return "modify";
+			log.debug(e);
+			getValueStack().set("msg", "update lookbook ["+lookbook.getLookbookEname()+"] failure,because of session time out , please relogin!");
 		}
+		return "modify";
 	}
 	
 	//below methods for frontend

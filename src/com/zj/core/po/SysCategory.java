@@ -14,9 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import com.zj.bigdefine.GlobalParam;
 import com.zj.common.annotation.DisplayName;
 import com.zj.common.annotation.JsonData;
@@ -82,7 +79,7 @@ public class SysCategory extends AbstractEntity implements Serializable {
 
 	@ManyToOne(optional = false, fetch = FetchType.EAGER,cascade={CascadeType.MERGE})
 	@JoinColumn(name = "CATEGORY_GROUP_ID",referencedColumnName="CATEGORY_GROUP_ID",updatable=false)
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	public SysCategoryGroup getParent() {
 		return parent;
 	}

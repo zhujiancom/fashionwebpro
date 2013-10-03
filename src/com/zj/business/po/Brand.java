@@ -306,7 +306,7 @@ public class Brand extends AbstractEntity implements Serializable {
 		this.styles = styles;
 	}
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinColumn(name="BRAND_ID")
 	public Set<Editorial> getEditorials() {
 		return editorials;
@@ -315,7 +315,7 @@ public class Brand extends AbstractEntity implements Serializable {
 		this.editorials = editorials;
 	}
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinColumn(name="BRAND_ID")
 	public Set<Lookbook> getLookbooks() {
 		return lookbooks;
@@ -324,7 +324,7 @@ public class Brand extends AbstractEntity implements Serializable {
 		this.lookbooks = lookbooks;
 	}
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinColumn(name="BRAND_ID")
 	public Set<Runwayshow> getRunwayshows() {
 		return runwayshows;

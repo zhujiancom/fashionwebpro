@@ -41,6 +41,9 @@
 						event.stopPropagation();
 						$(this).parent().parent().remove();
 					});
+					$( "#brandName" ).autocomplete({
+						source: "brand_fuzzySearch.action"
+					});
 				});
 		</script>
     
@@ -84,10 +87,10 @@
 					<input type="text" name="editorial.editdate"  class="datepicker" value="<s:date name='editorial.editdate' format='yyyy-MM-dd'/>" />
 				</div>
 					<div class="rowElem">
-					<label>
+					<label for="brandName">
 						Brand:
 					</label>
-					<input type="text" name="brand.brandEname"  value="<s:property value='editorial.brand.brandEname' />" />
+					<input type="text"id="brandName"  name="brand.brandEname"  value="<s:property value='editorial.brand.brandEname' />" />
 				</div>
 				<br />
 			<br />

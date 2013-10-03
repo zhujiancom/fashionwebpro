@@ -63,7 +63,7 @@ public class ReportAction extends BaseAction {
 			report.setReportimg(attachmentDirPath);
 			report.setCreater(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
 			report.setCreateTime(new Date());
-			reportService.update(report,designer);
+			reportService.save(report,designer);
 			
 			if(imageFiles != null){
 				for(int i=0;i<imageFiles.length;i++){

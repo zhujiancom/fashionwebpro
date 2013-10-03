@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +15,10 @@ import com.zj.bigdefine.GlobalParam;
 import com.zj.business.playlist.InterviewPlayList;
 import com.zj.business.po.Designer;
 import com.zj.business.po.Interview;
-import com.zj.business.service.IDesignerService;
 import com.zj.business.service.IInterviewService;
 import com.zj.business.vo.InterviewVO;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
-import com.zj.common.log.Log;
 import com.zj.common.utils.JSONUtil;
 import com.zj.common.utils.PageInfo;
 import com.zj.common.utils.StringUtil;
@@ -35,13 +34,11 @@ public class InterviewAction extends BaseAction {
 	 * 
 	 */
 	private static final long serialVersionUID = -1183179471149257186L;
-
+	private static final Logger log = Logger.getLogger(RunwayshowAction.class);
 	private Interview interview;
 	private Designer designer;
 	@Resource
 	private IInterviewService interviewService;
-	@Resource
-	private IDesignerService designerService;
 	private int rp; // page size
 	private int page; // page num
 	private String ids; // users id which need to be deleted
@@ -80,16 +77,9 @@ public class InterviewAction extends BaseAction {
 				posterurl = "upload/interview"+"/"+interview.getInterviewtype()+"/"+posterFileName;
 				interview.setPoster(getWebRootPath()+posterurl);
 			}
-			if(designer != null && !"".equals(designer.getEname())){
-				designer = designerService.searchByName(designer.getEname());
-				if(designer != null){
-					interview.setDesigner(designer);
-					designer.getInterviews().add(interview);
-				}
-			}
 			interview.setCreater(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
 			interview.setCreateTime(new Date());
-			interviewService.insert(interview);
+			interviewService.save(interview, designer);
 			if(isAddPoster){
 				String absoluteUrl = getBasePath()+posterurl;
 				File destFile = new File(absoluteUrl);
@@ -110,19 +100,19 @@ public class InterviewAction extends BaseAction {
 			return "save_success";
 		}catch(ServiceException se){
 			se.printStackTrace();
-			Log.debug(InterviewAction.class,se.getMessage());
+			log.debug("create interview error!",se);
 			getValueStack().set("msg", "create Interview ["+interview.getInterviewEname()+"] Failure! ");
 			return "save_failure";
 		}catch(UploadFileException ue){
 			ue.printStackTrace();
-			Log.debug(InterviewAction.class,ue.getMessage());
-			getValueStack().set("msg", "create Interview ["+interview.getInterviewEname()+"] Failure! ");
+			log.debug("upload attachments error!",ue);
+			getValueStack().set("msg", "create Interview ["+interview.getInterviewEname()+"] success, but upload attachments occured error! ");
 			return "save_failure";
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			Log.debug(InterviewAction.class,e.getMessage());
-			getValueStack().set("msg", "create Interview ["+interview.getInterviewEname()+"] Failure! ");
+			log.debug(e);
+			getValueStack().set("msg", "create Interview ["+interview.getInterviewEname()+"] Failed, because of session time out , please relogin! ");
 			return "save_failure";
 		}
 	}
@@ -146,8 +136,8 @@ public class InterviewAction extends BaseAction {
 		} catch (ServiceException e) {
 			String msg = "Delete Interviews Failure !";
 			String json = JSONUtil.stringToJson(msg);
+			log.debug(e);
 			sendJSONdata(json);
-			Log.debug(InterviewAction.class, e.getMessage());
 		}
 	}
 
@@ -201,13 +191,14 @@ public class InterviewAction extends BaseAction {
 			return "modify_forward_successful";
 		} catch (ServiceException e) {
 			e.printStackTrace();
-			Log.debug(BrandAction.class, "The brand is not exist!");
+			log.debug("The brand is not exist!");
 			getValueStack().set("msg", "the object is not exist in DataBase, then cannot forward to modify page!");
 			return "modify_forward_failure";
 		}
 	}
 	
 	public String update(){
+		int prefixLen = getWebRootPath().length();
 		String oldPosterurl = interview.getPoster();
 		String oldVideourl = interview.getInterviewurl();;
 		String posterurl = "";
@@ -227,26 +218,14 @@ public class InterviewAction extends BaseAction {
 				interview.setPoster(getWebRootPath()+posterurl);
 				isUpdatePoster = true;
 			}
-			if(designer != null && !"".equals(designer.getEname())){
-				designer = designerService.searchByName(designer.getEname());
-				if(designer != null){
-					interview.setDesigner(designer);
-					designer.getInterviews().add(interview);
-				}
-			}
 			interview.setModifiedTime(new Date());
 			interview.setModifier(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
-			boolean isSuccess = interviewService.updateInterviewAttachInfo(interview, isUpdatePoster, isUpdateVideo);
-			if(!isSuccess){
-				throw new ServiceException();
-			}
+			interviewService.update(interview,designer);
 			if(isUpdatePoster){
 				if(oldPosterurl != null){
+					oldPosterurl = oldPosterurl.substring(prefixLen);
 					String absoluteUrl = getBasePath()+oldPosterurl;
-					File oldFile = new File(absoluteUrl);
-					if(oldFile.exists()){
-						oldFile.delete();
-					}
+					preDeleteFile(absoluteUrl);
 				}
 				String absoluteUrl = getBasePath()+posterurl;
 				File destFile = new File(absoluteUrl);
@@ -257,11 +236,9 @@ public class InterviewAction extends BaseAction {
 			}
 			if(isUpdateVideo){
 				if(oldVideourl != null){
+					oldVideourl = oldVideourl.substring(prefixLen);
 					String absoluteUrl = getBasePath()+oldVideourl;
-					File oldFile = new File(absoluteUrl);
-					if(oldFile.exists()){
-						oldFile.delete();
-					}
+					preDeleteFile(absoluteUrl);
 				}
 				String absoluteUrl = getBasePath()+videourl;
 				File destFile = new File(absoluteUrl);
@@ -270,25 +247,22 @@ public class InterviewAction extends BaseAction {
 				}
 				copyByChannel(videoFile,destFile);
 			}
-			getValueStack().set("msg", "Object save success,update interview ["+interview.getInterviewEname()+"] successfully!");
-			return "modify";
-		}catch(ServiceException e1){
-			e1.printStackTrace();
-			Log.debug(InterviewAction.class, e1.getMessage());
-			getValueStack().set("msg", "Object save error,update interview ["+interview.getInterviewEname()+"] failure!");
-			return "modify";
-		}catch(UploadFileException e2){
-			e2.printStackTrace();
-			Log.debug(InterviewAction.class, e2.getMessage());
-			getValueStack().set("msg", "Object save success,but attactments upload failure!");
-			return "modify";
+			getValueStack().set("msg", "update interview ["+interview.getInterviewEname()+"] successfully!");
+		}catch(ServiceException se){
+			se.printStackTrace();
+			log.debug("update interview error!", se);
+			getValueStack().set("msg", "update interview ["+interview.getInterviewEname()+"] failure!");
+		}catch(UploadFileException ue){
+			ue.printStackTrace();
+			log.debug("upload attachments error!",ue);
+			getValueStack().set("msg", "update interview ["+interview.getInterviewEname()+"] success, but upload attachments occured error !");
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			Log.debug(InterviewAction.class, e.getMessage());
-			getValueStack().set("msg", "update interview ["+interview.getInterviewEname()+"] failure!");
-			return "modify";
+			log.debug(e);
+			getValueStack().set("msg", "update interview ["+interview.getInterviewEname()+"] failed, because of time session out, please relogin!");
 		}
+		return "modify";
 	}
 	
 	public String showInterviews(){

@@ -2,6 +2,7 @@ package com.zj.common.cache;
 
 import java.util.List;
 
+import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.Configuration;
 import net.sf.ehcache.config.DiskStoreConfiguration;
@@ -32,8 +33,15 @@ public class EHCacheService {
 		Configuration cacheManagerConfig = new Configuration().diskStore(new DiskStoreConfiguration().path(cacheDiskStorePath));
 		cacheManagerConfig.setName(cacheManagerName);
 		cacheManager = new CacheManager(cacheManagerConfig);
-		categoryCache = new CategoryCache();
-		cacheManager.addCache(categoryCache.getCache());
+		if(cacheManager.cacheExists("categoryCache")){
+			log.info("there have cache on the disk!");
+			Cache cache = cacheManager.getCache("categoryCache");
+			categoryCache = new CategoryCache(cache);
+		}else{
+			log.info("there is no cache on the disk!");
+			categoryCache = new CategoryCache();
+			cacheManager.addCache(categoryCache.getCache());
+		}
 		log.info("Added cache: "+categoryCache.getCacheName()+" to the cache manager --> "+cacheManagerName);
 	}
 	

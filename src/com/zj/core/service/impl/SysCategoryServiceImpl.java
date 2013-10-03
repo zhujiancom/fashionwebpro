@@ -129,7 +129,7 @@ public class SysCategoryServiceImpl extends CommonServiceImpl implements ISysCat
 	public SysCategory loadItem(Class<SysCategory> clazz, Long id) throws ServiceException{
 		SysCategory item = null;
 		try{
-			item = dao.load(clazz, id);
+			item = dao.get(clazz, id);
 			if(item == null){
 				throw new DAOException("No data found!");
 			}

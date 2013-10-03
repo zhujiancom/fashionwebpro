@@ -120,7 +120,7 @@ public class Runwayshow extends AbstractEntity implements Serializable {
 	public void setPoster(String poster) {
 		this.poster = poster;
 	}
-	@ManyToOne(optional = true, fetch = FetchType.LAZY)
+	@ManyToOne(optional = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "BRAND_ID",referencedColumnName="BRAND_ID")
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	public Brand getBrand() {

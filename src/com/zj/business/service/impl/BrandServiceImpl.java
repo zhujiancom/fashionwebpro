@@ -53,7 +53,8 @@ public class BrandServiceImpl extends CommonServiceImpl implements
 	public Brand searchByName(String ename) throws ServiceException {
 		List<Brand> brands = dao.queryHQL("from Brand brand where brand.brandEname='"+ename+"'");
 		if(brands != null && !brands.isEmpty()){
-			return brands.get(0);
+			Brand brand = brands.get(0);
+			return brand;
 		}else{
 			return null;
 		}

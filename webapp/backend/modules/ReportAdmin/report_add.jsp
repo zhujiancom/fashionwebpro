@@ -34,6 +34,9 @@
 	    <script type="text/javascript"
 				src="<%=basePath %>ckeditor/ckeditor.js">
 		</script>
+		<script type="text/javascript"
+				src="<%=basePath %>/ckfinder/ckfinder.js">
+		</script>
 
     	<script type="text/javascript" >
 				$(function(){
@@ -65,6 +68,7 @@
 		        					}
 		    				};
 		    			});
+		    			CKFinder.setupCKEditor(editor, "<%=basePath%>ckfinder/");
 		    		});
 				});
 		</script>
