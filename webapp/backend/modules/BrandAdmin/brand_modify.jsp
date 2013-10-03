@@ -58,7 +58,7 @@
 	    				};
 	    			});
 	    		});
-	    		CKFinder.setupCKEditor(editor, "/ckfinder/");
+	    		CKFinder.setupCKEditor(editor, "<%=basePath%>ckfinder/");
 			});
 	    </script>
 
