@@ -1,6 +1,5 @@
 package com.zj.business.action;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -163,14 +162,8 @@ public class BrandAction extends BaseAction {
 	public String update() {
 		String imgurl = "";
 		String oldImgurl = getBasePath() + brand.getBrandimg();
+		boolean isUpdateImg = false;
 		try {
-			ByteArrayInputStream msgContent =(ByteArrayInputStream) brand.getDetailContentEN().getBinaryStream();
-			byte[] byte_data =new byte[msgContent.available()];
-			msgContent.read(byte_data, 0,byte_data.length);
-	        String result = new String(byte_data);
-	        System.out.println(result);
-			boolean isUpdateImg = false;
-			
 			if (imageFileFileName != null && !"".equals(imageFileFileName)) {
 				isUpdateImg = true;
 				String imageFileName = new Date().getTime()
