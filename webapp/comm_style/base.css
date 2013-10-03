@@ -1,0 +1,79 @@
+@import "tableStyle.css";
+@import "pageNavigation.css";
+@import "inputStyle.css";
+@import url("../comm_script/jqtransform/jqtransform.css");
+@import url("../comm_script/jqtransform/jqtransform-validate.css");
+@import url("ui-lightness/jquery-ui-1.8.16.custom.css");
+
+*{
+	margin:0;
+	padding:0;
+}
+body{
+	background-color: #FFFFFF;
+	font:12px/1.5 Geneva, Arial, Helvetica, sans-serif;
+	margin:0 auto;
+	padding:0;
+	overflow: visible;
+}
+/*******
+ * 鏁翠綋妗嗘灦甯冨眬浣嶄簬涓績
+ */
+#wrapper{
+	width:80%;
+	margin:10 auto;
+	padding:5px;
+}
+
+a{
+	text-decoration:none;
+	font-size:12px;
+	color:#0000ff;
+}
+a:hover{
+	text-decoration:none;
+	font-size:12px;
+	color:#ff8000;
+}
+/*************
+ * 绌虹櫧濉厖琛�
+ *************/
+.blankRow{
+	width:100%;
+	display:block;
+	height:20px;
+	position:relative;
+	top:20px;
+}
+.fieldsetClass{
+	margin:20px auto;
+	width:80%;
+	border:none;
+}
+.fieldsetClass legend{
+	position:relative;
+	left:10px;
+	top:0;
+	font-size:18px;
+	font-weight:200;
+	color:#0000ff;
+}
+.DropdownWrapper{
+	width:150px;
+	border:solid thin lavender;
+	overflow:auto;
+	position:relative;
+	left:-165px;
+	top:32px;
+	display:none;
+	background-color: ghostwhite ;
+}
+.customDropdown{
+	padding:2px;
+}
+.customDropdown li{
+	list-style:none;
+	line-height:20px;
+	font-family: Courier, "Courier New", monospace ;
+	font-size:12px;
+}

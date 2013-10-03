@@ -1,0 +1,42 @@
+@charset "utf-8";
+/* CSS Document */
+
+*{
+	margin:0;
+	padding:0;
+}
+
+#mainwrapper{
+	width:800px;
+	margin:0 auto;
+	margin-top:20px;
+}
+
+#content{
+	width:840px;
+}
+
+.tablestyle{
+	width:780px;
+	margin:10px;
+	padding:5px;
+}
+
+.titlestyle{
+	font-family:Georgia, "Times New Roman", Times, serif;
+	font-size:24px;
+	font-style:bold;
+	padding:10px;
+}
+
+.lookbookstyle{
+	height:100px;
+	width:180px;
+	text-align:center;
+	vertical-align:middle;
+}
+
+.imgstyle{
+	height:95px;
+	width:172px;
+}

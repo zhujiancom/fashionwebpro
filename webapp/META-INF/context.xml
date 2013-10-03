@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/fashion" crossContext="true" reloadable="true" >
+
+<Resource name="jdbc/fashion" auth="Container"
+					type="javax.sql.DataSource"
+					factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+					timeBetweenEvictionRunsMillis="30000"
+					maxActive="100"
+					minIdle="10"
+					maxWait="60000"
+					initialSize="10"
+					removeAbandonedTimeout="60"
+					removeAbandoned="true"
+					logAbandoned="true"
+					minEvictableIdleTimeMillis="300000"
+					testOnBorrow="true"
+					testOnReturn="false"
+					validationQuery="SELECT 1"
+					jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"
+					driverClassName="com.mysql.jdbc.Driver"
+					url="jdbc:mysql://localhost:3306/fashion?characterEncoding=UTF-8"
+					username="root"
+					password="devDB"
+					/>
+</Context>

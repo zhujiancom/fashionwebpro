@@ -1,0 +1,71 @@
+@charset "utf-8";
+/* CSS Document */
+*{
+	margin:0;
+	padding:0;
+}
+
+#mainwrapper{
+	width:1000px;
+	height:1000px;
+	margin:0 auto;
+}
+#menu{
+	height:100%;
+	width:15%;
+	float:left;
+	border:3px solid green;
+}
+#videowrapper{
+	height:100%;
+	width:85%;
+	padding-top:5%;
+}
+
+#introduction{
+	margin-top:5%;
+	margin-bottom:2%;
+	font-family:Georgia, "Times New Roman", Times, serif;
+}
+
+#intro{
+	height:300px;
+	width:78%;
+	padding:5px;
+	border:3px dashed #999;
+	word-wrap:break-word;
+	word-break:break-strict;
+	font-size:14px;
+	font-family:Georgia, "Times New Roman", Times, serif;
+}
+
+.msg_caption { 
+	overflow:hidden; 
+}
+.up { 
+	height:20px;
+	width:20px;
+	float:left; 
+	padding:5px;
+	cursor:pointer;
+	margin-left:45%;
+}
+
+.down { 
+	height:20px;
+	width:20px;
+	float:left; 
+	padding:5px;
+	cursor:pointer;
+	margin-left:45%;
+}
+
+#comment{
+	height:229px;
+	width:98%;
+	padding:5px;
+	overflow:hidden;
+	font-size:14px;
+	font-family:Georgia, "Times New Roman", Times, serif;
+	border:none;
+}

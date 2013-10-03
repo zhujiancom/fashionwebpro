@@ -1,0 +1,107 @@
+@charset "utf-8";
+/* CSS Document */
+*{
+	margin:0;
+	padding:0;
+}
+
+#contentwrapper{
+	width:1000px;
+	height:1000px;
+	margin:0 auto;
+}
+
+#contenttitle{
+	height:100px;
+	width:1000px;
+	margin-top:20px;
+}
+
+.title{
+	font-family:Georgia, "Times New Roman", Times, serif;
+	text-align:center;
+	padding:10px;
+}
+.otherinfor{
+	height:auto;
+	text-align:center;
+	font-size:16px;
+	font-family:Georgia, "Times New Roman", Times, serif;
+	padding-left:350px;
+}
+.otherinfor ul li{
+	list-style:none;
+	float:left;
+	display:block;
+	color:#808080;
+}
+.otherinfor ul li a:link{
+	text-decoration:none;
+	color:#808080;
+}
+.otherinfor ul li a:hover{
+	text-decoration:underline;
+	color:#ffa631;
+}
+.otherinfor ul li a:visited{
+	text-decoration:none;
+	color:#424c50;
+}
+
+
+.tpsep{
+	border:none;
+	border-top:3px dotted #CCC;
+}
+
+.fotorama{
+	margin-left:150px;
+}
+
+.sepsep{
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+#content{
+	height:300px;
+	width:650px;
+	margin-left:150px;
+	padding:5px;
+	border:3px dashed #999;
+	word-wrap:break-word;
+	word-break:break-strict;
+	font-size:14px;
+	font-family:Georgia, "Times New Roman", Times, serif;
+}
+
+.msg_caption { 
+	overflow:hidden; 
+}
+.up { 
+	height:20px;
+	width:20px;
+	float:left; 
+	padding:5px;
+	cursor:pointer;color:white; 
+	margin-left:45%;
+}
+
+.down { 
+	height:20px;
+	width:20px;
+	float:left; 
+	padding:5px;
+	cursor:pointer;color:white; 
+	margin-left:45%;
+}
+
+#comment{
+	height:229px;
+	width:98%;
+	padding:5px;
+	overflow:hidden;
+	font-size:14px;
+	font-family:Georgia, "Times New Roman", Times, serif;
+	border:none;
+}

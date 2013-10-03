@@ -1,0 +1,37 @@
+@charset "utf-8";
+/* CSS Document */
+
+*{
+	margin:0;
+	padding:0;
+}
+
+#mainwrapper{
+	width:1000px;
+	height:1000px;
+	margin:0 auto;
+	margin-top:20px;
+}
+
+.tablestyle{
+	width:600px;
+	height:auto;
+	margin-left:200px;
+	font-family:Georgia, "Times New Roman", Times, serif;
+}
+
+.labelstyle{
+	width:250px;
+	height:auto;
+	font-weight:bold;
+	font-size:18px;
+	vertical-align:top;
+	padding:5px;
+}
+
+.contentstyle{
+	width:500px;
+	height:auto;
+	font-size:14px;
+	padding:5px;
+}

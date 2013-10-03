@@ -1,0 +1,36 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+*{
+	margin:0;
+	padding:0;
+}
+
+#mainwrapper{
+	width:1000px;
+	height:1000px;
+	margin:0 auto;
+	margin-top:20px;
+}
+
+.tablestyle{
+	width:400px;
+	height:80px;
+	margin-left:250px;
+	font-family:Georgia, "Times New Roman", Times, serif;
+	font-size:20px;
+	padding:5px;
+}
+
+.inputstyle{
+	font-size:18px;
+	font-family:Georgia, "Times New Roman", Times, serif;
+}
+
+.buttonstyle{
+	text-align:right;
+	vertical-align:bottom;
+    padding-right:20px;
+	padding-top:5px;
+}

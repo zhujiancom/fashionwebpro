@@ -1,0 +1,23 @@
+.commonButton_class{
+	width:83px;
+	height:28px;
+	border:none;
+	background-image:url(../comm_images/button.gif);
+	cursor: pointer;
+}
+.searchButton_class{
+	width:79px;
+	height:32px;
+	border:none;
+	background-image:url(../comm_images/search_btn.gif);
+	cursor: pointer;
+}
+
+.big_submitButton_class{
+	background-image:url(../comm_images/big_submit_btn.gif);
+	width:93px;
+	height:30px;
+	border:none;
+}
+
+

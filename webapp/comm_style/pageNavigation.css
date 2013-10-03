@@ -1,0 +1,16 @@
+.pageselect{
+	width:60px;
+}
+#pagination ul{
+	list-style-type:none;
+}
+#pagination ul li{
+	list-style-type:none;
+	float:right;
+	margin-right:50px;
+}
+#pagination ul li font{
+	font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size:large;
+	color:red;
+}

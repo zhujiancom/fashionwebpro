@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<include file="struts/struts-common.xml"></include>
+	
+	<package name="backend" extends="common" namespace="/backend">
+		<interceptors>
+			<interceptor name="onlineUserStatistic" class="com.zj.core.control.struts.intercept.OnlineUserStatistic"/>
+		</interceptors>
+		
+		<action name="baseaction_*" class="baseAction" method="{1}"></action>
+		
+		<action name="sysuser_*" class="sysuserAction" method="{1}">
+			<interceptor-ref name="onlineUserStatistic"/>
+			<interceptor-ref name="fileUploadStack"/>
+			<interceptor-ref name="defaultStack"/>
+			<result name="login_success" type="redirect">index.html</result>
+			<result name="login_invalid">index.jsp</result>
+			<result name="login_failed">index.jsp</result>
+			<result name="logout_success" type="redirect">index.jsp</result>
+			<result name="create_user_failure">modules/UserAdmin/back/backenduser_add.jsp</result>
+			<result name="create_user_successful">modules/UserAdmin/back_index.jsp</result>
+			<result name="modify_forward_successful">modules/UserAdmin/back/backenduser_modify.jsp</result>
+			<result name="modify_forward_failure">modules/UserAdmin/back_index.jsp</result>
+			<result name="modify">modules/UserAdmin/back_index.jsp</result>
+		</action>
+		
+		<!-- Action for module -->
+		<action name="sysmodule_*" class="sysmoduleAction" method="{1}">
+			<result type="json" name="success">
+				<param name="root">jsonArray</param>
+			</result>
+		</action>
+		
+		<!-- Action for designer -->
+		<action name="designer_*" class="designerAction" method="{1}">
+			<result name="load_designer_success">index.jsp</result>
+			<result name="load_designer_failure">index.jsp</result>
+			<result name="save_success">modules/DesignerAdmin/index.jsp</result>
+			<result name="save_failure">modules/DesignerAdmin/index.jsp</result>
+			<result name="modify_forward_successful">modules/DesignerAdmin/designer_modify.jsp</result>
+			<result name="modify_forward_failure">modules/DesignerAdmin/index.jsp</result>
+			<result name="modify">modules/DesignerAdmin/index.jsp</result>
+		</action>
+		
+		<!-- Action for style -->
+		<action name="style_*" class="styleAction" method="{1}">
+			<result name="load_style_success">index.jsp</result>
+			<result name="load_style_failure">index.jsp</result>
+			<result name="save_success">modules/StyleAdmin/index.jsp</result>
+			<result name="save_failure">modules/StyleAdmin/index.jsp</result>
+			<result name="modify_forward_successful">modules/StyleAdmin/style_modify.jsp</result>
+			<result name="modify_forward_failure">modules/StyleAdmin/index.jsp</result>
+			<result name="modify">modules/StyleAdmin/index.jsp</result>
+		</action>
+		
+		<!-- Action for brand -->
+		<action name="brand_*" class="brandAction" method="{1}">
+			<result name="load_style_success">index.jsp</result>
+			<result name="load_style_failure">index.jsp</result>
+			<result name="save_success">modules/BrandAdmin/index.jsp</result>
+			<result name="save_failure">modules/BrandAdmin/index.jsp</result>
+			<result name="modify_forward_successful">modules/BrandAdmin/brand_modify.jsp</result>
+			<result name="modify_forward_failure">modules/BrandAdmin/index.jsp</result>
+			<result name="modify">modules/BrandAdmin/index.jsp</result>
+		</action>
+		
+			<!-- Action for interview -->
+		<action name="interview_*" class="interviewAction" method="{1}">
+			<interceptor-ref name="fileUploadStack"/>
+			<interceptor-ref name="defaultStack"/>
+			<result name="save_success">modules/InterviewAdmin/index.jsp</result>
+			<result name="save_failure">modules/InterviewAdmin/index.jsp</result>
+			<result name="modify_forward_successful">modules/InterviewAdmin/interview_modify.jsp</result>
+			<result name="modify_forward_failure">modules/InterviewAdmin/index.jsp</result>
+			<result name="modify">modules/InterviewAdmin/index.jsp</result>
+		</action>
+			<!-- Action for report -->
+		<action name="report_*" class="reportAction" method="{1}">
+			<result name="load_style_success">index.jsp</result>
+			<result name="load_style_failure">index.jsp</result>
+			<result name="save_success">modules/ReportAdmin/index.jsp</result>
+			<result name="save_failure">modules/ReportAdmin/index.jsp</result>
+			<result name="modify_forward_successful">modules/ReportAdmin/report_modify.jsp</result>
+			<result name="modify_forward_failure">modules/ReportAdmin/index.jsp</result>
+			<result name="modify">modules/ReportAdmin/index.jsp</result>
+		</action>
+			<!-- Action for editorial -->
+		<action name="editorial_*" class="editorialAction" method="{1}">
+			<interceptor-ref name="fileUploadStack"/>
+			<interceptor-ref name="defaultStack"/>
+			<result name="load_style_success">index.jsp</result>
+			<result name="load_style_failure">index.jsp</result>
+			<result name="save_success">modules/EditorialAdmin/index.jsp</result>
+			<result name="save_failure">modules/EditorialAdmin/index.jsp</result>
+			<result name="modify_forward_successful">modules/EditorialAdmin/editorial_modify.jsp</result>
+			<result name="modify_forward_failure">modules/EditorialAdmin/index.jsp</result>
+			<result name="modify">modules/EditorialAdmin/index.jsp</result>
+		</action>
+		<!-- Action for lookbook -->
+		<action name="lookbook_*" class="lookbookAction" method="{1}">
+			<result name="save_success">modules/LookbookAdmin/index.jsp</result>
+			<result name="save_failure">modules/LookbookAdmin/index.jsp</result>
+			<result name="modify_forward_successful">modules/LookbookAdmin/lookbook_modify.jsp</result>
+			<result name="modify_forward_failure">modules/LookbookAdmin/index.jsp</result>
+			<result name="modify">modules/LookbookAdmin/index.jsp</result>
+		</action>
+		<!-- Action for runwayshow -->
+		<action name="runwayshow_*" class="runwayshowAction" method="{1}">
+			<result name="save_success">modules/RunwayShowAdmin/index.jsp</result>
+			<result name="save_failure">modules/RunwayShowAdmin/index.jsp</result>
+			<result name="modify_forward_successful">modules/RunwayShowAdmin/runwayshow_modify.jsp</result>
+			<result name="modify_forward_failure">modules/RunwayShowAdmin/index.jsp</result>
+			<result name="modify">modules/RunwayShowAdmin/index.jsp</result>
+		</action>
+		<!-- Action for news -->
+		<action name="news_*" class="newsAction" method="{1}">
+			<result name="save_success">modules/NewsAdmin/index.jsp</result>
+			<result name="save_failure">modules/NewsAdmin/index.jsp</result>
+			<result name="modify_forward_successful">modules/NewsAdmin/news_modify.jsp</result>
+			<result name="modify_forward_failure">modules/NewsAdmin/index.jsp</result>
+			<result name="modify">modules/NewsAdmin/index.jsp</result>
+			
+		</action>
+		
+		<!-- Action for category -->
+		<action name="category_*" class="categoryAction" method="{1}">
+			<result name="success" type="json">
+				<param name="root">jsonArray</param>
+			</result>
+			<result name="create_group_successful">modules/CategoryAdmin/category_main.jsp</result>
+			<result name="create_item">modules/CategoryAdmin/category_sub_main.jsp</result>
+			<result name="item_modify_forward">modules/CategoryAdmin/category_sub_modify.jsp</result>
+			<result name="modify_item">modules/CategoryAdmin/category_main.jsp</result>
+		</action>
+		
+		<!-- Action for Account -->
+		<action name="account_*" class="accountAction" method="{1}">
+		</action>
+		
+		<action name="homepager_modify" class="homepagerAction" method="modify">
+			<result name="modify">modules/HomePageAdmin/index.jsp</result>
+		</action>
+		
+		<!-- Contact us Action -->
+		<action name="contact_*" class="contactAction" method="{1}">
+			<result name="save_success">modules/ConcernUs/index.jsp</result>
+			<result name="save_failure">modules/ConcernUs/index.jsp</result>
+			<result name="modify_forward_successful">modules/ConcernUs/modify.jsp</result>
+		</action>
+	</package>
+</struts>

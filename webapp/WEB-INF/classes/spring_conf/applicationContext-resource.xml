@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           					http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+           					http://www.springframework.org/schema/aop 
+							http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+							http://www.springframework.org/schema/context
+							http://www.springframework.org/schema/context/spring-context-3.1.xsd
+							http://www.springframework.org/schema/tx 
+							http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+	<context:annotation-config />
+	<context:component-scan base-package="com.zj"/>
+	<aop:aspectj-autoproxy />
+	<!-- 载入properties配置文件 -->
+	<bean id="placeholderProperties"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:/hibernate.properties</value>
+				<value>classpath:/environment.properties</value>
+			</list>
+		</property>
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="order" value="1" />
+	</bean>
+
+	<!-- 数据源配置 -->
+	<!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" -->
+	<!-- scope="singleton" destroy-method="close"> -->
+	<!-- <property name="driverClassName" value="${jdbc.driver}" /> -->
+	<!-- <property name="url" value="${jdbc.url}" /> -->
+	<!-- <property name="username" value="${jdbc.username}" /> -->
+	<!-- <property name="password" value="${jdbc.password}" /> -->
+	<!-- </bean> -->
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>java:comp/env/jdbc/fashion</value>
+		</property>
+	</bean>
+
+	<!-- 配置SessionFactory -->
+	<!-- <bean id="sessionFactory" -->
+	<!-- class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"> -->
+	<!-- <property name="dataSource"> -->
+	<!-- <ref local="dataSource" /> -->
+	<!-- </property> -->
+	<!-- <property name="mappingLocations"> -->
+	<!-- <list> -->
+	<!-- <value>classpath:com/zj/bean/*.hbm.xml</value> -->
+	<!-- <value>classpath:com/zj/common/bean/*.hbm.xml</value> -->
+	<!-- </list> -->
+	<!-- </property> -->
+	<!-- <property name="hibernateProperties"> -->
+	<!-- <props> -->
+	<!-- <prop key="hibernate.dialect">${hibernate.dialect}</prop> -->
+	<!-- <prop key="hibernate.show_sql">true</prop> -->
+	<!-- <prop key="current_session_context_class">thread</prop> -->
+	<!-- <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory -->
+	<!-- </prop> -->
+	<!-- <prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop> -->
+	<!-- <prop key="hibernate.cache.use_query_cache">true</prop> -->
+	<!-- <prop key="hibernate.cache.use_second_level_cache">true</prop> -->
+	<!-- <prop key="hibernate.jdbc.batch_size">0</prop> -->
+	<!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->
+	<!-- </props> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		<!-- <property name="hibernateProperties"> -->
+		<!-- <props> -->
+		<!-- <prop key="hibernate.dialect">${hibernate.dialect}</prop> -->
+		<!-- <prop key="hibernate.show_sql">true</prop> -->
+		<!-- <prop key="current_session_context_class">thread</prop> -->
+		<!-- <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory -->
+		<!-- </prop> -->
+		<!-- <prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop> -->
+		<!-- <prop key="hibernate.cache.use_query_cache">true</prop> -->
+		<!-- <prop key="hibernate.cache.use_second_level_cache">true</prop> -->
+		<!-- <prop key="hibernate.jdbc.batch_size">0</prop> -->
+		<!-- <prop key="hibernate.hbm2ddl.auto">create</prop> -->
+		<!-- </props> -->
+		<!-- </property> -->
+		<property name="packagesToScan">
+			<list>
+				<value>com.zj.core.po</value>
+				<value>com.zj.business.po</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" /> 
+	
+	<!-- 配置事务的传播特性  声明式事务-->
+<!--	<tx:advice id="txAdvice" transaction-manager="transactionManager">-->
+<!--		<tx:attributes>-->
+<!--			<tx:method name="add*" propagation="REQUIRED" />-->
+<!--			<tx:method name="delete*" propagation="REQUIRED" />-->
+<!--			<tx:method name="update*" propagation="REQUIRED" />-->
+<!--			<tx:method name="create*" propagation="REQUIRED" />-->
+<!--			<tx:method name="login*" propagation="REQUIRED" />-->
+<!--			<tx:method name="merge*" propagation="REQUIRED" />-->
+<!--		</tx:attributes>-->
+<!--	</tx:advice>  哪些类的哪些方法参与事务 -->
+<!--	<aop:config>-->
+<!--		<aop:pointcut expression="execution(* com.zj.*.service.impl.*.*(..))"-->
+<!--			id="allManagerMethod" />-->
+<!--		<aop:advisor advice-ref="txAdvice" pointcut-ref="allManagerMethod" />-->
+<!--	</aop:config>-->
+
+</beans>

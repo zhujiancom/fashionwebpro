@@ -1,0 +1,48 @@
+.tableClass{
+	border-collapse:collapse;
+	width:90%;
+	margin:10px 20px 10px 20px;
+	font-size:12px;
+	font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+.tableClass td,th{
+	border:thin solid #D3D3D3;
+	padding:2px;
+}
+.tableClass td{
+	text-align:center;
+	height:24px;
+	line-height:24px;
+}
+.tableClass th{
+	background:url(../comm_images/th-bg.gif) repeat-x;
+	height:25px;
+}
+.eventr{
+	background-color:#e8fffd;
+}
+.hovertr{
+	background-color:#0000ff;
+	filter:alpha(opacity=90,finishOpacity=90,style=1);
+	opacity:0.9;
+	color:white;
+}
+.hovertr a{
+	color:white;
+}
+.hovertr a:hover{
+	color:white;
+	color:#ff8000;
+	position:relative;
+	top:1px;
+	left:1px;
+}
+/**
+ * css3 表格隔行变色，只支持在w3c标准浏览器中起作用
+ */
+/*
+.tableClass tbody tr:nth-child(even){
+	background-color:#e8fffd;
+}
+
+*/
