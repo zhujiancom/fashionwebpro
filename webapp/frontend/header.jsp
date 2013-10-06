@@ -8,12 +8,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
   <head>
     <title>Header</title>
-    
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <%--	<link href="<%=basePath %>comm_script/bootstrap/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>--%>
 	<link href="<%=basePath %>frontend/css/header.css" type="text/css" rel="stylesheet"/>
 	<link rel="stylesheet" href="<%=basePath %>frontend/javascript/jquery-plugin/magnific-popup/magnific-popup.css"/> 
-	<script src="<%=basePath %>frontend/javascript/jquery-plugin/magnific-popup/jquery.magnific-popup.js" type="text/javascript"></script> 
 	
 	<style type="text/css">
     	
@@ -94,7 +92,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<li class="list_common menus"><a href="homepager_loadData.action"><s:text name="home"/></li>
 					<li class="list_common menus"><a href="designer_loadAll.action"><s:text name="designer"/></a></li>
 					<li class="list_common menus"><a href="brand_loadAll.action"><s:text name="brand"/></a></li>
-					<li class="list_common menus"><a href="#">INTERVIEWS</a></li>
+					<li class="list_common menus"><a href="#"><s:text name="interview"/></a></li>
 					<li class="list_common menus"><a href="menus/search/search.jsp"><s:text name="search"/></a></li>
 					<li class="list_common menus"><a href="contact_loadInfo.action"><s:text name="aboutus"/></a></li>
 				</ul>

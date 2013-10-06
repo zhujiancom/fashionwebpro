@@ -4,42 +4,58 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
   <head>
     <base href="<%=basePath%>frontend/">
     
     <title>My JSP 'main.jsp' starting page</title>
+    <script src="<%=basePath %>comm_script/jquery-1.9.1.min.js" type="text/javascript"></script> 
+    <script src="<%=basePath %>frontend/javascript/jquery-plugin/magnific-popup/jquery.magnific-popup.js" type="text/javascript"></script> 
     
-	<script src="javascript/jquery-1.7.2.min.js" type="application/javascript"></script>
     <style type="text/css">
     	#menu{
-    		position:relative;
     		float:left;
-    		height:600px;
     		width:22%;
-    		border-right:#C0C0C0 solid 2px;
+    		clear:left;
     	}
     	#main{
     		position:relative;
     		float:right;
     		width:77%;
     	}
+    	#contentwrapper{
+    		width:895px;
+    		position:relative;
+    		top:5px;
+    	}
     </style>
   </head>
   
   <body  oncontextmenu="return false" onselectstart="return false">
     <div id="wrapper">
-  		<jsp:include page="/frontend/header.jsp"></jsp:include>
+  		<jsp:include page="../../header.jsp"></jsp:include>
   		<div id="contentwrapper">
 		    <div id="menu">
-		    	<iframe name="menuPanel" src="menus/brand/leftmenu.jsp?brandId=<%=request.getParameter("brandId") %>" frameborder="0" width="180px" height="600px" scrolling="no"></iframe>
+		    	<iframe id="menuPanel" name="menuPanel" src="brand_loadMenu.action?brand.brandid=<%=request.getParameter("brandId") %>" frameborder="0" width="180px" style="padding:0;margin:0" scrolling="no"></iframe>
 		    </div>
 		    <div id="main">
-		    	<iframe name="mainPanel" src="brand_showBrandInfo.action?brand.brandid=<%=request.getParameter("brandId") %>" frameborder="0" width="800px" height="1000px""></iframe>
+		    	<iframe id="mainPanel" name="mainPanel" src="brand_showBrandInfo.action?brand.brandid=<%=request.getParameter("brandId") %>" frameborder="0" width="690px" style="padding:0;margin:0;" scrolling="no"></iframe>
+		    	<script type="text/javascript">
+					function reinitIframe(){
+					var menuFrame = document.getElementById("menuPanel");
+					var iframe = document.getElementById("mainPanel");
+					
+					try{
+						iframe.height = iframe.contentWindow.document.documentElement.scrollHeight;
+						menuFrame.height = iframe.contentWindow.document.documentElement.scrollHeight;
+					}catch (ex){}
+					}
+					window.setInterval("reinitIframe()", 200);
+		    	</script>
 		    </div>
 		</div>
-		<jsp:include page="/frontend/footer.jsp"></jsp:include>
+		<jsp:include page="../../footer.jsp"></jsp:include>
 	</div>
   </body>
 </html>

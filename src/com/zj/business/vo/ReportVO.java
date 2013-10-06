@@ -14,6 +14,11 @@ public class ReportVO  extends AbstractVO{
 	private String title;
 	private String content;
 	
+	public ReportVO(Report report){
+		this.report = report;
+		basePath="";
+	}
+	
 	public ReportVO(Report report, String basePath){
 		super();
 		this.report = report;

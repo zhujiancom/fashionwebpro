@@ -4,41 +4,57 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
   <head>
     <base href="<%=basePath%>frontend/">
     
     <title>My JSP 'main.jsp' starting page</title>
-    <script src="javascript/jquery-1.7.2.min.js" type="application/javascript"></script>
+    <script src="<%=basePath %>comm_script/jquery-1.9.1.min.js" type="text/javascript"></script> 
+    <script src="<%=basePath %>frontend/javascript/jquery-plugin/magnific-popup/jquery.magnific-popup.js" type="text/javascript"></script> 
     <style type="text/css">
     	#menu{
-    		position:relative;
     		float:left;
-    		border-right:#C0C0C0 solid 2px;
-    		height:600px;
     		width:22%;
+    		clear:left;
     	}
     	#main{
     		position:relative;
     		float:right;
     		width:77%;
     	}
+    	#contentwrapper{
+    		width:895px;
+    		position:relative;
+    		top:5px;
+    	}
     </style>
   </head>
   
   <body  oncontextmenu="return false" onselectstart="return false">
     <div id="wrapper">
-  		<jsp:include page="/frontend/header.jsp"></jsp:include>
+  		<jsp:include page="../../header.jsp"></jsp:include>
   		<div id="contentwrapper">
 		    <div id="menu">
-		    	<iframe name="menuPanel" src="menus/designer/leftmenu.jsp?designerId=<%=request.getParameter("designerId") %>" frameborder="0" width="160px" height="540px" scrolling="no"></iframe>
+					<iframe name="menuPanel" id="menuPanel" src="designer_loadMenu.action?designer.designerId=<%=request.getParameter("designerId") %>" frameborder="0" width="180px" style="padding:0;margin:0" scrolling="no"></iframe>
 		    </div>
 		    <div id="main">
-		    	<iframe name="mainPanel" src="designer_showProfile.action?designer.designerId=<%=request.getParameter("designerId") %>" frameborder="0" width="835px" height="1000px" style="margin:0"></iframe>
+		    	<iframe name="mainPanel" id="mainPanel" src="designer_showProfile.action?designer.designerId=<%=request.getParameter("designerId") %>" frameborder="0" width="690px" style="padding:0;margin:0;" scrolling="no"></iframe>
+		    	<script type="text/javascript">
+					function reinitIframe(){
+					var menuFrame = document.getElementById("menuPanel");
+					var iframe = document.getElementById("mainPanel");
+					
+					try{
+						iframe.height = iframe.contentWindow.document.documentElement.scrollHeight;
+						menuFrame.height = iframe.contentWindow.document.documentElement.scrollHeight;
+					}catch (ex){}
+					}
+					window.setInterval("reinitIframe()", 200);
+		    	</script>
 		    </div>
 		</div>
-		<jsp:include page="/frontend/footer.jsp"></jsp:include>
+		<jsp:include page="../../footer.jsp"></jsp:include>
 	</div>
   </body>
 </html>

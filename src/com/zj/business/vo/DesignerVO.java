@@ -1,10 +1,18 @@
 package com.zj.business.vo;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import com.zj.business.po.Brand;
 import com.zj.business.po.Designer;
+import com.zj.business.treenode.Menu;
 import com.zj.common.utils.StringUtil;
 
 public class DesignerVO extends AbstractVO {
 	private Designer designer;
+	private List<BrandVO> brandvos;
 	private String name;
 	private String borncity;
 	private String borncountry;
@@ -20,6 +28,8 @@ public class DesignerVO extends AbstractVO {
 	private String profile;
 	private String thumbnailUrl;
 	
+	private List<Menu> menus;
+	
 	public DesignerVO(){}
 	
 	public DesignerVO(Designer designer) {
@@ -30,6 +40,7 @@ public class DesignerVO extends AbstractVO {
 
 	@Override
 	public DesignerVO process(String lang) {
+		processBrandVO(lang);
 		if(EN_US.equalsIgnoreCase(lang)){
 			setEnglishValue();
 		}else{
@@ -37,7 +48,19 @@ public class DesignerVO extends AbstractVO {
 		}
 		return this;
 	}
-
+	
+	public void processBrandVO(String lang){
+		brandvos = new ArrayList<BrandVO>();
+		Set<Brand> brands = designer.getBrands();
+		if(brands != null && !brands.isEmpty()){
+			for(Iterator<Brand> key=brands.iterator();key.hasNext();){
+				BrandVO brandvo = new BrandVO(key.next());
+				brandvo.process(lang);
+				brandvos.add(brandvo);
+			}
+		}
+	}
+	
 	private void setEnglishValue(){
 		setName(designer.getEname());
 		String content = StringUtil.getStrFromBlob(designer.getDetailContentEN());
@@ -169,4 +192,19 @@ public class DesignerVO extends AbstractVO {
 		this.thumbnailUrl = thumbnailUrl;
 	}
 
+	public List<Menu> getMenus() {
+		return menus;
+	}
+
+	public void setMenus(List<Menu> menus) {
+		this.menus = menus;
+	}
+
+	public List<BrandVO> getBrandvos() {
+		return brandvos;
+	}
+
+	public void setBrandvos(List<BrandVO> brandvos) {
+		this.brandvos = brandvos;
+	}
 }

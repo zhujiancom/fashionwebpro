@@ -2638,8 +2638,7 @@ function openDialog(title, url, width, height, parentWin) {
 			width : width,
 			height : height,
 			lock : true,
-			fixed : true,
-			id:'test'
+			fixed : true
 		});
 	}
 };

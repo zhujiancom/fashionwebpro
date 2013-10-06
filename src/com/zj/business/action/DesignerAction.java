@@ -25,6 +25,9 @@ import com.zj.bigdefine.GlobalParam;
 import com.zj.business.po.Brand;
 import com.zj.business.po.Designer;
 import com.zj.business.service.IDesignerService;
+import com.zj.business.treenode.DesignerMenuBuilder;
+import com.zj.business.treenode.IMenuBuilder;
+import com.zj.business.treenode.Menu;
 import com.zj.business.vo.DesignerVO;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
@@ -366,6 +369,33 @@ public class DesignerAction extends BaseAction {
 		menu = treenode.generateNode();
 		jsonArray = JSONUtil.sendArray(menu, null);
 		return "generate_menutree_success";
+	}
+	
+	public String loadMenu(){
+		String language = "en_US";
+		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
+		if (sessionLocale != null && sessionLocale instanceof Locale) {
+            Locale locale = (Locale) sessionLocale;
+            language = locale.getLanguage()+"_"+locale.getCountry();
+        }
+		long designerId = designer.getDesignerId();
+		try {
+			Designer d = designerService.get(Designer.class,designerId);
+			DesignerVO vo = new DesignerVO(d);
+			vo.process(language);
+			boolean isPermission = false;
+			if(session.get(GlobalParam.LOGIN_ACCOUNT_SESSION) != null){
+				isPermission = true;
+			}
+			IMenuBuilder builder = new DesignerMenuBuilder(vo);
+			List<Menu> menus = designerService.generateMenu(builder, isPermission);
+			vo.setMenus(menus);
+			getValueStack().set("designervo", vo);
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "loadMenu_success";
 	}
 	
 	public void fetchInfo(){

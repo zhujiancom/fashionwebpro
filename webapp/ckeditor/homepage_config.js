@@ -22,6 +22,7 @@ CKEDITOR.editorConfig = function( config ) {
 	];
 //	config.toolbar='Basic';
 	config.removePlugins = 'elementspath';
+//	config.filebrowserWindowFeatures = 'resizable=yes,scrollbars=no';
 	config.resize_enabled = false;
 //	config.extraPlugins = "ajax";
 	config.toolbarCanCollapse = true;

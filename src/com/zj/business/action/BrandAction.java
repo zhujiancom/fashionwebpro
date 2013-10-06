@@ -22,18 +22,15 @@ import com.zj.business.po.Brand;
 import com.zj.business.po.Designer;
 import com.zj.business.po.Style;
 import com.zj.business.service.IBrandService;
+import com.zj.business.treenode.BrandMenuBuilder;
+import com.zj.business.treenode.IMenuBuilder;
+import com.zj.business.treenode.Menu;
 import com.zj.business.vo.BrandVO;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
 import com.zj.common.utils.JSONUtil;
 import com.zj.common.utils.PageInfo;
 import com.zj.common.utils.StringUtil;
-import com.zj.common.ztreenode.AbstractMakeDataStrategy;
-import com.zj.common.ztreenode.NodeType;
-import com.zj.common.ztreenode.TreeNode;
-import com.zj.common.ztreenode.TreeNodeImpl;
-import com.zj.common.ztreenode.TreeNodeStrategyFactory;
-import com.zj.common.ztreenode.ZTreeNode;
 import com.zj.core.control.struts.BaseAction;
 import com.zj.core.po.SysUser;
 
@@ -253,28 +250,28 @@ public class BrandAction extends BaseAction {
 		}
 	}
 
-	public String showBrandDetail() {
-		String language = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-			Locale locale = (Locale) sessionLocale;
-			language = locale.getLanguage() + "_" + locale.getCountry();
-		}
-		if (brand.getBrandid() != 0) {
-			long brandId = brand.getBrandid();
-			try {
-				Brand b = brandService.get(Brand.class, brandId);
-				BrandVO bvo = new BrandVO(b);
-				bvo.process(language);
-				getValueStack().set("brandVO", bvo);
-				return "load_brand_success";
-			} catch (ServiceException e) {
-				e.printStackTrace();
-				return "load_brand_failure";
-			}
-		}
-		return "load_brand_failure";
-	}
+//	public String showBrandDetail() {
+//		String language = "en_US";
+//		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
+//		if (sessionLocale != null && sessionLocale instanceof Locale) {
+//			Locale locale = (Locale) sessionLocale;
+//			language = locale.getLanguage() + "_" + locale.getCountry();
+//		}
+//		if (brand.getBrandid() != 0) {
+//			long brandId = brand.getBrandid();
+//			try {
+//				Brand b = brandService.get(Brand.class, brandId);
+//				BrandVO bvo = new BrandVO(b);
+//				bvo.process(language);
+//				getValueStack().set("brandVO", bvo);
+//				return "load_brand_success";
+//			} catch (ServiceException e) {
+//				e.printStackTrace();
+//				return "load_brand_failure";
+//			}
+//		}
+//		return "load_brand_failure";
+//	}
 
 	// below methods all requests from frontend
 	public String loadAll() {
@@ -300,44 +297,72 @@ public class BrandAction extends BaseAction {
 		}
 	}
 
-	public String menuTree() {
+//	public String menuTree() {
+//		String language = "en_US";
+//		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
+//		if (sessionLocale != null && sessionLocale instanceof Locale) {
+//			Locale locale = (Locale) sessionLocale;
+//			language = locale.getLanguage() + "_" + locale.getCountry();
+//		}
+//		long brandId = brand.getBrandid();
+//		List<ZTreeNode> menu = new ArrayList<ZTreeNode>();
+//		AbstractMakeDataStrategy strategy = null;
+//		try {
+//			brand = brandService.get(Brand.class, brandId);
+//			if (treeid == null) {
+//				strategy = TreeNodeStrategyFactory.getNodeStrategy(
+//						NodeType.NONEFORBRAND, new Object[]{brand, language});
+//			}
+//			if (treeid != null) {
+//				if (nodetype.equals(NodeType.PRESSFORBRAND.toString())
+//						&& session.get(GlobalParam.LOGIN_ACCOUNT_SESSION) != null) {
+//					strategy = TreeNodeStrategyFactory.getNodeStrategy(
+//							NodeType.PRESSFORBRAND, new Object[]{brand, treeid,
+//									language});
+//				} else if (nodetype.equals(NodeType.COLLECTIONFORBRAND
+//						.toString())
+//						&& session.get(GlobalParam.LOGIN_ACCOUNT_SESSION) != null) {
+//					strategy = TreeNodeStrategyFactory.getNodeStrategy(
+//							NodeType.COLLECTIONFORBRAND, new Object[]{brand,
+//									treeid, language});
+//				}
+//			}
+//		} catch (ServiceException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		TreeNode treenode = new TreeNodeImpl(strategy);
+//		menu = treenode.generateNode();
+//		jsonArray = JSONUtil.sendArray(menu, null);
+//		return "generate_menutree_success";
+//	}
+	
+	public String loadMenu(){
 		String language = "en_US";
 		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
 		if (sessionLocale != null && sessionLocale instanceof Locale) {
-			Locale locale = (Locale) sessionLocale;
-			language = locale.getLanguage() + "_" + locale.getCountry();
-		}
-		long brandId = brand.getBrandid();
-		List<ZTreeNode> menu = new ArrayList<ZTreeNode>();
-		AbstractMakeDataStrategy strategy = null;
-		try {
-			brand = brandService.get(Brand.class, brandId);
-			if (treeid == null) {
-				strategy = TreeNodeStrategyFactory.getNodeStrategy(
-						NodeType.NONEFORBRAND, new Object[]{brand, language});
+            Locale locale = (Locale) sessionLocale;
+            language = locale.getLanguage()+"_"+locale.getCountry();
+        }
+		Long brandId = brand.getBrandid();
+		try{
+			Brand b = brandService.get(Brand.class, brandId);
+			BrandVO vo = new BrandVO(b);
+			vo.process(language);
+			boolean isPermission = false;
+			if(session.get(GlobalParam.LOGIN_ACCOUNT_SESSION) != null){
+				isPermission = true;
 			}
-			if (treeid != null) {
-				if (nodetype.equals(NodeType.PRESSFORBRAND.toString())
-						&& session.get(GlobalParam.LOGIN_ACCOUNT_SESSION) != null) {
-					strategy = TreeNodeStrategyFactory.getNodeStrategy(
-							NodeType.PRESSFORBRAND, new Object[]{brand, treeid,
-									language});
-				} else if (nodetype.equals(NodeType.COLLECTIONFORBRAND
-						.toString())
-						&& session.get(GlobalParam.LOGIN_ACCOUNT_SESSION) != null) {
-					strategy = TreeNodeStrategyFactory.getNodeStrategy(
-							NodeType.COLLECTIONFORBRAND, new Object[]{brand,
-									treeid, language});
-				}
-			}
-		} catch (ServiceException e) {
+			IMenuBuilder builder = new BrandMenuBuilder(vo);
+			List<Menu> menus = brandService.generateMenu(builder,isPermission);
+			vo.setMenus(menus);
+			getValueStack().set("brandvo", vo);
+			getValueStack().set("msg","test");
+		}catch (ServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		TreeNode treenode = new TreeNodeImpl(strategy);
-		menu = treenode.generateNode();
-		jsonArray = JSONUtil.sendArray(menu, null);
-		return "generate_menutree_success";
+		return "loadMenu_success";
 	}
 
 	public String showBrandInfo() {
@@ -352,7 +377,7 @@ public class BrandAction extends BaseAction {
 			Brand b = brandService.get(Brand.class, id);
 			BrandVO bvo = new BrandVO(b);
 			bvo.process(language);
-			getValueStack().set("brandVO", bvo);
+			getValueStack().set("brandvo", bvo);
 			return "load_brand_success";
 		} catch (ServiceException e) {
 			e.printStackTrace();

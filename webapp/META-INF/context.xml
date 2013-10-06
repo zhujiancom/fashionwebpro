@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <Context path="/fashion" crossContext="true" reloadable="true" >
 
 <Resource name="jdbc/fashion" auth="Container"

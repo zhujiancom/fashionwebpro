@@ -20,7 +20,7 @@ CKEDITOR.editorConfig = function( config ) {
         { name: 'tools' },
         { name: 'document',    groups: [ 'mode', 'document', 'doctools' ] },
         { name: 'others' },
-        '/',
+        '/', 
         { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
         { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align' ] },
         { name: 'styles' },
@@ -38,7 +38,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.startupShowBorders = false;
 	config.toolbarCanCollapse = true;
 	config.width=900;
-	config.height=500;
+	config.height=500; 
 	config.removePlugins = 'elementspath';
 	config.resize_enabled = false;
 };

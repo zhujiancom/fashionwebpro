@@ -44,6 +44,7 @@
 			<result name="generate_menutree_success" type="json">
 				<param name="root">jsonArray</param>
 			</result>
+			<result name="loadMenu_success">menus/designer/leftmenu.jsp</result>
 		</action>
 		
 		<action name="brand_*" class="brandAction" method="{1}">
@@ -53,6 +54,7 @@
 			<result name="generate_menutree_success" type="json">
 				<param name="root">jsonArray</param>
 			</result>
+			<result name="loadMenu_success">menus/brand/leftmenu.jsp</result>
 		</action>
 		
 			<!-- Action for interview -->

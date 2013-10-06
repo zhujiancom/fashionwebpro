@@ -3,6 +3,7 @@
     <wb-module deploy-name="fashionwebSite">
         <wb-resource deploy-path="/" source-path="/webapp"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/resource"/>
         <property name="context-root" value="/fashionwebSite"/>
         <property name="java-output-path" value="/fashionwebSite/webapp/WEB-INF/classes"/>
     </wb-module>

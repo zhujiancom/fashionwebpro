@@ -3,16 +3,18 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<%@ taglib uri="/struts-tags" prefix="s" %>
+<!DOCTYPE html>
 <html>
   <head>
     <base href="<%=basePath%>frontend/">
     
     <title>My JSP 'leftmenu.jsp' starting page</title>
-    <link rel="stylesheet" href="<%=basePath %>comm_script/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css"></link>
-	<script type="text/javascript" src="<%=basePath %>comm_script/jquery-1.6.2.min.js"></script>
-	<script type="text/javascript" src="<%=basePath %>comm_script/ztree/jquery.ztree.all-3.2.min.js"></script>
+	<link rel="stylesheet" href="<%=basePath %>frontend/css/leftmenu.css" type="text/css"></link>
+	<link rel="stylesheet" href="<%=basePath %>comm_script/navgoco/jquery.navgoco.css" type="text/css"></link>
+	
+	<script type="text/javascript" src="<%=basePath %>comm_script/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="<%=basePath %>comm_script/navgoco/jquery.navgoco.min.js" type="text/css"></script>
 	
 	<script type="text/javascript">
 		$(function(){
@@ -22,101 +24,72 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				parentWin.$.dialog.tips(msg);			
 			}
 		});
-	</script>
-	
-    <script type="text/javascript">
-		var ZtreeSetting = {
-	            data: {
-	                simpleData: {
-	                    enable: true,
-	                    idKey: "treeid",
-	                    pIdKey: "pid",
-	                    rootPId: null
-	                }
-	            },
-	            key:{
-	            	name:"name"
-	            },
-	            async: {//异步加载
-	                enable: true, //开启异步加载
-	                url:"designer_menuTree.action",
-	                dataFilter: ajaxDataFilter,
-	                type:"post",
-	                autoParam: ["treeid","nodetype"],
-	                otherParam:{
-            			"designer.designerId":"<%=request.getParameter("designerId") %>"
-            			}
-	            	},
-	            view: {
-	            	dblClickExpand:dblClickExpand,
-	                showLine: false,
-	                selectedMulti: false,
-	                expandSpeed: ($.browser.msie && parseInt($.browser.version) <= 6) ? "" : "fast",
-	                showIcon: false
-	            },
-	            callback: {
-	                beforeClick: function(treeId, treeNode) {
-	                	var zTree = $.fn.zTree.getZTreeObj("MenuTree");
-	                	if(treeNode.isParent){
-	                		treeNode.url = "";
-	                		zTree.updateNode(treeNode);
-						}
-	                },
-	                beforeExpand:zTreeBeforeExpand,
-	                onClick: treeNodeClick
-	            }
-	
-	        };
 		
-		function zTreeBeforeExpand(treeId,treeNode){
-			return treeNode.isParent;
-		}
-		
-		function dblClickExpand(treeId,treeNode){
-			return treeNode.level >0 ;
-		}
-		
-		function treeNodeClick(event, treeid, treeNode) {
-			var parentWin = window.parent.frames['mainPanel'];
-		};
-		
-		function RefreshTreeNode(nodeID) {
-	        var zTree = $.fn.zTree.getZTreeObj("MenuTree"),
-			node = zTree.getNodeByParam("treeid", nodeID, null);
-	        alert(node);
-	        if (!node) {
-	            return;
-	        }
-	        zTree.reAsyncChildNodes(node.getParentNode(), "refresh", false);
-	    };
-	    
-	    function ajaxDataFilter(treeid, parentNode, childNodes) {
-	    	if (!childNodes){
-	    		return null;
-	    	}
-	        for (var i=0, l=childNodes.length; i<l; i++) {
-					if(childNodes[i].treeid == 0 ){
-						childNodes[i].icon = "<%=basePath%>comm_script/ztree/css/zTreeStyle/img/display.png";
-					}
-					if(typeof childNodes[i].url === "string" && childNodes[i].url != ""){
-						childNodes[i].url = "<%=basePath%>"+childNodes[i].url;
-					}
-			}
-	        return childNodes;
-	    }
-	    $(function(){
-	    	var ztreeNode = $.fn.zTree.init($("#MenuTree"),ZtreeSetting,null);
+		$(document).ready(function() {
+			$("#menu").navgoco({
+				caret: '<span class="caret"></span>',
+				accordion: false,
+				openClass: 'open',
+				save: true,
+				cookie: {
+					name: 'navgoco',
+					expires: false,
+					path: '/'
+				},
+				slide: {
+					duration: 400,
+					easing: 'swing'
+				}
 	    });
+
+	    $("#collapseAll").click(function(e) {
+	        e.preventDefault();
+	        $("#menu").navgoco('toggle', false);
+	    });
+
+	    $("#expandAll").click(function(e) {
+	        e.preventDefault();
+	        $("#menu").navgoco('toggle', true);
+	    });
+	});
+		
 	</script>
-	<style type="text/css">
-		.ztree li span.button.switch.level0 {visibility:hidden; width:1px;}
-		.ztree li ul.level0 {padding:0; background:none;}
-	</style>
+	
 
   </head>
   
   <body  oncontextmenu="return false" onselectstart="return false">
-   	<ul id="MenuTree" class="ztree" style="width: 90%;">
-    </ul>
+        <div id="menus">
+            <div id="nav">
+                <ul id="menu" class="nav">
+                    <li class="active"><a href="#">Home</a></li>
+					<s:iterator value="designervo.menus" var="menu">
+						<li>
+							<a <s:property value="#menu.attributes"/>><s:property value="#menu.name"/></a>
+							<s:if test="!#menu.items.isEmpty() || !#menu.subMenus.isEmpty()">
+								<ul>
+									<s:iterator value="#menu.items" var="menuItem">
+										<li><a <s:property value="#menuItem.attributes"/>><s:property value="#menuItem.name"/></a></li>
+									</s:iterator>
+									<s:iterator value="#menu.subMenus" var="subMenu">
+										<li>
+											<a href="#"><s:property value="#subMenu.name"/></a>
+											<ul>
+												<s:iterator value="#subMenu.items" var="subItem">
+													<li><a <s:property value="#subItem.attributes"/>><s:property value="#subItem.name"/></a></li>
+												</s:iterator>
+											</ul>
+										</li>
+									</s:iterator>		
+								</ul>
+							</s:if>
+						</li>
+					</s:iterator>
+                </ul>
+                <p class="external">
+                    <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+                </p>
+            </div>
+        </div>
   </body>
 </html>
