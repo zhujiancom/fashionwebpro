@@ -139,7 +139,14 @@
 		</action>
 		
 		<action name="homepager_modify" class="homepagerAction" method="modify">
-			<result name="modify">modules/HomePageAdmin/index.jsp</result>
+			<result name="modify" type="chain">
+				<param name="actionName">homepager_loadDataForBackend</param>
+				<param name="namespace">/backend</param>
+			</result>
+		</action>
+		
+		<action name="homepager_loadDataForBackend" class="homepagerAction" method="loadDataForBackend">
+			<result name="load_success">modules/HomePageAdmin/index.jsp</result>
 		</action>
 		
 		<!-- Contact us Action -->

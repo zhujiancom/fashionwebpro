@@ -1,5 +1,6 @@
 package com.zj.business.vo;
 
+import com.zj.bigdefine.CommonConstant;
 import com.zj.common.utils.StringUtil;
 
 public abstract class AbstractVO implements Language {
@@ -41,8 +42,13 @@ public abstract class AbstractVO implements Language {
 		return result.toString();
 	}
 
-//	public static void main(String[] args){
-//		AbstractVO vo = new AbstractVO();
-//		System.out.println(vo.convertTCSC("梦缘", ZH_TW));
-//	}
+	protected String generateThumbnailUrl(String sourceUrl){
+		String thumbnailUrl = "";
+		if(!StringUtil.isEmpty(sourceUrl)){
+            StringBuffer sb = new StringBuffer(sourceUrl);
+            sb.insert(sourceUrl.lastIndexOf("."), CommonConstant.ThumbnailSuffix);
+            thumbnailUrl = sb.toString();
+        }
+		return thumbnailUrl;
+	}
 }

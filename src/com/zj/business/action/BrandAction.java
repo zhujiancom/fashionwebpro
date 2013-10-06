@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -14,6 +15,8 @@ import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.ckfinder.connector.utils.ImageUtils;
+import com.zj.bigdefine.CommonConstant;
 import com.zj.bigdefine.GlobalParam;
 import com.zj.business.po.Brand;
 import com.zj.business.po.Designer;
@@ -69,13 +72,14 @@ public class BrandAction extends BaseAction {
 
 	public String save() {
 		String imgUrl = "";
+		String thumbnailUrl = "";
 		boolean isAddImg = false;
 		try {
 			if (imageFileFileName != null && !"".equals(imageFileFileName)) {
 				isAddImg = true;
-				String imageFileName = new Date().getTime()
-						+ getExtention(imageFileFileName);
-				imgUrl = "upload/headImg/brand/" + imageFileName;
+				String imageName = UUID.randomUUID().toString();
+				imgUrl = "upload/headImg/brand/" + imageName+ getExtention(imageFileFileName);;
+				thumbnailUrl = "upload/headImg/brand/"+imageName+CommonConstant.ThumbnailSuffix+ getExtention(imageFileFileName);
 				brand.setBrandimg(imgUrl);
 			}
 			brand.setCreater(((SysUser) session
@@ -84,11 +88,14 @@ public class BrandAction extends BaseAction {
 			brandService.save(brand, designer);
 			if (isAddImg) {
 				String absoluteUrl = getBasePath() + imgUrl;
+				String absoluteThumbnailUrl = getBasePath() +thumbnailUrl;
 				File destFile = new File(absoluteUrl);
 				if (!destFile.getParentFile().exists()) {
 					destFile.getParentFile().mkdirs();
 				}
+				File destThumbnail = new File(absoluteThumbnailUrl);
 				copyByChannel(imageFile, destFile);
+				ImageUtils.createResizedImage(imageFile, destThumbnail, Integer.valueOf(System.getProperty("thumbnail.size.width")), Integer.valueOf(System.getProperty("thumbnail.size.height")),Float.valueOf( System.getProperty("thumbnail.size.quality")));
 			}
 			getValueStack()
 					.set("msg",
@@ -150,25 +157,32 @@ public class BrandAction extends BaseAction {
 	public String modifyForward() {
 		try {
 			Brand dbbrand = brandService.get(Brand.class, id);
-			getValueStack().setValue("brand", dbbrand);
+			BrandVO vo = new BrandVO(dbbrand);
+			getValueStack().set("brandvo", vo);
 			return "modify_forward_successful";
 		} catch (ServiceException e) {
 			e.printStackTrace();
 			log.debug("The brand is not exist!",e);
+			return "modify_forward_failure";
+		}catch(Exception e){
+			log.debug(e);
+			e.printStackTrace();
 			return "modify_forward_failure";
 		}
 	}
 
 	public String update() {
 		String imgurl = "";
+		String thumbnailUrl="";
 		String oldImgurl = getBasePath() + brand.getBrandimg();
 		boolean isUpdateImg = false;
 		try {
 			if (imageFileFileName != null && !"".equals(imageFileFileName)) {
+				String fileType = getExtention(imageFileFileName);
 				isUpdateImg = true;
-				String imageFileName = new Date().getTime()
-						+ getExtention(imageFileFileName);
-				imgurl = "upload/headImg/brand/" + imageFileName;
+				String imageName =UUID.randomUUID().toString();
+				imgurl = "upload/headImg/brand/" + imageName+fileType;
+				thumbnailUrl="upload/headImg/designer/"+imageName+CommonConstant.ThumbnailSuffix+fileType;
 				brand.setBrandimg(imgurl);
 			}
 			
@@ -179,8 +193,16 @@ public class BrandAction extends BaseAction {
 			if (isUpdateImg) {
 				preDeleteFile(oldImgurl);
 				String absolutePath = getBasePath() + imgurl;
+				String absoluteThumbnailUrl = getBasePath() +thumbnailUrl;
 				File destFile = new File(absolutePath);
+				if(!destFile.getParentFile().exists()){
+					if(destFile.getParentFile().mkdirs()){
+						throw new UploadFileException("create parent floder error!");
+					}
+				}
+				File destThumbnail = new File(absoluteThumbnailUrl);
 				copyByChannel(imageFile, destFile);
+				ImageUtils.createResizedImage(imageFile, destThumbnail, Integer.valueOf(System.getProperty("thumbnail.size.width")), Integer.valueOf(System.getProperty("thumbnail.size.height")),Float.valueOf( System.getProperty("thumbnail.size.quality")));
 			}
 			getValueStack().set(
 					"msg",

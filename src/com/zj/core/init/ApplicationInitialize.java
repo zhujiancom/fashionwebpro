@@ -1,5 +1,8 @@
 package com.zj.core.init;
 
+import java.io.IOException;
+import java.util.Properties;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
@@ -33,7 +36,13 @@ public class ApplicationInitialize extends HttpServlet {
 
 	public void init() throws ServletException{
 		log.info(">>>>>>>>>> Initialized Appliation Start >>>>>>>>>>");
-		
+		Properties properties = System.getProperties();
+		try {
+			properties.load(this.getClass().getClassLoader().getResourceAsStream("environment.properties"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.setProperties(properties);
 		HomePager homepager = dao.get(HomePager.class, 1L);
 		if(homepager == null){
 			homepager = new HomePager();

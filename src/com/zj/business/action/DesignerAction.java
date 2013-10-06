@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -18,6 +19,8 @@ import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.ckfinder.connector.utils.ImageUtils;
+import com.zj.bigdefine.CommonConstant;
 import com.zj.bigdefine.GlobalParam;
 import com.zj.business.po.Brand;
 import com.zj.business.po.Designer;
@@ -69,12 +72,14 @@ public class DesignerAction extends BaseAction {
 	private String term;  //fuzzy search designer's full name
 	public String save(){
 		String imgUrl = "";
+		String thumbnailUrl = "";
 		boolean isAddImg = false;
 		try{
 			if(imageFileFileName != null && !"".equals(imageFileFileName)){
 				isAddImg = true;
-				String imageFileName = new Date().getTime()+getExtention(imageFileFileName);
-				imgUrl = "upload/headImg/designer/"+imageFileName;
+				String imageName = UUID.randomUUID().toString();
+				imgUrl = "upload/headImg/designer/"+imageName+getExtention(imageFileFileName);
+				thumbnailUrl = "upload/headImg/designer/"+imageName+ CommonConstant.ThumbnailSuffix +getExtention(imageFileFileName);
 				designer.setImgURL(imgUrl);
 			}
 			designer.setCreater(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
@@ -82,11 +87,14 @@ public class DesignerAction extends BaseAction {
 			designerService.insert(designer);
 			if(isAddImg){
 				String absoluteUrl = getBasePath()+imgUrl;
+				String absoluteThumbnailUrl = getBasePath() +thumbnailUrl;
 				File destFile = new File(absoluteUrl);
 				if(!destFile.getParentFile().exists()){
 					destFile.getParentFile().mkdirs();
 				}
+				File destThumbnail = new File(absoluteThumbnailUrl);
 				copyByChannel(imageFile,destFile);
+				ImageUtils.createResizedImage(imageFile, destThumbnail, Integer.valueOf(System.getProperty("thumbnail.size.width")), Integer.valueOf(System.getProperty("thumbnail.size.height")),Float.valueOf( System.getProperty("thumbnail.size.quality")));
 			}
 			getValueStack().set("msg", "create designer ["+designer.getEname()+"] Successfully! ");
 			return "save_success";
@@ -124,6 +132,16 @@ public class DesignerAction extends BaseAction {
 		}
 	}
 	
+	public void showAllExcludeFeaturedDesigner(){
+		try{
+			PageInfo<Designer> pageinfo = designerService.loadDesignersExcludeFaturedForPage(rp, page);
+			String json = JSONUtil.sendHbmObjectGrid(pageinfo);
+			sendJSONdata(json);
+		}catch(ServiceException e){
+			
+		}
+	}
+	
 	public void fuzzySearch(){
 		try {
 			List<Designer> designers = designerService.fuzzySearchByName(term);
@@ -158,11 +176,16 @@ public class DesignerAction extends BaseAction {
 	public String modifyForward(){
 		try {
 			Designer dbdesigner = designerService.get(Designer.class, id);
-			getValueStack().setValue("designer", dbdesigner);
+			DesignerVO vo = new DesignerVO(dbdesigner);
+			getValueStack().set("designervo", vo);
 			return "modify_forward_successful";
 		} catch (ServiceException e) {
 			e.printStackTrace();
 			log.debug("The Designer is not exist!",e);
+			return "modify_forward_failure";
+		}catch(Exception e){
+			log.debug(e);
+			e.printStackTrace();
 			return "modify_forward_failure";
 		}
 	}
@@ -185,13 +208,16 @@ public class DesignerAction extends BaseAction {
 	 */
 	public String update(){
 		String imgurl = "";
+		String thumbnailUrl="";
 		String oldImgurl = getBasePath()+designer.getImgURL();
 		boolean isUpdateImg = false;
 		try{
 			if(imageFileFileName != null && !"".equals(imageFileFileName)){
+				String fileType = getExtention(imageFileFileName);
 				isUpdateImg = true;
-				String imageFileName = new Date().getTime()+getExtention(imageFileFileName);
-				imgurl = "upload/headImg/designer/"+imageFileName;
+				String imageName =UUID.randomUUID().toString();
+				imgurl = "upload/headImg/designer/"+imageName+fileType;
+				thumbnailUrl="upload/headImg/designer/"+imageName+CommonConstant.ThumbnailSuffix+fileType;
 				designer.setImgURL(imgurl);
 			}
 			designer.setModifier(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
@@ -200,8 +226,16 @@ public class DesignerAction extends BaseAction {
 			if(isUpdateImg){
 				preDeleteFile(oldImgurl);
 				String absolutePath = getBasePath()+imgurl;
+				String absoluteThumbnailUrl = getBasePath() +thumbnailUrl;
 				File destFile = new File(absolutePath);
+				if(!destFile.getParentFile().exists()){
+					if(destFile.getParentFile().mkdirs()){
+						throw new UploadFileException("create parent floder error!");
+					}
+				}
+				File destThumbnail = new File(absoluteThumbnailUrl);
 				copyByChannel(imageFile, destFile);
+				ImageUtils.createResizedImage(imageFile, destThumbnail, Integer.valueOf(System.getProperty("thumbnail.size.width")), Integer.valueOf(System.getProperty("thumbnail.size.height")),Float.valueOf( System.getProperty("thumbnail.size.quality")));
 			}
 			getValueStack().set("msg", "update Designer ["+designer.getEname()+"] successfully!");
 		}catch(ServiceException se){
@@ -284,7 +318,7 @@ public class DesignerAction extends BaseAction {
 			Designer designer = designerService.get(Designer.class,id);
 			DesignerVO vo = new DesignerVO(designer);
 			vo.process(language);
-			getValueStack().set("designer",vo);
+			getValueStack().set("designervo",vo);
 			return "load_profile_success";
 		} catch (ServiceException e) {
 			e.printStackTrace();

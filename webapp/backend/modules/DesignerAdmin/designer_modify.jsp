@@ -7,7 +7,7 @@
 %>
 <%@taglib uri="/struts-tags"  prefix="s"%>
 <%@ taglib uri="http://ckeditor.com"  prefix="ckeditor"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
 	<head>
 		<base href="<%=basePath%>backend/">
@@ -19,12 +19,11 @@
 		<meta http-equiv="expires" content="0">
 		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
 		<meta http-equiv="description" content="This is my page">
+		<link href="<%=basePath %>comm_script/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link href="<%=basePath %>comm_style/base.css" rel="stylesheet" type="text/css" />
+	    <link href="<%=basePath %>comm_script/fileuploader/css/custom_uploader.css" rel="stylesheet">
 	    <script type="text/javascript" 
 	    		src="<%=basePath %>comm_script/jquery-1.6.2.min.js">
-	    </script>
-	    <script type="text/javascript" 
-	    		src="<%=basePath%>comm_script/dialog/lhgdialog.min.js">
 	    </script>
 	    <script type="text/javascript" 
 	    		src="<%=basePath%>comm_script/jquery-plugin/jquery-ui-1.8.16.custom.min.js">
@@ -63,36 +62,48 @@
 	<body>
 		<div id="wrapper">
 			<form id="fmt" action="designer_update.action" method="post" target="main" enctype="multipart/form-data">
-				<input type="hidden" name="designer.designerId" value="<s:property value="designer.designerId"/>" />
-				<input type="hidden" name="designer.imgURL" value="<s:property value="designer.imgURL"/>"/>
+				<input type="hidden" name="designer.designerId" value="<s:property value="designervo.designer.designerId"/>" />
+				<input type="hidden" name="designer.imgURL" value="<s:property value="designervo.designer.imgURL"/>"/>
 				<div class="rowElem">
 					<label>
 						Designer Name(EN):
 					</label>
-					<input type="text" name="designer.ename" value="<s:property value='designer.ename' />" />
+					<input type="text" name="designer.ename" value="<s:property value='designervo.designer.ename' />" />
 				</div>
 				<div class="rowElem">
 					<label>
 						Designer Name(ZH):
 					</label>
-					<input type="text" name="designer.cname" value="<s:property value='designer.cname' />"/>
+					<input type="text" name="designer.cname" value="<s:property value='designervo.designer.cname' />"/>
 				</div>
-				
-					<div class="rowElem">
-					<label>
-						Designer Image:
-					</label>
-					<input type="file" name="imageFile">
-				</div>
-				<br />
+				<div id="uploadbox">
+					<div id="title">
+			        	<p>Designer Head Image:</p>
+			            <hr />
+			        </div>
+			        <div id="container">
+			        <div id="imagecontainer">
+			        	<ul>
+			            	<li class="list_common">
+			                	<div class="imgLiquidFill imgLuid pic">
+			                    	<img src="<%=basePath %><s:property value='designervo.thumbnailUrl'/>"  />
+			                    </div>
+			                </li>
+			        	</ul>
+			        </div>
+			        </div>
+			        <div id="uploader">
+			        	<input type="file" name="imageFile" multiple="multiple"/>
+			        </div>
+			     </div>
 				<div>
 					<label>Detail Content(CH):</label>
-					<textarea name="designer.detailContentCH"><s:property value="designer.detailContentCH"/></textarea>
+					<textarea name="designer.detailContentCH"><s:property value="designervo.designer.detailContentCH"/></textarea>
 				</div>
 				<br/>
 				<div>
 					<label>Detail Content(EN):</label>
-					<textarea name="designer.detailContentEN"><s:property value="designer.detailContentEN"/></textarea>
+					<textarea name="designer.detailContentEN"><s:property value="designervo.designer.detailContentEN"/></textarea>
 				</div>
 				<br />
 			<br />

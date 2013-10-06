@@ -1,8 +1,7 @@
 @import "tableStyle.css";
 @import "pageNavigation.css";
 @import "inputStyle.css";
-@import url("../comm_script/jqtransform/jqtransform.css");
-@import url("../comm_script/jqtransform/jqtransform-validate.css");
+
 @import url("ui-lightness/jquery-ui-1.8.16.custom.css");
 
 *{

@@ -7,7 +7,7 @@
 %>
 <%@taglib uri="/struts-tags"  prefix="s"%>
 <%@ taglib uri="http://ckeditor.com"  prefix="ckeditor"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
 	<head>
 		<base href="<%=basePath%>backend/">
@@ -20,12 +20,11 @@
 		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
 		<meta http-equiv="description" content="This is my page">
 		<link href="<%=basePath %>comm_style/base.css" rel="stylesheet" type="text/css" />
+    	<link href="<%=basePath %>comm_script/bootstrap/css/bootstrap.css" rel="stylesheet">
+<%--		<link href="<%=basePath %>comm_script/bootstrap/css/bootstrap-formhelpers.css" rel="stylesheet">--%>
     
 	    <script type="text/javascript" 
 	    		src="<%=basePath %>comm_script/jquery-1.6.2.min.js">
-	    </script>
-	    <script type="text/javascript" 
-	    		src="<%=basePath%>comm_script/dialog/lhgdialog.min.js">
 	    </script>
 	    <script type="text/javascript" 
 	    		src="<%=basePath%>comm_script/jquery-plugin/jquery-ui-1.8.16.custom.min.js">
@@ -85,13 +84,13 @@
 						Brand Name(ZH):
 					</label>
 					<input type="text" name="brand.brandCname" />
-				</div>
-					<div class="rowElem">
-					<label>
-						Brand Image:
-					</label>
-					<input type="file" name="imageFile" />
-				</div>
+<%--				</div>--%>
+<%--					<div class="rowElem">--%>
+<%--					<label>--%>
+<%--						Brand Image:--%>
+<%--					</label>--%>
+<%--					<input type="file" name="imageFile" />--%>
+<%--				</div>--%>
 				<br/>
 				<div class="rowElem">
 					<label>Detail Content(ZH):</label>
@@ -106,7 +105,7 @@
 			<br />
 			<div class="ui-widget">
 				<label for="designerName">Designer Name(EN): </label>
-				<input id="designerName" name="designer.ename"/>
+				<input id="designerName" type="text" name="designer.ename"/>
 			</div>
 			<br/>
 			<div class="rowElem"

@@ -114,8 +114,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                	<li>
 		                    <table class="tablestyle">
 		                        <tr>
-		                            <td rowspan="3" class="portraite imgLiquidFill imgLiquid" ><img src="<%=basePath %><s:property value='#designervo.po.imgURL'/>" /></td>
-		                            <td colspan="2" class="columnstyle titlestyle"><a href="menus/designer/main.jsp?designerId=<s:property value='#designervo.po.designerId'/>"><s:property value="#designervo.name" /></a></td>
+		                            <td rowspan="3" class="portraite imgLiquidFill imgLiquid" ><img src="<%=basePath %><s:property value='#designervo.designer.imgURL'/>" /></td>
+		                            <td colspan="2" class="columnstyle titlestyle"><a href="menus/designer/main.jsp?designerId=<s:property value='#designervo.designer.designerId'/>"><s:property value="#designervo.name" /></a></td>
 		                        </tr>
 		                    </table>
 		                </li>

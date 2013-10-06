@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
+import com.zj.bigdefine.CommonConstant;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
 import com.zj.common.utils.JSONUtil;
@@ -246,6 +247,20 @@ public class BaseAction extends ActionSupport implements SessionAware,RequestAwa
 			log.debug("delete file <"+fileName+"> success!");
 		}else{
 			log.debug("no file need to delete!");
+		}
+		StringBuffer sb = new StringBuffer(fileName);
+		String thumbnailUrl = sb.insert(fileName.lastIndexOf("."),CommonConstant.ThumbnailSuffix).toString();
+		File thumbnail = new File(thumbnailUrl);
+		if(thumbnail.exists()){
+			log.debug("prepare delete old thumbnail file <"+thumbnailUrl+">.");
+			try {
+				FileUtils.forceDelete(thumbnail);
+			} catch (IOException e) {
+				throw new UploadFileException("delete old thumbnail file <"+thumbnailUrl+"> occured error!",e);
+			}
+			log.debug("delete thumbnail file <"+thumbnailUrl+"> success!");
+		}else{
+			log.info("no thumbnail need to delete!");
 		}
 	}
 	

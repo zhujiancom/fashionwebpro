@@ -84,4 +84,13 @@ public class DesignerServiceImpl extends CommonServiceImpl implements
 		}
 		return featuredDesigner;
 	}
+
+	@Override
+	public PageInfo<Designer> loadDesignersExcludeFaturedForPage(int pageSize, int pageNum) throws ServiceException {
+		HomePager homepager = ehCacheService.getHomepagerCache().get(1L);
+		Long featuredDesingerId = homepager.getFeaturedDesigner();
+		String hql = "from Designer designer where designer.designerId != "+featuredDesingerId;
+		PageInfo<Designer> designers = dao.queryHQLForPage(hql, pageSize, pageNum);
+		return designers;
+	}
 }

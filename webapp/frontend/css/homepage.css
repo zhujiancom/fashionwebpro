@@ -83,7 +83,6 @@ a:hover{
 	height:380px;
 }
 #videodiv{
-	border:1px solid green;
 	width:500px;
 	height:380px;
 	float:left;
@@ -102,13 +101,8 @@ h3{
 		margin-bottom:5px;
 } 
 
-
-
-
-
 #profilediv{
 	margin-left:515px;
-	border:1px solid purple;
 	width:380px;
 	height:380px;
 }

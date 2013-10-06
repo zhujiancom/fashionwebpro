@@ -1,15 +1,10 @@
 package com.zj.business.vo;
 
-import java.util.Iterator;
-import java.util.Set;
-
-import com.zj.bigdefine.ReferenceKey;
-import com.zj.business.po.Brand;
 import com.zj.business.po.Designer;
-import com.zj.core.init.ApplicationInitialize;
+import com.zj.common.utils.StringUtil;
 
 public class DesignerVO extends AbstractVO {
-	private Designer po;
+	private Designer designer;
 	private String name;
 	private String borncity;
 	private String borncountry;
@@ -22,10 +17,15 @@ public class DesignerVO extends AbstractVO {
 	private String personalcareerexpr;
 	private String gender;
 	private String brands;
+	private String profile;
+	private String thumbnailUrl;
 	
-	public DesignerVO(Designer po) {
+	public DesignerVO(){}
+	
+	public DesignerVO(Designer designer) {
 		super();
-		this.po = po;
+		this.designer = designer;
+		this.thumbnailUrl = generateThumbnailUrl(designer.getImgURL());
 	}
 
 	@Override
@@ -39,62 +39,22 @@ public class DesignerVO extends AbstractVO {
 	}
 
 	private void setEnglishValue(){
-		setName(po.getEname());
-		setBorncity(po.getBorncity_en());
-		setBorncountry(po.getBorncountry_en());
-//		setNationality(ApplicationInitialize.categoryMap.get(ReferenceKey.NATIONALITY).get(po.getNationality_en()).getCategoryEname());
-		setLivingcountry(po.getLivingcountry_en());
-		setLivingcity(po.getLivingcity_en());
-		setIdealclient(po.getIdealclient_en());
-		setTrademarkpiece(po.getTrademarkpiece_en());
-		setEducationbg(po.getEducationbg_en());
-		setPersonalcareerexpr(po.getPersonalcareerexpr_en());
-//		setGender(ApplicationInitialize.categoryMap.get(ReferenceKey.SEX).get(po.getGender()).getCategoryEname());
-		
-		Set<Brand> brandSet = po.getBrands();
-		Iterator<Brand> it = brandSet.iterator();
-		StringBuilder sb = new StringBuilder();
-		while(it.hasNext()){
-			Brand brand = it.next();
-			sb.append(brand.getBrandEname()).append(",");
-		}
-		if(sb.length()>0){
-			sb.setCharAt(sb.length()-1, ' ');
-		}
-		setBrands(sb.toString());
+		setName(designer.getEname());
+		String content = StringUtil.getStrFromBlob(designer.getDetailContentEN());
+		setProfile(content);
 	}
 	
 	private void setChineseValue(String language){
-		setName(convertTCSC(po.getCname(),language));
-		setBorncity(convertTCSC(po.getBorncity_zh(),language));
-		setBorncountry(convertTCSC(po.getBorncountry_zh(),language));
-//		setNationality(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.NATIONALITY).get(po.getNationality_zh()).getCategoryCname(),language));
-		setLivingcountry(convertTCSC(po.getLivingcountry_zh(),language));
-		setLivingcity(convertTCSC(po.getLivingcity_zh(),language));
-		setIdealclient(convertTCSC(po.getIdealclient_zh(),language));
-		setTrademarkpiece(convertTCSC(po.getTrademarkpiece_zh(),language));
-		setEducationbg(convertTCSC(po.getEducationbg_zh(),language));
-		setPersonalcareerexpr(convertTCSC(po.getPersonalcareerexpr_zh(),language));
-//		setGender(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.SEX).get(po.getGender()).getCategoryCname(),language));
-		Set<Brand> brandSet = po.getBrands();
-		Iterator<Brand> it = brandSet.iterator();
-		StringBuilder sb = new StringBuilder();
-		while(it.hasNext()){
-			Brand brand = it.next();
-			sb.append(brand.getBrandCname()).append(",");
-		}
-		if(sb.length()>0){
-			sb.setCharAt(sb.length()-1, ' ');
-		}
-		setBrands(convertTCSC(sb.toString(),language));
+		setName(convertTCSC(designer.getCname(),language));
+		setProfile(convertTCSC(StringUtil.getStrFromBlob(designer.getDetailContentCH()),language));
 	}
 	
-	public Designer getPo() {
-		return po;
+	public Designer getDesigner() {
+		return designer;
 	}
 
-	public void setPo(Designer po) {
-		this.po = po;
+	public void setDesigner(Designer designer) {
+		this.designer = designer;
 	}
 
 	public String getName() {
@@ -191,6 +151,22 @@ public class DesignerVO extends AbstractVO {
 
 	public void setBrands(String brands) {
 		this.brands = brands;
+	}
+
+	public String getProfile() {
+		return profile;
+	}
+
+	public void setProfile(String profile) {
+		this.profile = profile;
+	}
+
+	public String getThumbnailUrl() {
+		return thumbnailUrl;
+	}
+
+	public void setThumbnailUrl(String thumbnailUrl) {
+		this.thumbnailUrl = thumbnailUrl;
 	}
 
 }

@@ -1,12 +1,7 @@
 package com.zj.business.vo;
 
-import java.util.Iterator;
-import java.util.Set;
-
-import com.zj.bigdefine.ReferenceKey;
 import com.zj.business.po.Brand;
-import com.zj.business.po.Style;
-import com.zj.core.init.ApplicationInitialize;
+import com.zj.common.utils.StringUtil;
 
 public class BrandVO extends AbstractVO {
 	
@@ -22,10 +17,13 @@ public class BrandVO extends AbstractVO {
 	private String countries;
 	private String designername;
 	private String styles;
+	private String thumbnailUrl;
+	private String detailContent;
 	
 	public BrandVO(Brand brand){
 		super();
 		this.brand = brand;
+		this.thumbnailUrl = generateThumbnailUrl(brand.getBrandimg());
 	}
 
 	@Override
@@ -35,14 +33,11 @@ public class BrandVO extends AbstractVO {
 		}else{
 			setChineseValue(lang);
 		}
-//		}else if(ZH_TW.equalsIgnoreCase(lang)){
-//			setTWChineseValue();
-//		}
 		return this;
 	}
 
 	public void setEnglishValue(){
-//		setName(brand.getBrandEname());
+		setName(brand.getBrandEname());
 //		setPricerange(ApplicationInitialize.categoryMap.get(ReferenceKey.PRICE_RANGE).get(brand.getPricerange()).getCategoryEname());
 //		setTargetcustomer(brand.getTargetcustomerEn());
 //		setBrandmission(brand.getBrandmissionEn());
@@ -66,10 +61,12 @@ public class BrandVO extends AbstractVO {
 //			sb.setCharAt(sb.length()-1, ' ');
 //		}
 //		setStyles(sb.toString());
+		String content = StringUtil.getStrFromBlob(brand.getDetailContentEN());
+		setDetailContent(content);
 	}
 	
 	private void setChineseValue(String language){
-//		setName(convertTCSC(brand.getBrandCname(),language));
+		setName(convertTCSC(brand.getBrandCname(),language));
 //		setPricerange(convertTCSC(ApplicationInitialize.categoryMap.get(ReferenceKey.PRICE_RANGE).get(brand.getPricerange()).getCategoryCname(),language));
 //		setTargetcustomer(convertTCSC(brand.getTargetcustomerZh(),language));
 //		setBrandmission(convertTCSC(brand.getBrandmissionZh(),language));
@@ -93,32 +90,9 @@ public class BrandVO extends AbstractVO {
 //			sb.setCharAt(sb.length()-1, ' ');
 //		}
 //		setStyles(convertTCSC(sb.toString(),language));
+		String content = StringUtil.getStrFromBlob(brand.getDetailContentCH());
+		setDetailContent(convertTCSC(content,language));
 	}
-	
-//	public void setTWChineseValue(){
-//		setName(brand.getBrandCname());
-//		setPricerange(ApplicationInitialize.categoryMap.get(ReferenceKey.PRICE_RANGE).get(brand.getPricerange()).getCategoryCname());
-//		setTargetcustomer(brand.getTargetcustomerZh());
-//		setBrandmission(brand.getBrandmissionZh());
-//		setEstimate(ApplicationInitialize.categoryMap.get(ReferenceKey.SALES_VOLUME).get(brand.getEstimatedanto()).getCategoryCname());
-//		setLatest(ApplicationInitialize.categoryMap.get(ReferenceKey.SALES_VOLUME).get(brand.getLastestanto()).getCategoryCname());
-//		setSellingpoint(brand.getUniquespZh());
-//		setOperationmodel(ApplicationInitialize.categoryMap.get(ReferenceKey.OPERATION_MODE).get(brand.getPrimaryomEn()).getCategoryCname());
-//		setCountries(brand.getSellincountryZh());
-//		setDesignername(brand.getDesigner().getCname());
-//		
-//		Set<Style> styleSet = brand.getStyles();
-//		Iterator<Style> it = styleSet.iterator();
-//		StringBuilder sb = new StringBuilder();
-//		while(it.hasNext()){
-//			Style style = it.next();
-//			sb.append(style.getStyleCname()).append(",");
-//		}
-//		if(sb.length()>0){
-//			sb.setCharAt(sb.length()-1, ' ');
-//		}
-//		setStyles(sb.toString());
-//	}
 	
 	public Brand getBrand() {
 		return brand;
@@ -216,4 +190,20 @@ public class BrandVO extends AbstractVO {
 		this.styles = styles;
 	}
 
+	public String getThumbnailUrl() {
+		return thumbnailUrl;
+	}
+
+	public void setThumbnailUrl(String thumbnailUrl) {
+		this.thumbnailUrl = thumbnailUrl;
+	}
+
+	public String getDetailContent() {
+		return detailContent;
+	}
+
+	public void setDetailContent(String detailContent) {
+		this.detailContent = detailContent;
+	}
+	
 }

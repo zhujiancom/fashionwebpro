@@ -38,6 +38,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.startupShowBorders = false;
 	config.toolbarCanCollapse = true;
 	config.width=900;
+	config.height=500;
 	config.removePlugins = 'elementspath';
 	config.resize_enabled = false;
 };

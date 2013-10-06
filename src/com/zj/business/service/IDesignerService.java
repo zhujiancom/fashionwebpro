@@ -10,6 +10,7 @@ import com.zj.core.service.ICommonService;
 public interface IDesignerService extends ICommonService {
 	
 	public PageInfo<Designer> loadDesignersForPage(int pageSize,int pageNum) throws ServiceException;
+	public PageInfo<Designer> loadDesignersExcludeFaturedForPage(int pageSize,int pageNum) throws ServiceException;
 	public PageInfo<Designer> searchList(int pageSize,int pageNum,String queryKey,String queryValue) throws ServiceException;
 	public List<Designer> fuzzySearchByName(String fuzzyName) throws ServiceException;
 	public Designer searchByName(String ename) throws ServiceException;

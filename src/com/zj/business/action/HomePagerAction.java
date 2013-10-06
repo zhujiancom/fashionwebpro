@@ -1,18 +1,27 @@
 package com.zj.business.action;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.ckfinder.connector.utils.ImageUtils;
+import com.zj.bigdefine.CommonConstant;
 import com.zj.bigdefine.GlobalParam;
 import com.zj.business.po.Account;
 import com.zj.business.po.Designer;
@@ -23,11 +32,14 @@ import com.zj.business.service.IAccountService;
 import com.zj.business.service.IDesignerService;
 import com.zj.business.service.IHomePagerService;
 import com.zj.business.service.ILookbookService;
-import com.zj.business.service.INewsSerivce;
+import com.zj.business.vo.DesignerVO;
+import com.zj.business.vo.HomepagerVO;
+import com.zj.business.vo.LookbookVO;
 import com.zj.common.cache.EHCacheService;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
-import com.zj.common.log.Log;
+import com.zj.common.utils.FileUtil;
+import com.zj.common.utils.StringUtil;
 import com.zj.core.control.struts.BaseAction;
 
 @Component("homepagerAction")
@@ -38,13 +50,12 @@ public class HomePagerAction extends BaseAction {
 	 * 
 	 */
 	private static final long serialVersionUID = -8174360054063433686L;
+	private static final Logger log = Logger.getLogger(HomePagerAction.class);
 	
 	private List<Designer> designerlist;
-	private Designer featuredDesigner;
+	private Long featuredDesignerId;
 	private String accountname;
 	private List<News> newslist;
-	private String videoUrl;
-	private String imageDir;
 	private List<Lookbook> lookbooklist;
 	
 	@Resource
@@ -53,8 +64,6 @@ public class HomePagerAction extends BaseAction {
 	private IHomePagerService homepagerService;
 	@Resource
 	private IDesignerService designerService;
-	@Resource
-	private INewsSerivce newsService;
 	@Resource
 	private ILookbookService lookbookService;
 	@Resource
@@ -78,53 +87,47 @@ public class HomePagerAction extends BaseAction {
 	
 	public String modify(){
 		try {
-//			HomePager homepager = homepagerService.get(HomePager.class, 1L);
 			HomePager homepager = ehCacheService.getHomepagerCache().get(1L);
-			boolean hasImageFile = false;
-			if(imageFiles != null && imageFiles.length > 0){
-				hasImageFile = true;
-				homepager.setImageDir("upload/homepage/");
+			String oldVideoUrl = homepager.getVideoUrl();
+			String imageDir = homepager.getImageDir();
+			if(StringUtil.isEmpty(imageDir)){
+				imageDir = "upload/homepage/";
+				homepager.setImageDir(imageDir);
+			}
+			String dirPath = getBasePath()+imageDir;
+			File dir = new File(dirPath);
+			if(!dir.exists()){
+				dir.mkdirs();
 			}
 			boolean hasVideoFile = false;
 			if(videoFile != null){
 				hasVideoFile = true;
-				String videoName = new Date().getTime()+getExtention(videoFileFileName);
-				homepager.setVideoUrl("upload/homepage/video/"+videoName);
+				homepager.setVideoUrl("upload/homepage/video/"+videoFileFileName);
 			}
-			boolean hasPoster = false;
-			if(poster != null){
-				hasPoster = true;
-				String posterName = new Date().getTime()+getExtention(posterFileName);
-				homepager.setPoster("upload/homepage/video/"+posterName);
-			}
-			
 			//featured Designer
-			if(featuredDesigner != null && !"".equals(featuredDesigner.getEname())){
-				featuredDesigner = designerService.searchByName(featuredDesigner.getEname());
-				homepager.setFeaturedDesigner(featuredDesigner.getDesignerId());
+			if(featuredDesignerId != null && featuredDesignerId !=0){
+				homepager.setFeaturedDesigner(featuredDesignerId);
 			}
 			//designer
 			if(designerlist != null && !designerlist.isEmpty()){
 				Set<Designer> designers = new HashSet<Designer>();
 				for(int i=0;i<designerlist.size();i++){
 					Designer designer = designerlist.get(i);
-					if(i<3){
-						designer = designerService.get(Designer.class, designer.getDesignerId());
-						designers.add(designer);
-					}
+					designer = designerService.get(Designer.class, designer.getDesignerId());
+					designers.add(designer);
 				}
 				homepager.setDesigners(designers);
 			}
 			//what's news
-			if(newslist != null && !newslist.isEmpty()){
-				Set<News> newses = new HashSet<News>();
-				for(int i=0;i<newslist.size();i++){
-					News news = newslist.get(i);
-					news = newsService.get(News.class,news.getNewsId());
-					newses.add(news);
-				}
-				homepager.setNews(newses);
-			}
+//			if(newslist != null && !newslist.isEmpty()){
+//				Set<News> newses = new HashSet<News>();
+//				for(int i=0;i<newslist.size();i++){
+//					News news = newslist.get(i);
+//					news = newsService.get(News.class,news.getNewsId());
+//					newses.add(news);
+//				}
+//				homepager.setNews(newses);
+//			}
 			//lookbook
 			if(lookbooklist != null && !lookbooklist.isEmpty()){
 				Set<Lookbook> lookbooks = new HashSet<Lookbook>();
@@ -139,68 +142,47 @@ public class HomePagerAction extends BaseAction {
 			
 			ehCacheService.getHomepagerCache().put(1L, homepager);
 			
-			if(hasImageFile){
-				String dirPath = getBasePath()+homepager.getImageDir();
-				File dir = new File(dirPath);
-				if(!dir.exists()){
-					dir.mkdirs();
-				}
-				File[] listFile = dir.listFiles();
-				if(listFile != null && listFile.length > 0){
-					for(File file:listFile){
-						file.delete();
-					}
-				}
+			if(imageFiles != null){
+				preDeleteDirectory(dir);
 				for(int i=0;i<imageFiles.length;i++){
-					String imageFilePath = dirPath+"/"+(i+1)+getExtention(imageFilesFileName[i]);
+					String imageName = UUID.randomUUID().toString();
+					String fileType = getExtention(imageFilesFileName[i]);
+					String imageFilePath = dirPath+imageName+fileType;
+					String thumbnailPath = dirPath+imageName+CommonConstant.ThumbnailSuffix+fileType;
 					File destFile = new File(imageFilePath);
-					copy(imageFiles[i],destFile);
+					File destThumbnail = new File(thumbnailPath);
+					copyByChannel(imageFiles[i],destFile);
+					ImageUtils.createResizedImage(imageFiles[i], destThumbnail, Integer.valueOf(System.getProperty("thumbnail.size.width")), Integer.valueOf(System.getProperty("thumbnail.size.height")),Float.valueOf( System.getProperty("thumbnail.size.quality")));
+					
 				}
 			}
 			
 			if(hasVideoFile){
 				String absolutePath = getBasePath()+homepager.getVideoUrl();
 				File video = new File(absolutePath);
-				File parentDir = video.getParentFile();
-				if(!parentDir.exists()){
-					parentDir.mkdirs();
+				if(!video.getParentFile().exists()){
+					video.getParentFile().mkdirs();
 				}
-				File[] listFile = parentDir.listFiles();
-				if(listFile != null &&listFile.length > 0){
-					for(File file:listFile){
-						file.delete();
-					}
-				}
+				String oldVideoAbsolutePath = getBasePath()+oldVideoUrl;
+				preDeleteFile(oldVideoAbsolutePath);
 				copyByChannel(videoFile, video);
 			}
-			if(hasPoster){
-				String absolutePath = getBasePath()+homepager.getPoster();
-				File posterFile = new File(absolutePath);
-				File parentDir = posterFile.getParentFile();
-				if(!parentDir.exists()){
-					parentDir.mkdirs();
-				}
-				copyByChannel(poster, posterFile);
-			}
 			getValueStack().set("msg","Modify Homepage information Success!");
-			return "modify";
 		}catch(ServiceException se){
 			se.printStackTrace();
-			Log.debug(HomePagerAction.class, se.getMessage());
+			log.debug(se);
 			getValueStack().set("msg","Modify Homepage information error!");
-			return "modify";
 		}catch(UploadFileException ue){
 			ue.printStackTrace();
-			Log.debug(HomePagerAction.class, ue.getMessage());
+			log.debug("upload attachments error!",ue);
 			getValueStack().set("msg","Modify Homepage information error!");
-			return "modify";
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			Log.debug(HomePagerAction.class, e.getMessage());
+			log.debug(e);
 			getValueStack().set("msg","Modify Homepage information error!");
-			return "modify";
 		}
+		return "modify";
 	}
 
 	public String loadData(){
@@ -216,71 +198,61 @@ public class HomePagerAction extends BaseAction {
 			}
 			HomePager homepager = homepagerService.get(HomePager.class, 1L);
 			//load designer
-//			Set<Designer> designers = homepager.getDesigners();
-//			List<DesignerVO> designerVOs = new ArrayList<DesignerVO>();
-//			Iterator<Designer> iter = designers.iterator();
-//			while(iter.hasNext()){
-//				Designer d = iter.next();
-//				DesignerVO vo = new DesignerVO(d);
+			Set<Designer> designers = homepager.getDesigners();
+			List<DesignerVO> designerVOs = new ArrayList<DesignerVO>();
+			Iterator<Designer> iter = designers.iterator();
+			while(iter.hasNext()){
+				Designer d = iter.next();
+				DesignerVO vo = new DesignerVO(d);
 //				vo.process(language);
-//				designerVOs.add(vo);
-//			}
-//			getValueStack().set("designerlist", designerVOs);
+				designerVOs.add(vo);
+			}
 			//load featured designer
-//			if(homepager.getFeaturedDesigner() != null){
-//				Designer featuredDesigner = designerService.get(Designer.class, homepager.getFeaturedDesigner());
-//				DesignerVO designerVo = new DesignerVO(featuredDesigner);
+			DesignerVO featuredDesignerVO = null;
+			if(homepager.getFeaturedDesigner() != null && homepager.getFeaturedDesigner() != 0){
+				Designer featuredDesigner = designerService.get(Designer.class, homepager.getFeaturedDesigner());
+				featuredDesignerVO = new DesignerVO(featuredDesigner);
 //				designerVo.process(language);
-//				getValueStack().set("featuredDesigner", designerVo);
-//			}
+			}
 			
-			//load image
+			//load images
+			List<String> imageUrls = new LinkedList<String>();
 			String imageDirPath = getBasePath()+homepager.getImageDir();
 			if(imageDirPath != null && !"".equals(imageDirPath)){
 				File imageDir = new File(imageDirPath);
-				File[] listFile = imageDir.listFiles();
-				List<String> imagesrcs = new ArrayList<String>();
-				if(listFile != null){
-					for(File file:listFile){
-						if(file.isFile()){
-							String absolutePath = file.getAbsolutePath();
-							String imagePath = absolutePath.substring(getBasePath().length()).replace("\\", "/");
-							imagesrcs.add(imagePath);
-						}
-					}
+				Collection<File> thumbnails = FileUtil.listFiles(imageDir, FileFilterUtils.asFileFilter(new FilenameFilter() {
+									
+									@Override
+									public boolean accept(File dir, String name) {
+										if(name.indexOf(CommonConstant.ThumbnailSuffix) == -1){
+											return true;
+										}
+										return false;
+									}
+								}),null);
+				String basePath = getBasePath();
+				for(File thumbnail:thumbnails){
+					String thumbnailPath = thumbnail.getAbsolutePath();
+					String surfixPath = thumbnailPath.substring(basePath.length());
+					surfixPath = StringUtil.replaceChars(surfixPath, '\\', '/');
+					imageUrls.add(surfixPath);
 				}
-				getValueStack().set("imagesrcs", imagesrcs);
 			}
 			
-			//load news
-//			Set<News> news = homepager.getNews();
-//			List<NewsVO> newslist = new ArrayList<NewsVO>(); 
-//			Iterator<News> newskey = news.iterator();
-//			while(newskey.hasNext()){
-//				News n = newskey.next();
-//				NewsVO nvo = new NewsVO(n,getBasePath());
-//				nvo.process(language);
-//				newslist.add(nvo);
-//			}
-//			getValueStack().set("newslist", newslist);
-			
 			//load collection
-//			Set<Lookbook> lookbooks = homepager.getLookbooks();
-//			List<LookbookVO> lookbookvos = new ArrayList<LookbookVO>();
-//			Iterator<Lookbook> lookbookkey = lookbooks.iterator();
-//			while(lookbookkey.hasNext()){
-//				Lookbook po = lookbookkey.next();
-//				LookbookVO vo = new LookbookVO(po,getBasePath());
+			Set<Lookbook> lookbooks = homepager.getLookbooks();
+			List<LookbookVO> lookbookVOs = new ArrayList<LookbookVO>();
+			Iterator<Lookbook> lookbookkey = lookbooks.iterator();
+			while(lookbookkey.hasNext()){
+				Lookbook po = lookbookkey.next();
+				LookbookVO vo = new LookbookVO(po,getBasePath());
 //				vo.process(language);
-//				lookbookvos.add(vo);
-//			}
-//			getValueStack().set("lookbooklist", lookbookvos);
-			
-			//load video
-			getValueStack().set("videourl", homepager.getVideoUrl());
-			//load poster
-			getValueStack().set("poster", homepager.getPoster());
-			
+				lookbookVOs.add(vo);
+			}
+			String videourl = homepager.getVideoUrl();
+			HomepagerVO vo = new HomepagerVO(featuredDesignerVO, designerVOs, lookbookVOs, videourl, imageUrls);
+			vo.process(language);
+			getValueStack().set("homevo", vo);
 		} catch (ServiceException se) {
 			se.printStackTrace();
 		}catch(Exception e){
@@ -289,29 +261,71 @@ public class HomePagerAction extends BaseAction {
 		return "load_success";
 	}
 
-	public String getVideoUrl() {
-		return videoUrl;
+	public String loadDataForBackend(){
+		try {
+			HomePager homepager = homepagerService.get(HomePager.class, 1L);
+			HomepagerVO vo = new HomepagerVO();
+			//load featured designer
+			if(homepager.getFeaturedDesigner() != null){
+				Designer featuredDesigner = designerService.get(Designer.class, homepager.getFeaturedDesigner());
+				vo.setFeaturedDesigner(featuredDesigner);
+			}
+			//load home thumbnail images
+			String imageDirPath = getBasePath()+homepager.getImageDir();
+			File imageDir = new File(imageDirPath);
+			if(imageDir.exists()){
+				Collection<File> thumbnails = FileUtil.listFiles(imageDir, FileFilterUtils.asFileFilter(new FilenameFilter() {
+					
+					@Override
+					public boolean accept(File dir, String name) {
+						if(name.matches(".+("+CommonConstant.ThumbnailSuffix+").+")){
+							return true;
+						}
+						return false;
+					}
+				}),null);
+				List<String> imageUrls = new LinkedList<String>();
+				String basePath = getBasePath();
+				for(File thumbnail:thumbnails){
+					String thumbnailPath = thumbnail.getAbsolutePath();
+					String surfixPath = thumbnailPath.substring(basePath.length());
+					surfixPath = StringUtil.replaceChars(surfixPath, '\\', '/');
+					imageUrls.add(surfixPath);
+				}
+				vo.setImageThumbnailUrls(imageUrls);
+			}
+			//load video
+			String videoUrl = homepager.getVideoUrl();
+			if(!StringUtil.isEmpty(videoUrl)){
+				String videoName = videoUrl.substring(videoUrl.lastIndexOf("/")+1);
+				vo.setVideoName(videoName);
+			}
+			//load video poster thumbnail
+			String posterUrl = homepager.getPoster();
+			if(!StringUtil.isEmpty(homepager.getPoster())){
+				StringBuffer sb = new StringBuffer(posterUrl);
+	            sb.insert(posterUrl.lastIndexOf("."), "_poster"+CommonConstant.ThumbnailSuffix);
+				String posterThumbnailUrl = sb.toString();
+				vo.setPosterThumbnailUrl(posterThumbnailUrl);
+			}
+			Set<Designer> designers = homepager.getDesigners();
+			if(designers != null && !designers.isEmpty()){
+				vo.setDesigners(Arrays.asList(designers.toArray(new Designer[0])));
+			}
+			Set<Lookbook> lookbooks = homepager.getLookbooks();
+			if(lookbooks != null && !lookbooks.isEmpty()){
+				vo.setLookbooks(Arrays.asList(lookbooks.toArray(new Lookbook[0])));
+			}
+			
+			getValueStack().set("homevo", vo);
+			
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "load_success";
 	}
-
-	public void setVideoUrl(String videoUrl) {
-		this.videoUrl = videoUrl;
-	}
-
-	public String getImageDir() {
-		return imageDir;
-	}
-
-	public void setImageDir(String imageDir) {
-		this.imageDir = imageDir;
-	}
-
-	public Designer getFeaturedDesigner() {
-		return featuredDesigner;
-	}
-
-	public void setFeaturedDesigner(Designer featuredDesigner) {
-		this.featuredDesigner = featuredDesigner;
-	}
+	
 
 	public List<Designer> getDesignerlist() {
 		return designerlist;
@@ -425,4 +439,15 @@ public class HomePagerAction extends BaseAction {
 		this.posterFileName = posterFileName;
 	}
 
+	public Long getFeaturedDesignerId() {
+		return featuredDesignerId;
+	}
+
+	public void setFeaturedDesignerId(Long featuredDesignerId) {
+		this.featuredDesignerId = featuredDesignerId;
+	}
+	public static void main(String[] args){
+		String str = "test_thumbnail.jpg";
+		System.out.println(str.matches("[^(_thumbnail]"));
+	}
 }

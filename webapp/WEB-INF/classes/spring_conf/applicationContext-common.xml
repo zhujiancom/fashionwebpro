@@ -43,6 +43,7 @@
 
 	<bean id="applicationInitialize" class="com.zj.core.init.ApplicationInitialize" init-method="init">
 		<property name="dao" ref="dao"></property>
+		<property name="ehCacheService" ref="ehCacheService"></property>
 	</bean>
 	
 <!--	<bean id="commonService" class="com.zj.core.service.impl.CommonServiceImpl" scope="prototype">-->

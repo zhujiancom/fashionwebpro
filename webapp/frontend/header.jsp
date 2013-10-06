@@ -10,9 +10,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <title>Header</title>
     
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link href="css/header.css" type="text/css" rel="stylesheet"/>
-	<link rel="stylesheet" href="javascript/jquery-plugin/magnific-popup/magnific-popup.css"/> 
-	<script src="javascript/jquery-plugin/magnific-popup/jquery.magnific-popup.js" type="text/javascript"></script> 
+<%--	<link href="<%=basePath %>comm_script/bootstrap/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>--%>
+	<link href="<%=basePath %>frontend/css/header.css" type="text/css" rel="stylesheet"/>
+	<link rel="stylesheet" href="<%=basePath %>frontend/javascript/jquery-plugin/magnific-popup/magnific-popup.css"/> 
+	<script src="<%=basePath %>frontend/javascript/jquery-plugin/magnific-popup/jquery.magnific-popup.js" type="text/javascript"></script> 
 	
 	<style type="text/css">
     	
