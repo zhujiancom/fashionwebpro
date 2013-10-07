@@ -305,7 +305,7 @@ public class DesignerAction extends BaseAction {
 			return "load_success";
 		} catch (ServiceException e) {
 			e.printStackTrace();
-			return "load_failure";
+			return "serviceException";
 		}
 	}
 	

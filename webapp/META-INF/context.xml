@@ -1,4 +1,4 @@
-<Context path="/fashion" crossContext="true" reloadable="true" >
+<Context path="/fashionwebSite" crossContext="true" reloadable="true" >
 
 <Resource name="jdbc/fashion" auth="Container"
 					type="javax.sql.DataSource"
