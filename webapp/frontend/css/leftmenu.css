@@ -1,0 +1,55 @@
+@charset "utf-8";
+/* CSS Document */
+
+@charset "utf-8";
+/* CSS Document */
+
+*{
+	margin:0;
+	padding: 0;
+}
+
+a:link{
+	text-decoration: none;
+	color: inherit;
+}
+
+a:hover{
+	text-decoration:underline;
+	color:#FF0;
+}
+
+.login a:visited{
+	color:#0CF;
+	text-decoration:none;
+}
+
+.list_common{
+	list-style: none;
+	color: #FFFFFF;
+	font-size: 11px;
+	font-weight: bold;
+	font-family: Arial,"Microsoft YaHei","微软雅黑","Verdana",sans-serif,STXihei,"华文细黑";
+	letter-spacing: 1px;
+	float: left;
+	display: block;
+}	
+#main{
+	margin:0 auto;
+	margin-top:5px;
+	height: auto;
+	width:895px;
+}
+
+#menus{
+	width:180px;
+}
+.nav li{
+	font-family: Arial,"Microsoft YaHei","微软雅黑","Verdana",sans-serif,STXihei,"华文细黑";
+	letter-spacing: 1px;
+}
+.external{
+	font-size:12px;
+	font-family: Arial,"Microsoft YaHei","微软雅黑","Verdana",sans-serif,STXihei,"华文细黑";
+	letter-spacing: 1px;
+}
