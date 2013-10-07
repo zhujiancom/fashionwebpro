@@ -4,7 +4,12 @@
 	<include file="struts/struts-common.xml"></include>
 	
 	<package name="frontend" extends="common" namespace="/frontend">
-		
+			<global-results>
+				<result name="serviceException">exceptions/serviceException.jsp</result>
+			</global-results>
+			<global-exception-mappings>
+				<exception-mapping result="serviceException" exception="com.zj.common.exception.ServiceException"></exception-mapping>
+			</global-exception-mappings>
 		<action name="account_*" class="accountAction" method="{1}">
 			<interceptor-ref name="fileUploadStack"/>
 			<interceptor-ref name="defaultStack"/>

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.zj.bigdefine.GlobalParam;
 import com.zj.common.annotation.UpdateMode;
+import com.zj.common.exception.DAOException;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.log.Log;
 import com.zj.common.utils.ClassUtil;
@@ -173,7 +174,11 @@ public class CommonServiceImpl implements ICommonService{
 	}
 	@Override
 	public <T> List<T> getAll(Class<T> clazz) throws ServiceException{
-		return dao.getAll(clazz);
+		try{
+			return dao.getAll(clazz);
+		}catch(DAOException daoEx){
+			throw new ServiceException("database access error!",daoEx);
+		}
 	}
 	/**
 	 * 唯一性验证
