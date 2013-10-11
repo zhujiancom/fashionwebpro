@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -12,15 +12,17 @@ import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.zj.bigdefine.CommonConstant;
 import com.zj.bigdefine.GlobalParam;
+import com.zj.business.observer.Language;
+import com.zj.business.observer.LanguageType;
 import com.zj.business.po.Designer;
 import com.zj.business.po.Report;
 import com.zj.business.service.IReportService;
 import com.zj.business.vo.ReportVO;
+import com.zj.business.vo.VOFactory;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
-import com.zj.common.utils.DateUtil;
-import com.zj.common.utils.FileUtil;
 import com.zj.common.utils.JSONUtil;
 import com.zj.common.utils.PageInfo;
 import com.zj.common.utils.StringUtil;
@@ -48,37 +50,38 @@ public class ReportAction extends BaseAction {
 	private Long id; // user id which need to be modify
 	private String query;
 	private String qtype;
-	private File[] imageFiles;
-	private String[] imageFilesContentType;
-	private String[] imageFilesFileName;
+	private File imageFile;
+	private String imageFileContentType;
+	private String imageFileFileName;
 	
 	public String save(){
+		String imgUrl = "";
+		String thumbnailUrl = "";
+		boolean isAddImg = false;
 		try{
-			String attachmentDirPath = "upload/presreport/"+DateUtil.date2Str(new Date(),"yyyyMMdd")+"_"+System.currentTimeMillis();
-			String absoluteUrl = getBasePath()+attachmentDirPath;
-			File dir = new File(absoluteUrl);
-			if(!dir.exists()){
-				dir.mkdirs();
+			if(imageFileFileName != null && !"".equals(imageFileFileName)){
+				isAddImg = true;
+				String fileType = getExtention(imageFileFileName);
+				String imageName = UUID.randomUUID().toString();
+				imgUrl = "upload/pressreport/"+imageName+fileType;
+				thumbnailUrl = "upload/pressreport/"+imageName+CommonConstant.ThumbnailSuffix+ getExtention(imageFileFileName);
+				report.setReportimg(imgUrl);
 			}
-			report.setReportimg(attachmentDirPath);
 			report.setCreater(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
 			report.setCreateTime(new Date());
 			reportService.save(report,designer);
 			
-			if(imageFiles != null){
-				for(int i=0;i<imageFiles.length;i++){
-					String attachFileName = (i+1)+getExtention(imageFilesFileName[i]);
-					String filePath = absoluteUrl+"/"+attachFileName;
-					File destFile = new File(filePath);
-					copyByChannel(imageFiles[i], destFile);
-				}
+			if(isAddImg){
+				String originalUrl = getBasePath() + imgUrl;
+				String thumbnail = getBasePath() +thumbnailUrl;
+				uploadSingleImage(imageFile,originalUrl,thumbnail);
 			}
 			getValueStack().set("msg","Add report ["+report.getReportEname()+"] Successfully!");
 			return "save_success";
 		}catch(ServiceException se){
 			se.printStackTrace();
 			log.info("add report error!",se);
-			getValueStack().set("msg", "Add report ["+report.getReportEname()+"] failure!" );
+			getValueStack().set("msg", "Add report ["+report.getReportEname()+"] failure! root cause is "+se.getMessage() );
 			return "save_failure";
 		}catch(UploadFileException ue){
 			ue.printStackTrace();
@@ -87,7 +90,7 @@ public class ReportAction extends BaseAction {
 			return "save_failure";
 		}catch(Exception e){
 			log.debug(e);
-			getValueStack().set("msg", "Add report ["+report.getReportEname()+"] failure! please login again!" );
+			getValueStack().set("msg", "Add report ["+report.getReportEname()+"] failure! root cause is "+e.getMessage() );
 			return "save_failure";
 		}
 	}
@@ -131,68 +134,69 @@ public class ReportAction extends BaseAction {
 	public String modifyForward(){
 		try {
 			Report dbReport = reportService.get(Report.class, id);
-			getValueStack().setValue("report", dbReport);
+			Designer d = dbReport.getDesigner();
+			ReportVO rvo = VOFactory.getObserverVO(ReportVO.class, dbReport);
+			getValueStack().set("reportvo", rvo);
+			getValueStack().set("designer", d);
 			return "modify_forward_successful";
 		} catch (ServiceException e) {
 			e.printStackTrace();
 			log.debug("cannot find this report in db",e);
-			getValueStack().setValue("msg", "there occurred some error! please attempt again!");
+			getValueStack().set("msg", "there occurred one error ["+e.getMessage()+"]! please attempt again!");
 			return "modify_forward_failure";
 		}
 	}
 	
 	public String update(){
-		String attachmentDirPath = report.getReportimg();
+		String imgurl = "";
+		String thumbnailUrl="";
+		String oldImagePath = getBasePath() + report.getReportimg();
+		boolean isUpdateImg = false;
 		try{
+			if (imageFileFileName != null && !"".equals(imageFileFileName)) {
+				String fileType = getExtention(imageFileFileName);
+				isUpdateImg = true;
+				String imageName =UUID.randomUUID().toString();
+				imgurl = "upload/pressreport/" + imageName+fileType;
+				thumbnailUrl="upload/pressreport/"+imageName+CommonConstant.ThumbnailSuffix+fileType;
+				report.setReportimg(imgurl);
+			}
 			report.setModifier(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
 			report.setModifiedTime(new Date());
 			reportService.update(report,designer);
-			if(imageFiles != null){
-				String absoluteUrl = getBasePath()+attachmentDirPath;
-				if(FileUtil.isDirectory(absoluteUrl)){
-					File directory = new File(absoluteUrl);
-					preDeleteDirectory(directory);
-					//add new files
-					for(int i=0;i<imageFiles.length;i++){
-						String imageFileName = (i+1)+getExtention(imageFilesFileName[i]);
-						String fileUrl = absoluteUrl+"/"+imageFileName;
-						File destFile = new File(fileUrl);
-						FileUtil.copyFile(imageFiles[i], destFile);
-					}
-				}
+			if(isUpdateImg){
+				preDeleteFile(oldImagePath);
+				String originalPath = getBasePath() + imgurl;
+				String thumbnail = getBasePath()+thumbnailUrl;
+				uploadSingleImage(imageFile, originalPath, thumbnail);
 			}
 			getValueStack().set("msg", "update report ["+report.getReportEname()+"] successfully");
 		}catch(ServiceException se){
 			se.printStackTrace();
 			log.info("update report error!",se);
-			getValueStack().set("msg", "update report ["+report.getReportEname()+"] failure!" );
+			getValueStack().set("msg", "update report ["+report.getReportEname()+"] failure! root cause is "+se.getMessage() );
 		}catch(UploadFileException ue){
-			getValueStack().set("msg", "update report ["+report.getReportEname()+"] failure!" );
+			getValueStack().set("msg", "update report ["+report.getReportEname()+"] info success, but upload attachments occured error!" );
 			log.debug("upload attachment error!",ue);
 		}catch(Exception e){
 			log.debug(e);
-			getValueStack().set("msg", "update report ["+report.getReportEname()+"] failure!");
+			getValueStack().set("msg", "update report ["+report.getReportEname()+"] failure, root cause is "+e.getMessage());
 		}
 		return "modify";
 	}
 	// below methods are using in frontend
 	public String showReports(){
-		String language = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-            Locale locale = (Locale) sessionLocale;
-            language = locale.getLanguage()+"_"+locale.getCountry();
-        } 
-
+		LanguageType type = getLanguageType();
+		Language language = Language.getInstance();
 		try {
 			List<Report> reports = reportService.getReportsByDesinger(designer.getDesignerId());
 			List<ReportVO> reportlist = new ArrayList<ReportVO>();
-			String basePath = getBasePath();
 			for(Report report:reports){
-				ReportVO vo = new ReportVO(report,basePath);
-				vo.process(language);
+				ReportVO vo = VOFactory.getObserverVO(ReportVO.class, report);
 				reportlist.add(vo);
+				language.addObserver(vo);
 			}
+			language.setLanguage(type);
 			getValueStack().set("reportlist", reportlist);
 			return "load_reports_success";
 		} catch (ServiceException e) {
@@ -202,16 +206,13 @@ public class ReportAction extends BaseAction {
 	}
 	
 	public String showDetails(){
-		String language = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-            Locale locale = (Locale) sessionLocale;
-            language = locale.getLanguage()+"_"+locale.getCountry();
-        } 
+		LanguageType type = getLanguageType();
+		Language language = Language.getInstance();
 		try {
 			Report dbreport = reportService.get(Report.class, report.getReportid());
-			ReportVO vo = new ReportVO(dbreport, getBasePath());
-			vo.process(language);
+			ReportVO vo = VOFactory.getObserverVO(ReportVO.class, dbreport);
+			language.addObserver(vo);
+			language.setLanguage(type);
 			getValueStack().set("specreport", vo);
 			return "open_report_success";
 		} catch (ServiceException e) {
@@ -224,14 +225,14 @@ public class ReportAction extends BaseAction {
 	public String showPreItem(){
 		try {
 			Report preReport = reportService.getPreReport(report.getReportid());
-			ReportVO vo = new ReportVO(preReport, getBasePath());
+			ReportVO vo =  VOFactory.getObserverVO(ReportVO.class, preReport);
 			getValueStack().set("specreport", vo);
 			return "open_report_success";
 		} catch (ServiceException e) {
 			log.debug(e);
 			try {
 				report = reportService.get(Report.class, report.getReportid());
-				ReportVO vo = new ReportVO(report, getBasePath());
+				ReportVO vo =  VOFactory.getObserverVO(ReportVO.class, report);
 				getValueStack().set("specreport",vo);
 			} catch (ServiceException e1) {
 				// TODO Auto-generated catch block
@@ -317,27 +318,27 @@ public class ReportAction extends BaseAction {
 		this.designer = designer;
 	}
 
-	public File[] getImageFiles() {
-		return imageFiles;
+	public File getImageFile() {
+		return imageFile;
 	}
 
-	public void setImageFiles(File[] imageFiles) {
-		this.imageFiles = imageFiles;
+	public void setImageFile(File imageFile) {
+		this.imageFile = imageFile;
 	}
 
-	public String[] getImageFilesContentType() {
-		return imageFilesContentType;
+	public String getImageFileContentType() {
+		return imageFileContentType;
 	}
 
-	public void setImageFilesContentType(String[] imageFilesContentType) {
-		this.imageFilesContentType = imageFilesContentType;
+	public void setImageFileContentType(String imageFileContentType) {
+		this.imageFileContentType = imageFileContentType;
 	}
 
-	public String[] getImageFilesFileName() {
-		return imageFilesFileName;
+	public String getImageFileFileName() {
+		return imageFileFileName;
 	}
 
-	public void setImageFilesFileName(String[] imageFilesFileName) {
-		this.imageFilesFileName = imageFilesFileName;
+	public void setImageFileFileName(String imageFileFileName) {
+		this.imageFileFileName = imageFileFileName;
 	}
 }

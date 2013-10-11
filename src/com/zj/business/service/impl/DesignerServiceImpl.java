@@ -2,7 +2,6 @@ package com.zj.business.service.impl;
 
 
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,8 +14,6 @@ import com.zj.bigdefine.GlobalParam;
 import com.zj.business.po.Designer;
 import com.zj.business.po.HomePager;
 import com.zj.business.service.IDesignerService;
-import com.zj.business.treenode.IMenuBuilder;
-import com.zj.business.treenode.Menu;
 import com.zj.common.cache.EHCacheService;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.utils.PageInfo;
@@ -95,21 +92,5 @@ public class DesignerServiceImpl extends CommonServiceImpl implements
 		String hql = "from Designer designer where designer.designerId != "+featuredDesingerId;
 		PageInfo<Designer> designers = dao.queryHQLForPage(hql, pageSize, pageNum);
 		return designers;
-	}
-
-	@Override
-	public List<Menu> generateMenu(IMenuBuilder builder,boolean isPermission)
-			throws ServiceException {
-		List<Menu> menus = new LinkedList<Menu>();
-		if(isPermission){
-			menus.add(builder.createDesignerMenu());
-			menus.add(builder.createBrandMenu());
-			menus.add(builder.createInterviewMenu());
-			menus.add(builder.createCollectionMenu());
-		}else{
-			menus.add(builder.createDesignerMenu());
-			menus.add(builder.createBrandMenu());
-		}
-		return menus;
 	}
 }

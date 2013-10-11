@@ -67,45 +67,4 @@ public class Menu extends AbstractMenu implements Serializable{
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
-	public static void main(String[] args){
-		Menu designer = new Menu("ERIC ZHU");
-		
-		Menu brandMenu = new Menu("BRAND");
-		MenuItem brand1 = new MenuItem("HERMES");
-		MenuItem brand2 = new MenuItem("LV");
-		brandMenu.addItem(brand1);
-		brandMenu.addItem(brand2);
-		
-		Menu interview = new Menu("INTERVIEWS");
-		MenuItem video = new MenuItem("VIDEO");
-		MenuItem audio = new MenuItem("AUDIO");
-		MenuItem pressreport = new MenuItem("PRESSREPORT");
-		interview.addItem(video);
-		interview.addItem(audio);
-		interview.addItem(pressreport);
-		
-		Menu collection = new Menu("COLLECTION");
-		Menu submenu1 = new Menu("HERMES");
-		MenuItem lookbook1 = new MenuItem("LOOKBOOK IMAGES");
-		MenuItem editorial1 = new MenuItem("EDTIORIAL IMAGES");
-		MenuItem runwayshow1 = new MenuItem("RUNWAY SHOWS");
-		submenu1.addItem(lookbook1);
-		submenu1.addItem(editorial1);
-		submenu1.addItem(runwayshow1);
-		Menu submenu2 = new Menu("LV");
-		MenuItem lookbook2 = new MenuItem("LOOKBOOK IMAGES");
-		MenuItem editorial2 = new MenuItem("EDTIORIAL IMAGES");
-		MenuItem runwayshow2 = new MenuItem("RUNWAY SHOWS");
-		submenu2.addItem(lookbook2);
-		submenu2.addItem(editorial2);
-		submenu2.addItem(runwayshow2);
-		collection.addSubMenu(submenu1);
-		collection.addSubMenu(submenu2);
-		
-		System.out.println(designer);
-		System.out.println(brandMenu);
-		System.out.println(interview);
-		System.out.println(collection);
-		
-	}
 }

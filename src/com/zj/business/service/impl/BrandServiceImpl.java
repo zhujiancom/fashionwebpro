@@ -1,6 +1,5 @@
 package com.zj.business.service.impl;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,8 +14,6 @@ import com.zj.business.po.Brand;
 import com.zj.business.po.Designer;
 import com.zj.business.service.IBrandService;
 import com.zj.business.service.IDesignerService;
-import com.zj.business.treenode.IMenuBuilder;
-import com.zj.business.treenode.Menu;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.utils.PageInfo;
 import com.zj.core.service.impl.CommonServiceImpl;
@@ -83,8 +80,10 @@ public class BrandServiceImpl extends CommonServiceImpl implements
 				brand.setDesigner(designer);
 				designer.getBrands().add(brand);
 			}
+			insert(brand);
+		}else{
+			throw new ServiceException("you didn't select designer, please type a designer!");
 		}
-		insert(brand);
 		log.debug("out of <brand save> transaction");
 	}
 
@@ -98,26 +97,11 @@ public class BrandServiceImpl extends CommonServiceImpl implements
 				brand.setDesigner(designer);
 				designer.getBrands().add(brand);
 			}
+			update(brand);
+		}else{
+			throw new ServiceException("you didn't select designer, please type a designer!");
 		}
-		update(brand);
 		log.debug("out of <brand update> transaction");
 	}
-
-	@Override
-	public List<Menu> generateMenu(IMenuBuilder builder, boolean isPermission)
-			throws ServiceException {
-		List<Menu> menus = new LinkedList<Menu>();
-		if(isPermission){
-			menus.add(builder.createBrandMenu());
-			menus.add(builder.createDesignerMenu());
-			menus.add(builder.createInterviewMenu());
-			menus.add(builder.createCollectionMenu());
-		}else{
-			menus.add(builder.createBrandMenu());
-			menus.add(builder.createDesignerMenu());
-		}
-		return menus;
-	}
-
 
 }

@@ -23,6 +23,8 @@ import org.springframework.stereotype.Component;
 import com.ckfinder.connector.utils.ImageUtils;
 import com.zj.bigdefine.CommonConstant;
 import com.zj.bigdefine.GlobalParam;
+import com.zj.business.observer.Language;
+import com.zj.business.observer.LanguageType;
 import com.zj.business.po.Account;
 import com.zj.business.po.Designer;
 import com.zj.business.po.HomePager;
@@ -35,6 +37,7 @@ import com.zj.business.service.ILookbookService;
 import com.zj.business.vo.DesignerVO;
 import com.zj.business.vo.HomepagerVO;
 import com.zj.business.vo.LookbookVO;
+import com.zj.business.vo.VOFactory;
 import com.zj.common.cache.EHCacheService;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
@@ -83,7 +86,6 @@ public class HomePagerAction extends BaseAction {
 	private String posterFileName;
 	
 	private Locale locale = null;
-	private String language = "en";
 	
 	public String modify(){
 		try {
@@ -187,11 +189,8 @@ public class HomePagerAction extends BaseAction {
 
 	public String loadData(){
 		try {
-			Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-			if (sessionLocale != null && sessionLocale instanceof Locale) {
-                locale = (Locale) sessionLocale;
-                language = locale.getLanguage()+"_"+locale.getCountry();
-            }
+			LanguageType type = getLanguageType();
+	        Language language = Language.getInstance();
 			if(accountname != null){
 				Account account = accountService.getAccount(accountname);
 				session.put(GlobalParam.LOGIN_ACCOUNT_SESSION, account);
@@ -199,27 +198,29 @@ public class HomePagerAction extends BaseAction {
 			HomePager homepager = homepagerService.get(HomePager.class, 1L);
 			//load designer
 			Set<Designer> designers = homepager.getDesigners();
-			List<DesignerVO> designerVOs = new ArrayList<DesignerVO>();
+			List<DesignerVO> designerVOs = new LinkedList<DesignerVO>();
 			Iterator<Designer> iter = designers.iterator();
 			while(iter.hasNext()){
 				Designer d = iter.next();
-				DesignerVO vo = new DesignerVO(d);
-//				vo.process(language);
-				designerVOs.add(vo);
+				DesignerVO dvo = VOFactory.getObserverVO(DesignerVO.class, d);
+				designerVOs.add(dvo);
+				language.addObserver(dvo);
 			}
 			//load featured designer
 			DesignerVO featuredDesignerVO = null;
 			if(homepager.getFeaturedDesigner() != null && homepager.getFeaturedDesigner() != 0){
 				Designer featuredDesigner = designerService.get(Designer.class, homepager.getFeaturedDesigner());
-				featuredDesignerVO = new DesignerVO(featuredDesigner);
-//				designerVo.process(language);
+				featuredDesignerVO = VOFactory.getObserverVO(DesignerVO.class, featuredDesigner);
+				language.addObserver(featuredDesignerVO);
 			}
 			
 			//load images
 			List<String> imageUrls = new LinkedList<String>();
-			String imageDirPath = getBasePath()+homepager.getImageDir();
+			String imageDirPath = homepager.getImageDir();
+			String basePath = getBasePath();
 			if(imageDirPath != null && !"".equals(imageDirPath)){
-				File imageDir = new File(imageDirPath);
+				String absoluteDirPath = basePath + imageDirPath;
+				File imageDir = FileUtil.generateDirectory(absoluteDirPath);
 				Collection<File> thumbnails = FileUtil.listFiles(imageDir, FileFilterUtils.asFileFilter(new FilenameFilter() {
 									
 									@Override
@@ -230,13 +231,15 @@ public class HomePagerAction extends BaseAction {
 										return false;
 									}
 								}),null);
-				String basePath = getBasePath();
 				for(File thumbnail:thumbnails){
 					String thumbnailPath = thumbnail.getAbsolutePath();
 					String surfixPath = thumbnailPath.substring(basePath.length());
 					surfixPath = StringUtil.replaceChars(surfixPath, '\\', '/');
 					imageUrls.add(surfixPath);
 				}
+			}else{
+				String absoluteDirPath = basePath + "upload/homepage/";
+				FileUtil.generateDirectory(absoluteDirPath);
 			}
 			
 			//load collection
@@ -246,12 +249,12 @@ public class HomePagerAction extends BaseAction {
 			while(lookbookkey.hasNext()){
 				Lookbook po = lookbookkey.next();
 				LookbookVO vo = new LookbookVO(po,getBasePath());
-//				vo.process(language);
 				lookbookVOs.add(vo);
+				language.addObserver(vo);
 			}
 			String videourl = homepager.getVideoUrl();
+			language.setLanguage(type);
 			HomepagerVO vo = new HomepagerVO(featuredDesignerVO, designerVOs, lookbookVOs, videourl, imageUrls);
-			vo.process(language);
 			getValueStack().set("homevo", vo);
 		} catch (ServiceException se) {
 			se.printStackTrace();
@@ -264,7 +267,7 @@ public class HomePagerAction extends BaseAction {
 	public String loadDataForBackend(){
 		try {
 			HomePager homepager = homepagerService.get(HomePager.class, 1L);
-			HomepagerVO vo = new HomepagerVO();
+			HomepagerVO vo = VOFactory.getObserverVO(HomepagerVO.class);
 			//load featured designer
 			if(homepager.getFeaturedDesigner() != null){
 				Designer featuredDesigner = designerService.get(Designer.class, homepager.getFeaturedDesigner());
@@ -381,14 +384,6 @@ public class HomePagerAction extends BaseAction {
 
 	public void setAccountname(String accountname) {
 		this.accountname = accountname;
-	}
-
-	public String getLanguage() {
-		return language;
-	}
-
-	public void setLanguage(String language) {
-		this.language = language;
 	}
 
 	public File getVideoFile() {

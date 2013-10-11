@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -27,10 +28,12 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.ckfinder.connector.utils.ImageUtils;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.zj.bigdefine.CommonConstant;
+import com.zj.business.observer.LanguageType;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
 import com.zj.common.utils.JSONUtil;
@@ -51,8 +54,12 @@ public class BaseAction extends ActionSupport implements SessionAware,RequestAwa
 	protected Map<String,Object> request;
 	protected Map<String,Object> application;
 	protected Map<String,String[]> parameters;
+	
 	@Resource
 	private ICommonService commonService;
+	
+	public BaseAction() {
+	}
 
 	@Override
 	public void setParameters(Map<String, String[]> parameters) {
@@ -235,7 +242,7 @@ public class BaseAction extends ActionSupport implements SessionAware,RequestAwa
 	 * @throws UploadFileException
 	 */
 	protected void preDeleteFile(String fileName) throws UploadFileException{
-		fileName = (fileName == null)? "":fileName;
+		fileName = (fileName == null || getBasePath().equals(fileName))? "":fileName;
 		File targetFile = new File(fileName);
 		if(targetFile.exists()){
 			log.debug("prepare delete old file <"+fileName+">.");
@@ -245,22 +252,22 @@ public class BaseAction extends ActionSupport implements SessionAware,RequestAwa
 				throw new UploadFileException("delete old file <"+fileName+"> occured error!",e);
 			}
 			log.debug("delete file <"+fileName+"> success!");
-		}else{
-			log.debug("no file need to delete!");
-		}
-		StringBuffer sb = new StringBuffer(fileName);
-		String thumbnailUrl = sb.insert(fileName.lastIndexOf("."),CommonConstant.ThumbnailSuffix).toString();
-		File thumbnail = new File(thumbnailUrl);
-		if(thumbnail.exists()){
-			log.debug("prepare delete old thumbnail file <"+thumbnailUrl+">.");
-			try {
-				FileUtils.forceDelete(thumbnail);
-			} catch (IOException e) {
-				throw new UploadFileException("delete old thumbnail file <"+thumbnailUrl+"> occured error!",e);
+			StringBuffer sb = new StringBuffer(fileName);
+			String thumbnailUrl = sb.insert(fileName.lastIndexOf("."),CommonConstant.ThumbnailSuffix).toString();
+			File thumbnail = new File(thumbnailUrl);
+			if(thumbnail.exists()){
+				log.debug("prepare delete old thumbnail file <"+thumbnailUrl+">.");
+				try {
+					FileUtils.forceDelete(thumbnail);
+				} catch (IOException e) {
+					throw new UploadFileException("delete old thumbnail file <"+thumbnailUrl+"> occured error!",e);
+				}
+				log.debug("delete thumbnail file <"+thumbnailUrl+"> success!");
+			}else{
+				log.debug("no thumbnail need to be deleted!");
 			}
-			log.debug("delete thumbnail file <"+thumbnailUrl+"> success!");
 		}else{
-			log.info("no thumbnail need to delete!");
+			log.debug("no file need to be deleted!");
 		}
 	}
 	
@@ -278,16 +285,35 @@ public class BaseAction extends ActionSupport implements SessionAware,RequestAwa
 		}
 	}
 	
-	public static void main(String[] args){
-		BaseAction baseAction = new BaseAction();
-		try {
-			String filePath = baseAction.getClass().getClassLoader().getResource("testfile").getPath();
-			File directory = new File(filePath);
-			baseAction.preDeleteDirectory(directory);
-//			baseAction.preDeleteFile(filePath);
-		} catch (UploadFileException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	protected LanguageType getLanguageType(){
+		String lang = "en_US";
+		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
+		if (sessionLocale != null && sessionLocale instanceof Locale) {
+            Locale locale = (Locale) sessionLocale;
+            lang = locale.getLanguage()+"_"+locale.getCountry();
+        }
+		LanguageType type = LanguageType.toLanguageType(lang.toUpperCase());
+		return type;
+	}
+	
+	protected void uploadSingleImage(File tmpFile,String originalImage,String thumbnail) throws UploadFileException{
+		File destFile = new File(originalImage);
+		if (!destFile.getParentFile().exists()) {
+			if(!destFile.getParentFile().mkdirs()){
+				throw new UploadFileException("create parent floder error!");
+			}
 		}
+		File destThumbnail = new File(thumbnail);
+		copyByChannel(tmpFile, destFile);
+		try {
+			ImageUtils.createResizedImage(tmpFile, destThumbnail, Integer.valueOf(System.getProperty("thumbnail.size.width")), Integer.valueOf(System.getProperty("thumbnail.size.height")),Float.valueOf( System.getProperty("thumbnail.size.quality")));
+		} catch (NumberFormatException e) {
+			log.debug("upload single image size numberical exception", e);
+			throw new UploadFileException("upload single image size numberical exception", e);
+		} catch (IOException e) {
+			log.debug("upload single image io exception", e);
+			throw new UploadFileException("upload single image io exception", e);
+		}
+	
 	}
 }

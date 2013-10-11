@@ -99,8 +99,10 @@ public class ReportServiceImpl extends CommonServiceImpl implements
 				report.setDesigner(designer);
 				designer.getReports().add(report);
 			}
+			insert(report);
+		}else{
+			throw new ServiceException("you didn't select designer, please type a designer!");
 		}
-		insert(report);
 		log.debug("out of <pressreport save> transaction");
 	}
 
@@ -115,8 +117,10 @@ public class ReportServiceImpl extends CommonServiceImpl implements
 				report.setDesigner(designer);
 				designer.getReports().add(report);
 			}
+			update(report);
+		}else{
+			throw new ServiceException("you didn't select designer, please type a designer!");
 		}
-		update(report);
 		log.debug("out of <pressreport update> transaction");
 	}
 

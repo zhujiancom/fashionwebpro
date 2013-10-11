@@ -77,11 +77,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<li class="list_common"><a href="account_registerForward.action"><s:text name="joinus"/></a></li>
 				</ul>
 				<ul id="languages">
-					<li class="list_common"><a href="homepager_loadData.action?request_locale=en_US">En</a></li>
+					<li class="list_common"><a href="switch.action?request_locale=en_US">En</a></li>
 					<li class="list_common">&nbsp;&nbsp;|&nbsp;&nbsp;</li>
-					<li class="list_common"><a href="homepager_loadData.action?request_locale=zh_CN">简</a></li>
+					<li class="list_common"><a href="switch.action?request_locale=zh_CN">简</a></li>
 					<li class="list_common">&nbsp;&nbsp;|&nbsp;&nbsp;</li>
-					<li class="list_common"><a href="homepager_loadData.action?request_locale=zh_TW">繁</a></li>
+					<li class="list_common"><a href="switch.action?request_locale=zh_TW">繁</a></li>
 				</ul>
 			</div>
 			<div id="headercenter">

@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 import com.ckfinder.connector.utils.ImageUtils;
 import com.zj.bigdefine.CommonConstant;
 import com.zj.bigdefine.GlobalParam;
+import com.zj.business.observer.Language;
+import com.zj.business.observer.LanguageType;
 import com.zj.business.po.Brand;
 import com.zj.business.po.Designer;
 import com.zj.business.po.Style;
@@ -26,6 +28,9 @@ import com.zj.business.treenode.BrandMenuBuilder;
 import com.zj.business.treenode.IMenuBuilder;
 import com.zj.business.treenode.Menu;
 import com.zj.business.vo.BrandVO;
+import com.zj.business.vo.DesignerVO;
+import com.zj.business.vo.MenuVO;
+import com.zj.business.vo.VOFactory;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
 import com.zj.common.utils.JSONUtil;
@@ -103,7 +108,7 @@ public class BrandAction extends BaseAction {
 			se.printStackTrace();
 			log.debug("create brand failed!",se);
 			getValueStack().set("msg",
-					"create brand " + brand.getBrandEname() + " Failure! ");
+					"create brand " + brand.getBrandEname() + " Failure! root cause is "+se.getMessage());
 			return "save_failure";
 		} catch (UploadFileException ue) {
 			ue.printStackTrace();
@@ -120,7 +125,7 @@ public class BrandAction extends BaseAction {
 					.set("msg",
 							"create brand "
 									+ brand.getBrandEname()
-									+ " Failed, because of seesion time out, please relogin! ");
+									+ " Failure! root cause is "+e.getMessage());
 			log.debug(e);
 			return "save_failure";
 		}
@@ -193,7 +198,7 @@ public class BrandAction extends BaseAction {
 				String absoluteThumbnailUrl = getBasePath() +thumbnailUrl;
 				File destFile = new File(absolutePath);
 				if(!destFile.getParentFile().exists()){
-					if(destFile.getParentFile().mkdirs()){
+					if(!destFile.getParentFile().mkdirs()){
 						throw new UploadFileException("create parent floder error!");
 					}
 				}
@@ -207,7 +212,7 @@ public class BrandAction extends BaseAction {
 							+ "] successfully!");
 		} catch (ServiceException se) {
 			getValueStack().set("msg",
-					"update Brand [" + brand.getBrandEname() + "] failure!");
+					"update Brand [" + brand.getBrandEname() + "] failure! root cause is "+se.getMessage());
 			se.printStackTrace();
 			log.debug("update brand error!",se);
 		} catch (UploadFileException ue) {
@@ -219,7 +224,7 @@ public class BrandAction extends BaseAction {
 			e.printStackTrace();
 			log.debug(e);
 			getValueStack().set("msg",
-					"update Brand [" + brand.getBrandEname() + "] info failed, because of seesion time out ,please relogin!");
+					"update Brand [" + brand.getBrandEname() + "] info failed, root cause is "+e.getMessage());
 		}
 		return "modify";
 	}
@@ -250,45 +255,28 @@ public class BrandAction extends BaseAction {
 		}
 	}
 
-//	public String showBrandDetail() {
-//		String language = "en_US";
-//		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-//		if (sessionLocale != null && sessionLocale instanceof Locale) {
-//			Locale locale = (Locale) sessionLocale;
-//			language = locale.getLanguage() + "_" + locale.getCountry();
-//		}
-//		if (brand.getBrandid() != 0) {
-//			long brandId = brand.getBrandid();
-//			try {
-//				Brand b = brandService.get(Brand.class, brandId);
-//				BrandVO bvo = new BrandVO(b);
-//				bvo.process(language);
-//				getValueStack().set("brandVO", bvo);
-//				return "load_brand_success";
-//			} catch (ServiceException e) {
-//				e.printStackTrace();
-//				return "load_brand_failure";
-//			}
-//		}
-//		return "load_brand_failure";
-//	}
-
 	// below methods all requests from frontend
+	/**
+	 * load all brands in brand browser page
+	 */
 	public String loadAll() {
-		String language = "en_US";
+		String lang = "en_US";
 		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
 		if (sessionLocale != null && sessionLocale instanceof Locale) {
 			Locale locale = (Locale) sessionLocale;
-			language = locale.getLanguage() + "_" + locale.getCountry();
+			lang = locale.getLanguage() + "_" + locale.getCountry();
 		}
 		try {
+			LanguageType type = LanguageType.toLanguageType(lang.toUpperCase());
+			Language language = Language.getInstance();
 			List<Brand> brands = brandService.getAll(Brand.class);
 			List<BrandVO> brandvos = new ArrayList<BrandVO>();
 			for (Brand b : brands) {
-				BrandVO bvo = new BrandVO(b);
-				bvo.process(language);
+				BrandVO bvo = VOFactory.getObserverVO(BrandVO.class, b);
 				brandvos.add(bvo);
+				language.addObserver(bvo);
 			}
+			language.setLanguage(type);
 			getValueStack().set("brandlist", brandvos);
 			return "load_success";
 		} catch (ServiceException e) {
@@ -297,86 +285,53 @@ public class BrandAction extends BaseAction {
 		}
 	}
 
-//	public String menuTree() {
-//		String language = "en_US";
-//		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-//		if (sessionLocale != null && sessionLocale instanceof Locale) {
-//			Locale locale = (Locale) sessionLocale;
-//			language = locale.getLanguage() + "_" + locale.getCountry();
-//		}
-//		long brandId = brand.getBrandid();
-//		List<ZTreeNode> menu = new ArrayList<ZTreeNode>();
-//		AbstractMakeDataStrategy strategy = null;
-//		try {
-//			brand = brandService.get(Brand.class, brandId);
-//			if (treeid == null) {
-//				strategy = TreeNodeStrategyFactory.getNodeStrategy(
-//						NodeType.NONEFORBRAND, new Object[]{brand, language});
-//			}
-//			if (treeid != null) {
-//				if (nodetype.equals(NodeType.PRESSFORBRAND.toString())
-//						&& session.get(GlobalParam.LOGIN_ACCOUNT_SESSION) != null) {
-//					strategy = TreeNodeStrategyFactory.getNodeStrategy(
-//							NodeType.PRESSFORBRAND, new Object[]{brand, treeid,
-//									language});
-//				} else if (nodetype.equals(NodeType.COLLECTIONFORBRAND
-//						.toString())
-//						&& session.get(GlobalParam.LOGIN_ACCOUNT_SESSION) != null) {
-//					strategy = TreeNodeStrategyFactory.getNodeStrategy(
-//							NodeType.COLLECTIONFORBRAND, new Object[]{brand,
-//									treeid, language});
-//				}
-//			}
-//		} catch (ServiceException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		TreeNode treenode = new TreeNodeImpl(strategy);
-//		menu = treenode.generateNode();
-//		jsonArray = JSONUtil.sendArray(menu, null);
-//		return "generate_menutree_success";
-//	}
-	
+	/**
+	 * load menu tree in frontend 
+	 * @return
+	 */
 	public String loadMenu(){
-		String language = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-            Locale locale = (Locale) sessionLocale;
-            language = locale.getLanguage()+"_"+locale.getCountry();
-        }
+        Language language = Language.getInstance();
 		Long brandId = brand.getBrandid();
 		try{
 			Brand b = brandService.get(Brand.class, brandId);
-			BrandVO vo = new BrandVO(b);
-			vo.process(language);
+			BrandVO bvo = VOFactory.getObserverVO(BrandVO.class, b);
+			Designer d = b.getDesigner();
+			DesignerVO dvo = VOFactory.getObserverVO(DesignerVO.class, d);
 			boolean isPermission = false;
 			if(session.get(GlobalParam.LOGIN_ACCOUNT_SESSION) != null){
 				isPermission = true;
 			}
-			IMenuBuilder builder = new BrandMenuBuilder(vo);
-			List<Menu> menus = brandService.generateMenu(builder,isPermission);
-			vo.setMenus(menus);
-			getValueStack().set("brandvo", vo);
-			getValueStack().set("msg","test");
+			MenuVO mvo = VOFactory.getObserverVO(MenuVO.class);
+			language.addObserver(dvo);
+			language.addObserver(bvo);
+			language.addObserver(mvo);
+			language.setLanguage(getLanguageType());
+			IMenuBuilder builder = new BrandMenuBuilder(bvo,dvo,isPermission);
+			List<Menu> menuTree = builder.createMenuTree();
+			getValueStack().set("brandvo", bvo);
+			getValueStack().set("menutree",menuTree);
 		}catch (ServiceException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return "serviceException";
 		}
 		return "loadMenu_success";
 	}
 
 	public String showBrandInfo() {
-		String language = "en_US";
+		String lang = "en_US";
 		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
 		if (sessionLocale != null && sessionLocale instanceof Locale) {
 			Locale locale = (Locale) sessionLocale;
-			language = locale.getLanguage() + "_" + locale.getCountry();
+			lang = locale.getLanguage() + "_" + locale.getCountry();
 		}
+		LanguageType type = LanguageType.toLanguageType(lang.toUpperCase());
+        Language language = Language.getInstance();
 		try {
 			Long id = brand.getBrandid();
 			Brand b = brandService.get(Brand.class, id);
-			BrandVO bvo = new BrandVO(b);
-			bvo.process(language);
+			BrandVO bvo = VOFactory.getObserverVO(BrandVO.class, b);
+			language.addObserver(bvo);
+			language.setLanguage(type);
 			getValueStack().set("brandvo", bvo);
 			return "load_brand_success";
 		} catch (ServiceException e) {

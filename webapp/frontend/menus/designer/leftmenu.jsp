@@ -63,7 +63,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <div id="nav">
                 <ul id="menu" class="nav">
                     <li class="active"><a href="#">Home</a></li>
-					<s:iterator value="designervo.menus" var="menu">
+					<s:iterator value="menutree" var="menu">
 						<li>
 							<a <s:property value="#menu.attributes"/>><s:property value="#menu.name"/></a>
 							<s:if test="!#menu.items.isEmpty() || !#menu.subMenus.isEmpty()">
@@ -87,7 +87,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</s:iterator>
                 </ul>
                 <p class="external">
-                    <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+                    <a href="#" id="collapseAll"><s:text name="collapseAll"/></a> | <a href="#" id="expandAll"><s:text name="expandAll"/></a>
                 </p>
             </div>
         </div>

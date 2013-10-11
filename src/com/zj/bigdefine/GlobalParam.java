@@ -6,6 +6,8 @@ public class GlobalParam {
 	public static final String LOGIN_USER_MODULE_PRIV = "moduleList";
 	public static final String BASE_AUTH_TOKEN = "auth_token";
 	public static final String BASE_AUTOLOGIN_COOKIE = "authlogin_cookie";
+	
+	public static final String FRONTEND_REQUEST_LANG = "FRONTEND_REQUEST_LANG";
 	public static final int ONLINE_STATUS = 1;
 	public static final String ONLINE_DESC = "在线";
 	public static final int OFFLINE_STATUS = 0;

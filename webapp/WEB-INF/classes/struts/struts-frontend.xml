@@ -6,9 +6,11 @@
 	<package name="frontend" extends="common" namespace="/frontend">
 			<global-results>
 				<result name="serviceException">exceptions/serviceException.jsp</result>
+				<result name="exception">exceptions/serviceException.jsp</result>
 			</global-results>
 			<global-exception-mappings>
 				<exception-mapping result="serviceException" exception="com.zj.common.exception.ServiceException"></exception-mapping>
+				<exception-mapping result="exception" exception="java.lang.Exception"></exception-mapping>
 			</global-exception-mappings>
 		<action name="account_*" class="accountAction" method="{1}">
 			<interceptor-ref name="fileUploadStack"/>
@@ -111,6 +113,10 @@
 		
 		<action name="contact_*" class="contactAction" method="{1}">
 			<result name="load_success">menus/contactus.jsp</result>
+		</action>
+		
+		<action name="switch" class="switchLanguageAction">
+			<result name="success" type="redirect">${referer}</result>
 		</action>
 	</package>
 </struts>

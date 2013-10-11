@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
   <head>
     
-    <meta http-equiv="refresh" content="0;url=<%=basePath %>frontend/homepager_loadData.action?request_locale=en_US">
+    <meta http-equiv="refresh" content="0;url=<%=basePath %>frontend/homepager_loadData.action">
     
     <title>My JSP 'frontend/index.jsp' starting page</title>
   </head>

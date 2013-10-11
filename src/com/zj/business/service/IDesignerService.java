@@ -17,5 +17,4 @@ public interface IDesignerService extends ICommonService {
 	public List<Designer> fuzzySearchByName(String fuzzyName) throws ServiceException;
 	public Designer searchByName(String ename) throws ServiceException;
 	public Designer fetchFeaturedDesigner() throws ServiceException;
-	public List<Menu> generateMenu(IMenuBuilder builder,boolean isPermission) throws ServiceException;
 }

@@ -4,10 +4,9 @@ import java.io.File;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,24 +21,23 @@ import org.springframework.stereotype.Component;
 import com.ckfinder.connector.utils.ImageUtils;
 import com.zj.bigdefine.CommonConstant;
 import com.zj.bigdefine.GlobalParam;
+import com.zj.business.observer.Language;
+import com.zj.business.observer.LanguageType;
 import com.zj.business.po.Brand;
 import com.zj.business.po.Designer;
 import com.zj.business.service.IDesignerService;
 import com.zj.business.treenode.DesignerMenuBuilder;
 import com.zj.business.treenode.IMenuBuilder;
 import com.zj.business.treenode.Menu;
+import com.zj.business.vo.BrandVO;
 import com.zj.business.vo.DesignerVO;
+import com.zj.business.vo.MenuVO;
+import com.zj.business.vo.VOFactory;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
 import com.zj.common.utils.JSONUtil;
 import com.zj.common.utils.PageInfo;
 import com.zj.common.utils.StringUtil;
-import com.zj.common.ztreenode.AbstractMakeDataStrategy;
-import com.zj.common.ztreenode.NodeType;
-import com.zj.common.ztreenode.TreeNode;
-import com.zj.common.ztreenode.TreeNodeImpl;
-import com.zj.common.ztreenode.TreeNodeStrategyFactory;
-import com.zj.common.ztreenode.ZTreeNode;
 import com.zj.core.control.struts.BaseAction;
 import com.zj.core.po.SysUser;
 
@@ -232,7 +230,7 @@ public class DesignerAction extends BaseAction {
 				String absoluteThumbnailUrl = getBasePath() +thumbnailUrl;
 				File destFile = new File(absolutePath);
 				if(!destFile.getParentFile().exists()){
-					if(destFile.getParentFile().mkdirs()){
+					if(!destFile.getParentFile().mkdirs()){
 						throw new UploadFileException("create parent floder error!");
 					}
 				}
@@ -287,20 +285,23 @@ public class DesignerAction extends BaseAction {
 	
 	// below methods all requests from frontend
 	public String loadAll(){
-		String language = "en_US";
+		String lang = "en_US";
 		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
 		if (sessionLocale != null && sessionLocale instanceof Locale) {
             Locale locale = (Locale) sessionLocale;
-            language = locale.getLanguage()+"_"+locale.getCountry();
-        } 
+            lang = locale.getLanguage()+"_"+locale.getCountry();
+        }
+		LanguageType type = LanguageType.toLanguageType(lang.toUpperCase());
+        Language language = Language.getInstance();
 		try {
 			List<Designer> designers = designerService.getAll(Designer.class);
 			List<DesignerVO> designervos = new ArrayList<DesignerVO>();
 			for(Designer d:designers){
-				DesignerVO vo = new DesignerVO(d);
-				vo.process(language);
-				designervos.add(vo);
+				DesignerVO dvo = VOFactory.getObserverVO(DesignerVO.class, d);
+				designervos.add(dvo);
+				language.addObserver(dvo);
 			}
+			language.setLanguage(type);
 			getValueStack().set("designers",designervos);
 			return "load_success";
 		} catch (ServiceException e) {
@@ -310,18 +311,21 @@ public class DesignerAction extends BaseAction {
 	}
 	
 	public String showProfile(){
-		String language = "en_US";
+		String lang = "en_US";
 		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
 		if (sessionLocale != null && sessionLocale instanceof Locale) {
             Locale locale = (Locale) sessionLocale;
-            language = locale.getLanguage()+"_"+locale.getCountry();
-        } 
+            lang = locale.getLanguage()+"_"+locale.getCountry();
+        }
+		LanguageType type = LanguageType.toLanguageType(lang.toUpperCase());
+        Language language = Language.getInstance();
 		try {
 			Long id = designer.getDesignerId();
-			Designer designer = designerService.get(Designer.class,id);
-			DesignerVO vo = new DesignerVO(designer);
-			vo.process(language);
-			getValueStack().set("designervo",vo);
+			Designer d = designerService.get(Designer.class,id);
+			DesignerVO dvo = VOFactory.getObserverVO(DesignerVO.class, d);
+			language.addObserver(dvo);
+			language.setLanguage(type);
+			getValueStack().set("designervo",dvo);
 			return "load_profile_success";
 		} catch (ServiceException e) {
 			e.printStackTrace();
@@ -330,70 +334,33 @@ public class DesignerAction extends BaseAction {
 		}
 	}
 	
-	public String menuTree(){
-		String language = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-            Locale locale = (Locale) sessionLocale;
-            language = locale.getLanguage()+"_"+locale.getCountry();
-        } 
-		long designerId = designer.getDesignerId();
-		List<ZTreeNode> menu = new ArrayList<ZTreeNode>();
-		AbstractMakeDataStrategy strategy = null;
-		if(treeid == null){
-			strategy = TreeNodeStrategyFactory.getNodeStrategy(NodeType.NONE,new Object[]{designerId,language});
-		}
-		if(treeid != null){
-			try {
-				Designer d = designerService.get(Designer.class,designerId);
-				if(nodetype.equals(NodeType.BRAND.toString())){
-						Set<Brand> brands = d.getBrands();
-						strategy = TreeNodeStrategyFactory.getNodeStrategy(NodeType.BRAND,new Object[]{treeid,brands,language});
-				}else if(nodetype.equals(NodeType.PRESS.toString()) && session.get(GlobalParam.LOGIN_ACCOUNT_SESSION) != null){
-					strategy = TreeNodeStrategyFactory.getNodeStrategy(NodeType.PRESS,new Object[]{designerId,treeid,language});
-				}else if(nodetype.equals(NodeType.COLLECTIONONE.toString()) && session.get(GlobalParam.LOGIN_ACCOUNT_SESSION) != null){
-					Set<Brand> brands = d.getBrands();
-					strategy = TreeNodeStrategyFactory.getNodeStrategy(NodeType.COLLECTIONONE,new Object[]{treeid,brands,language});
-				}else if(nodetype.equals(NodeType.COLLECTIONTWO.toString())){
-					strategy = TreeNodeStrategyFactory.getNodeStrategy(NodeType.COLLECTIONTWO,new Object[]{treeid,language});
-				}else{
-					Map<String,String> msg = new HashMap<String,String>();
-					msg.put("msg", "please login first!");
-					sendJSONdata(msg);
-				}
-			} catch (ServiceException e) {
-				e.printStackTrace();
-			}
-		}
-		TreeNode treenode = new TreeNodeImpl(strategy);
-		menu = treenode.generateNode();
-		jsonArray = JSONUtil.sendArray(menu, null);
-		return "generate_menutree_success";
-	}
-	
 	public String loadMenu(){
-		String language = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-            Locale locale = (Locale) sessionLocale;
-            language = locale.getLanguage()+"_"+locale.getCountry();
-        }
+        Language language = Language.getInstance();
 		long designerId = designer.getDesignerId();
 		try {
 			Designer d = designerService.get(Designer.class,designerId);
-			DesignerVO vo = new DesignerVO(d);
-			vo.process(language);
+			DesignerVO dvo = VOFactory.getObserverVO(DesignerVO.class, d);
+			language.addObserver(dvo);
+			Set<Brand> bs = d.getBrands();
+			List<BrandVO> bvos = new LinkedList<BrandVO>();
+			for(Brand b:bs){
+				BrandVO bvo = VOFactory.getObserverVO(BrandVO.class, b);
+				bvos.add(bvo);
+				language.addObserver(bvo);
+			}
 			boolean isPermission = false;
 			if(session.get(GlobalParam.LOGIN_ACCOUNT_SESSION) != null){
 				isPermission = true;
 			}
-			IMenuBuilder builder = new DesignerMenuBuilder(vo);
-			List<Menu> menus = designerService.generateMenu(builder, isPermission);
-			vo.setMenus(menus);
-			getValueStack().set("designervo", vo);
+			MenuVO mvo = VOFactory.getObserverVO(MenuVO.class);
+			language.addObserver(mvo);
+			language.setLanguage(getLanguageType());
+			IMenuBuilder builder = new DesignerMenuBuilder(dvo,bvos,isPermission);
+			List<Menu> menuTree = builder.createMenuTree();
+			getValueStack().set("designervo", dvo);
+			getValueStack().set("menutree", menuTree);
 		} catch (ServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return "serviceException";
 		}
 		return "loadMenu_success";
 	}

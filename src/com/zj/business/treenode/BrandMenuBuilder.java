@@ -1,65 +1,68 @@
 package com.zj.business.treenode;
 
-import com.zj.business.po.Designer;
+import java.util.LinkedList;
+import java.util.List;
+
+import com.zj.bigdefine.CommonConstant;
 import com.zj.business.vo.BrandVO;
+import com.zj.business.vo.DesignerVO;
+import com.zj.business.vo.MenuVO;
 
 public class BrandMenuBuilder implements IMenuBuilder {
 	private BrandVO brand;
+	private DesignerVO designer;
+	private boolean isPermission;
 
-	public BrandMenuBuilder() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public BrandMenuBuilder(BrandVO brand) {
+	public BrandMenuBuilder(BrandVO brand, DesignerVO designer) {
 		super();
 		this.brand = brand;
+		this.designer = designer;
 	}
 
-	@Override
+	public BrandMenuBuilder(BrandVO brand, DesignerVO designer,
+			boolean isPermission) {
+		super();
+		this.brand = brand;
+		this.designer = designer;
+		this.isPermission = isPermission;
+	}
+
+	public Menu createBrandMenu() {
+		Menu menu = new Menu(brand.getName().toUpperCase());
+		String attributes = "href='brand_showBrandInfo.action?brand.brandid="
+				+ brand.getId() + "' target=mainPanel";
+		menu.setAttributes(attributes);
+		return menu;
+	}
+
 	public Menu createDesignerMenu() {
-		Menu menu = new Menu(UNKNOW);
-//		DesignerVO designervo = brand.getDesignervo();
-		Designer designer = brand.getBrand().getDesigner();
+		Menu menu = new Menu(MenuVO.menuMap.get(CommonConstant.UNKNOW));
 		if (designer != null) {
-			menu = new Menu(designer.getEname().toUpperCase());
+			menu = new Menu(designer.getName().toUpperCase());
 			String attributes = "href='designer_showProfile.action?designer.designerId="
-					+ designer.getDesignerId()
-					+ "' target='mainPanel'";
+					+ designer.getId() + "' target='mainPanel'";
 			menu.setAttributes(attributes);
 		}
 		return menu;
 	}
 
-	@Override
-	public Menu createBrandMenu() {
-		Menu menu = new Menu(brand.getName().toUpperCase());
-		String attributes = "href='brand_showBrandInfo.action?brand.brandid="
-				+ brand.getBrand().getBrandid() + "' target=mainPanel";
-		menu.setAttributes(attributes);
-		return menu;
-	}
-
-	@Override
 	public Menu createInterviewMenu() {
-//		DesignerVO designervo = brand.getDesignervo();
-		Designer designer = brand.getBrand().getDesigner();
-		Menu menu = new Menu(INTERVIEWS);
-		MenuItem videoItem = new MenuItem(VIDEOS);
-		MenuItem audioItem = new MenuItem(AUDIOS);
-		MenuItem pressreportItem = new MenuItem(PRESSROPORTS);
+		Menu menu = new Menu(MenuVO.menuMap.get(CommonConstant.INTERVIEWS));
+		MenuItem videoItem = new MenuItem(
+				MenuVO.menuMap.get(CommonConstant.VIDEOS));
+		MenuItem audioItem = new MenuItem(
+				MenuVO.menuMap.get(CommonConstant.AUDIOS));
+		MenuItem pressreportItem = new MenuItem(
+				MenuVO.menuMap.get(CommonConstant.PRESSROPORTS));
 		if (designer != null) {
 			String videoAttr = "href='interview_showInterviews.action?designer.designerId="
-					+ designer.getDesignerId()
-					+ "&type=video' target='mainPanel'";
+					+ designer.getId() + "&type=video' target='mainPanel'";
 			videoItem.setAttributes(videoAttr);
 			String audioAttr = "href='interview_showInterviews.action?designer.designerId="
-					+ designer.getDesignerId()
-					+ "&type=audio' target='mainPanel'";
+					+ designer.getId() + "&type=audio' target='mainPanel'";
 			audioItem.setAttributes(audioAttr);
 			String reportAttr = "href='report_showReports.action?designer.designerId="
-					+ designer.getDesignerId()
-					+ "' target='mainPanel'";
+					+ designer.getId() + "' target='mainPanel'";
 			pressreportItem.setAttributes(reportAttr);
 		}
 		menu.addItem(videoItem);
@@ -68,28 +71,45 @@ public class BrandMenuBuilder implements IMenuBuilder {
 		return menu;
 	}
 
-	@Override
 	public Menu createCollectionMenu() {
-		Menu menu = new Menu(COLLECTIONS);
+		Menu menu = new Menu(MenuVO.menuMap.get(CommonConstant.COLLECTIONS));
 		// lookbook Item
-		MenuItem lookbookItem = new MenuItem(LOOKBOOK_IMAGES);
-		String lookbookAttr = "href='lookbook_showByBrand.action?brand.brandid="
-				+ brand.getBrand().getBrandid() + "'";
-		lookbookItem.setAttributes(lookbookAttr);
-		menu.addItem(lookbookItem);
+		MenuItem lookbookItem = new MenuItem(
+				MenuVO.menuMap.get(CommonConstant.LOOKBOOK_IMAGES));
 		// editorial Item
-		MenuItem editorialItem = new MenuItem(EDITORIAL_IMAGES);
-		String editorialAttr = "href='editorial_showByBrand.action?brand.brandid="
-				+ brand.getBrand().getBrandid() + "'";
-		editorialItem.setAttributes(editorialAttr);
-		menu.addItem(editorialItem);
+		MenuItem editorialItem = new MenuItem(
+				MenuVO.menuMap.get(CommonConstant.EDITORIAL_IMAGES));
 		// runway shows Item
-		MenuItem runwayshowItem = new MenuItem(RUNWAY_SHOWS);
-		String runwayshowAttr = "href='runwayshow_showByBrand.action?brand.brandid="
-				+ brand.getBrand().getBrandid() + "'";
-		runwayshowItem.setAttributes(runwayshowAttr);
+		MenuItem runwayshowItem = new MenuItem(
+				MenuVO.menuMap.get(CommonConstant.RUNWAY_SHOWS));
+		if (brand != null) {
+			String lookbookAttr = "href='lookbook_showByBrand.action?brand.brandid="
+					+ brand.getId() + "'";
+			lookbookItem.setAttributes(lookbookAttr);
+			String editorialAttr = "href='editorial_showByBrand.action?brand.brandid="
+					+ brand.getId() + "'";
+			editorialItem.setAttributes(editorialAttr);
+			String runwayshowAttr = "href='runwayshow_showByBrand.action?brand.brandid="
+					+ brand.getId() + "'";
+			runwayshowItem.setAttributes(runwayshowAttr);
+		}
+
+		menu.addItem(lookbookItem);
+		menu.addItem(editorialItem);
 		menu.addItem(runwayshowItem);
 		return menu;
+	}
+
+	@Override
+	public List<Menu> createMenuTree() {
+		List<Menu> menuTree = new LinkedList<Menu>();
+		menuTree.add(createBrandMenu());
+		menuTree.add(createDesignerMenu());
+		if (isPermission) {
+			menuTree.add(createInterviewMenu());
+			menuTree.add(createCollectionMenu());
+		}
+		return menuTree;
 	}
 
 	public BrandVO getBrand() {
@@ -100,4 +120,19 @@ public class BrandMenuBuilder implements IMenuBuilder {
 		this.brand = brand;
 	}
 
+	public DesignerVO getDesigner() {
+		return designer;
+	}
+
+	public void setDesigner(DesignerVO designer) {
+		this.designer = designer;
+	}
+
+	public boolean isPermission() {
+		return isPermission;
+	}
+
+	public void setPermission(boolean isPermission) {
+		this.isPermission = isPermission;
+	}
 }

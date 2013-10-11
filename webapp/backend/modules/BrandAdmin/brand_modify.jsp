@@ -83,7 +83,7 @@
 	<body>
 		<div id="wrapper">
 			<form id="fmt" action="brand_update.action" method="post" target="main" enctype="multipart/form-data">
-				<input type="hidden" name="brand.brandid" value="<s:property value='brandvo.brand.brandid'/>" />
+				<input type="hidden" name="brand.brandid" value="<s:property value='brandvo.id'/>" />
 				<input type="hidden" name="brand.brandimg" value="<s:property value='brandvo.brand.brandimg'/>"/>
 				<div class="rowElem">
 					<label>
@@ -97,6 +97,26 @@
 					</label>
 					<input type="text" name="brand.brandCname" value="<s:property value='brandvo.brand.brandCname' />" />
 				</div>
+				<div id="uploadbox">
+					<div id="title">
+			        	<p>Brand Thumbnail Image:</p>
+			            <hr />
+			        </div>
+			        <div id="container">
+			        <div id="imagecontainer">
+			        	<ul>
+		                	<li class="list_common">
+			                	<div class="imgLiquidFill imgLuid pic">
+			                    	<img src="<%=basePath %><s:property value='brandvo.thumbnailUrl'/>"  width="80" height="80"/>
+			                    </div>
+			                </li>
+			        	</ul>
+			        </div>
+			        </div>
+			        <div id="uploader">
+						<input type="file" name="imageFile" />
+			        </div>
+			     </div>
 <%--				<div id="uploadbox">--%>
 <%--					<div id="title">--%>
 <%--			        	<p>Brand Image:</p>--%>

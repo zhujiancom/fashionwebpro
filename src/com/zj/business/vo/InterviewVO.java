@@ -1,9 +1,10 @@
 package com.zj.business.vo;
 
+import com.zj.business.observer.LanguageType;
 import com.zj.business.po.Interview;
 
 public class InterviewVO  extends AbstractVO{
-
+	
 	private Interview interview;
 	private String content;
 	
@@ -11,18 +12,6 @@ public class InterviewVO  extends AbstractVO{
 		super();
 		this.interview = interview;
 		
-	}
-
-	@Override
-	public Language process(String lang) {
-		if(EN_US.equalsIgnoreCase(lang)){
-			setEnglishValue();
-		}else if(ZH_CN.equalsIgnoreCase(lang)){
-			setChineseValue();
-		}else if(ZH_TW.equalsIgnoreCase(lang)){
-			
-		}
-		return this;
 	}
 	
 	public void setEnglishValue(){
@@ -51,5 +40,11 @@ public class InterviewVO  extends AbstractVO{
 
 	public void setInterview(Interview interview) {
 		this.interview = interview;
+	}
+
+	@Override
+	protected void setChineseValue(LanguageType language) {
+		// TODO Auto-generated method stub
+		
 	}
 }

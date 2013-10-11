@@ -268,7 +268,7 @@ public class RunwayshowAction extends BaseAction {
 			parse.generateXMLFile(outputfile);
 			Runwayshow show = runwayshows.get(0);
 			RunwayshowVO rvo = new RunwayshowVO(show);
-			rvo.process(language);
+//			rvo.process(language);
 			getValueStack().set("runwayshowVO", rvo);
 		} catch (ServiceException e) {
 			e.printStackTrace();

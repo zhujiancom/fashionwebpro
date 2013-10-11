@@ -1,5 +1,6 @@
 package com.zj.business.vo;
 
+import com.zj.business.observer.LanguageType;
 import com.zj.business.po.Style;
 
 public class StyleVO extends AbstractVO{
@@ -10,17 +11,6 @@ public class StyleVO extends AbstractVO{
 	public StyleVO(Style style){
 		super();
 		this.style = style;
-	}
-	@Override
-	public Language process(String lang) {
-		if(EN_US.equalsIgnoreCase(lang)){
-			setEnglishValue();
-		}else if(ZH_CN.equalsIgnoreCase(lang)){
-			setChineseValue();
-		}else if(ZH_TW.equalsIgnoreCase(lang)){
-			setTWChineseValue();
-		}
-		return this;
 	}
 	
 	public void setEnglishValue(){
@@ -49,6 +39,12 @@ public class StyleVO extends AbstractVO{
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	@Override
+	protected void setChineseValue(LanguageType language) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -130,7 +130,7 @@ public class LookbookAction extends BaseAction {
 	public String modifyForward(){
 		try {
 			Lookbook dbLookbook = lookbookService.get(Lookbook.class, id);
-			getValueStack().setValue("lookbook", dbLookbook);
+			getValueStack().setValue("lookbookvo", dbLookbook);
 			return "modify_forward_successful";
 		} catch (ServiceException e) {
 			e.printStackTrace();
@@ -190,7 +190,7 @@ public class LookbookAction extends BaseAction {
 			String basePath = getBasePath();
 			for(Lookbook lookbook:lookbooks){
 				LookbookVO vo = new LookbookVO(lookbook,basePath);
-				vo.process(language);
+//				vo.process(language);
 				vos.add(vo);
 			}
 			getValueStack().set("lookbooklist",vos);

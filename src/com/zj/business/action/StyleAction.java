@@ -208,7 +208,7 @@ public class StyleAction extends BaseAction {
 			List<StyleVO> stylevos = new ArrayList<StyleVO>();
 			for(Style s: styles){
 				StyleVO svo = new StyleVO(s);
-				svo.process(language);
+//				svo.process(language);
 				stylevos.add(svo);
 			}
 			getValueStack().set("stylelist", stylevos);

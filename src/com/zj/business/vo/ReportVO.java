@@ -1,89 +1,27 @@
 package com.zj.business.vo;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.zj.business.observer.LanguageType;
 import com.zj.business.po.Report;
+import com.zj.common.utils.StringUtil;
 
 public class ReportVO  extends AbstractVO{
 	private Report report;
-	private String headImg;
-	private List<String> images;
-	private final String basePath;
+	private long id;
+	private String thumbnail;
 	private String title;
 	private String content;
 	
 	public ReportVO(Report report){
 		this.report = report;
-		basePath="";
+		this.thumbnail = generateThumbnailUrl(report.getReportimg());
+		setId(report.getReportid());
 	}
 	
-	public ReportVO(Report report, String basePath){
-		super();
-		this.report = report;
-		this.basePath = basePath;
-		init();
-	}
-	
-	public void init(){
-		String absoluteDirPath = basePath + report.getReportimg();
-		images = new ArrayList<String>();
-		File dir = new File(absoluteDirPath);
-		if(dir.exists()){
-			File file[] = dir.listFiles();
-			if(file.length > 0){
-				String tempUrl = file[0].getAbsolutePath();
-				headImg = tempUrl.substring(basePath.length()).replace('\\', '/');
-				for(int i=0;i<file.length;i++){
-					String imagesPath = file[i].getAbsolutePath().substring(basePath.length()).replace('\\', '/');
-					images.add(imagesPath);
-				}
-			}
-		}
-	}
-
-	@Override
-	public Language process(String lang) {
-		if(EN_US.equalsIgnoreCase(lang)){
-			setEnglishValue();
-		}else if(ZH_CN.equalsIgnoreCase(lang)){
-			setChineseValue();
-		}else if(ZH_TW.equalsIgnoreCase(lang)){
-			setTWValue();
-		}
-		return this;
-	}
-	
-	public void setEnglishValue(){
-		setTitle(report.getReportEname());
-		setContent(report.getReportEcontent());
-	}
-	public void setChineseValue(){
-		setTitle(report.getReportCname());
-		setContent(report.getReportCname());
-	}
-	public void setTWValue(){
-		setTitle(report.getReportCname());
-		setContent(report.getReportCname());
-	}
 	public Report getReport() {
 		return report;
 	}
 	public void setReport(Report report) {
 		this.report = report;
-	}
-	public String getHeadImg() {
-		return headImg;
-	}
-	public void setHeadImg(String headImg) {
-		this.headImg = headImg;
-	}
-	public List<String> getImages() {
-		return images;
-	}
-	public void setImages(List<String> images) {
-		this.images = images;
 	}
 
 	public String getTitle() {
@@ -100,6 +38,36 @@ public class ReportVO  extends AbstractVO{
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getThumbnail() {
+		return thumbnail;
+	}
+
+	public void setThumbnail(String thumbnail) {
+		this.thumbnail = thumbnail;
+	}
+
+	@Override
+	protected void setChineseValue(LanguageType language) {
+		setTitle(convertTCSC(report.getReportCname(),language));
+		String detail = StringUtil.getStrFromBlob(report.getDetailContentCH());
+		setContent(convertTCSC(detail, language));
+	}
+
+	@Override
+	protected void setEnglishValue() {
+		setTitle(report.getReportEname());
+		String detail = StringUtil.getStrFromBlob(report.getDetailContentEN());
+		setTitle(detail);
 	}
 
 	

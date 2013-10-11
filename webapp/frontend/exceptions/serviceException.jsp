@@ -7,7 +7,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
-    <title>My JSP 'serviceException.jsp' starting page</title>
+    <title>Error page</title>
 	<script src="<%=basePath %>frontend/javascript/jquery-1.7.2.min.js" type="application/javascript"></script>
   	<style type="text/css">
   		#messageContent{

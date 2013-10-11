@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.zj.business.po.Brand;
 import com.zj.business.po.Designer;
-import com.zj.business.treenode.IMenuBuilder;
-import com.zj.business.treenode.Menu;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.utils.PageInfo;
 import com.zj.core.service.ICommonService;
@@ -18,5 +16,4 @@ public interface IBrandService extends ICommonService {
 	public List<Brand> fuzzySearchByName(String fuzzyName) throws ServiceException;
 	public void save(Brand brand,Designer designer) throws ServiceException;
 	public void update(Brand brand,Designer designer) throws ServiceException;
-	public List<Menu> generateMenu(IMenuBuilder builder,boolean isPermission) throws ServiceException;
 }

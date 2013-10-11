@@ -2,16 +2,20 @@ package com.zj.business.vo;
 
 import java.util.List;
 
+import com.zj.business.observer.LanguageType;
 import com.zj.business.po.Designer;
 import com.zj.business.po.Lookbook;
 
 public class HomepagerVO extends AbstractVO {
-	private Designer featuredDesigner;
+	//below three attributes are used in backend
+	private Designer featuredDesigner; 
 	private List<Designer> designers;
+	private List<Lookbook> lookbooks;
+	
+	
 	private List<String> imageThumbnailUrls;
 	private String posterThumbnailUrl;
 	private String videoName;
-	private List<Lookbook> lookbooks;
 	
 	private DesignerVO featuredDesignerVO;
 	private List<DesignerVO> designerVOs;
@@ -29,36 +33,6 @@ public class HomepagerVO extends AbstractVO {
 		this.imageUrls = imageUrls;
 	}
 	
-	@Override
-	public Language process(String lang) {
-		if(featuredDesignerVO !=null){
-			featuredDesignerVO.process(lang);
-		}
-		for(DesignerVO designerVO:designerVOs){
-			designerVO.process(lang);
-		}
-		for(LookbookVO lookbookVO:lookbookVOs){
-			lookbookVO.process(lang);
-		}
-		return this;
-	}
-
-	public Designer getFeaturedDesigner() {
-		return featuredDesigner;
-	}
-
-	public void setFeaturedDesigner(Designer featuredDesigner) {
-		this.featuredDesigner = featuredDesigner;
-	}
-
-	public List<Designer> getDesigners() {
-		return designers;
-	}
-
-	public void setDesigners(List<Designer> designers) {
-		this.designers = designers;
-	}
-
 	public List<String> getImageThumbnailUrls() {
 		return imageThumbnailUrls;
 	}
@@ -81,14 +55,6 @@ public class HomepagerVO extends AbstractVO {
 
 	public void setVideoName(String videoName) {
 		this.videoName = videoName;
-	}
-
-	public List<Lookbook> getLookbooks() {
-		return lookbooks;
-	}
-
-	public void setLookbooks(List<Lookbook> lookbooks) {
-		this.lookbooks = lookbooks;
 	}
 
 	public DesignerVO getFeaturedDesignerVO() {
@@ -129,6 +95,40 @@ public class HomepagerVO extends AbstractVO {
 
 	public void setImageUrls(List<String> imageUrls) {
 		this.imageUrls = imageUrls;
+	}
+
+	@Override
+	protected void setEnglishValue() {
+		throw new UnsupportedOperationException("not support setChineseValue in homepagervo");
+	}
+
+	@Override
+	protected void setChineseValue(LanguageType language) {
+		throw new UnsupportedOperationException("not support setChineseValue in homepagervo");
+	}
+
+	public Designer getFeaturedDesigner() {
+		return featuredDesigner;
+	}
+
+	public void setFeaturedDesigner(Designer featuredDesigner) {
+		this.featuredDesigner = featuredDesigner;
+	}
+
+	public List<Designer> getDesigners() {
+		return designers;
+	}
+
+	public void setDesigners(List<Designer> designers) {
+		this.designers = designers;
+	}
+
+	public List<Lookbook> getLookbooks() {
+		return lookbooks;
+	}
+
+	public void setLookbooks(List<Lookbook> lookbooks) {
+		this.lookbooks = lookbooks;
 	}
 
 }

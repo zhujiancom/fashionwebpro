@@ -58,7 +58,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               <div id="featureddesigner">
               	<table cellpadding="0" cellspacing="0" rules="rows">
                 	<tr>
-                		<th colspan="2"><a href="#">FEATURED DESIGNERS</a></th>
+                		<th colspan="2"><a href="#"><s:text name="featuredDesigner"/></a></th>
                     </tr>
                     <tr align="center" valign="middle">
                     	<td>
@@ -83,7 +83,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           </div>
           <div id="main_center">
           	<div id="videodiv">
-            	<h3><a href="#">VIDEO</a></h3>
+            	<h3><a href="#"><s:text name="video"/></a></h3>
                 <hr />
             	<video controls="controls" autoplay="autoplay"  height="340px" width="500px">
                 	<source src="<%=basePath %><s:property value='homevo.videoUrl'/>" >
@@ -91,13 +91,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 </video>
             </div>
             <div id="profilediv">
-            	<h3><a href="#">PROFILE</a></h3>
+            	<h3><a href="#"><s:text name="profile"/></a></h3>
                 <hr />
                 <textarea name="designerProfile"><s:property value="homevo.featuredDesignerVO.profile"/></textarea>
             </div>
           </div>
           <div id="main_bottom" style="margin-top:2px;">
-          	<h3><a href="#">COLLECTION</a></h3>
+          	<h3><a href="#"><s:text name="collection"/></a></h3>
             <hr />
             <h4><a href="#">Title</a></h4>
             <table width="895px">

@@ -193,9 +193,9 @@ public class EditorialAction extends BaseAction {
 			List<EditorialVO> vos = new ArrayList<EditorialVO>();
 			String basePath = getBasePath();
 			for(Editorial editorial:editorials){
-				EditorialVO vo = new EditorialVO(editorial,basePath);
-				vo.process(language);
-				vos.add(vo);
+//				EditorialVO vo = new EditorialVO(editorial,basePath);
+//				vo.process(language);
+//				vos.add(vo);
 			}
 			getValueStack().set("editoriallist",vos);
 		} catch (ServiceException e) {

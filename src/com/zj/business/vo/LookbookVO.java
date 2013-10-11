@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zj.business.observer.LanguageType;
 import com.zj.business.po.Lookbook;
 
 public class LookbookVO  extends AbstractVO{
@@ -12,6 +13,7 @@ public class LookbookVO  extends AbstractVO{
 	private List<String> images;
 	private int length;
 	private String title;
+	private List<String> imageThumbnailUrls;
 	
 	public LookbookVO(Lookbook lookbook, String basePath){
 		super();
@@ -38,17 +40,6 @@ public class LookbookVO  extends AbstractVO{
 		}
 	}
 
-	@Override
-	public Language process(String lang) {
-		if(EN_US.equalsIgnoreCase(lang)){
-			setEnglishValue();
-		}else if(ZH_CN.equalsIgnoreCase(lang)){
-			setChineseValue();
-		}else if(ZH_TW.equalsIgnoreCase(lang)){
-			setTWChineseValue();
-		}
-		return this;
-	}
 	public void setEnglishValue(){
 		setTitle(lookbook.getLookbookEname());
 	}
@@ -88,6 +79,12 @@ public class LookbookVO  extends AbstractVO{
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	@Override
+	protected void setChineseValue(LanguageType language) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

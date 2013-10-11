@@ -1,5 +1,6 @@
 package com.zj.business.vo;
 
+import com.zj.business.observer.LanguageType;
 import com.zj.business.po.Runwayshow;
 
 public class RunwayshowVO extends AbstractVO{
@@ -12,17 +13,6 @@ public class RunwayshowVO extends AbstractVO{
 		this.runwayshow = runwayshow;
 	}
 
-	@Override
-	public Language process(String lang) {
-		if(EN_US.equalsIgnoreCase(lang)){
-			setEnglishValue();
-		}else if(ZH_CN.equalsIgnoreCase(lang)){
-			setChineseValue();
-		}else if(ZH_TW.equalsIgnoreCase(lang)){
-			setTWChineseValue();
-		}
-		return this;
-	}
 
 	public void setEnglishValue(){
 		setContent(runwayshow.getRunwayshowEintro());
@@ -47,6 +37,13 @@ public class RunwayshowVO extends AbstractVO{
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+
+	@Override
+	protected void setChineseValue(LanguageType language) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

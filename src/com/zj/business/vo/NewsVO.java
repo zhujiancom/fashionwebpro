@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zj.business.observer.LanguageType;
 import com.zj.business.po.News;
 
 public class NewsVO extends AbstractVO{
@@ -37,18 +38,6 @@ public class NewsVO extends AbstractVO{
 				}
 			}
 		}
-	}
-	
-	@Override
-	public Language process(String lang) {
-		if(EN_US.equalsIgnoreCase(lang)){
-			setEnglishValue();
-		}else if(ZH_CN.equalsIgnoreCase(lang)){
-			setChineseValue();
-		}else if(ZH_TW.equalsIgnoreCase(lang)){
-			setTWChineseValue();
-		}
-		return this;
 	}
 	
 	public void setEnglishValue(){
@@ -101,5 +90,11 @@ public class NewsVO extends AbstractVO{
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	@Override
+	protected void setChineseValue(LanguageType language) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -281,7 +281,7 @@ public class InterviewAction extends BaseAction {
 			parse.generateXMLFile(outputfile);
 			Interview i = interviews.get(0);
 			InterviewVO ivo = new InterviewVO(i);
-			ivo.process(language);
+//			ivo.process(language);
 			getValueStack().set("interviewVO", ivo);
 		} catch (ServiceException e) {
 			e.printStackTrace();

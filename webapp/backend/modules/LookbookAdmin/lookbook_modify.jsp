@@ -5,7 +5,7 @@
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
-<%@taglib uri="/struts-tags"  prefix="s"%>
+<%@taglib uri="/struts-tags"  prefix="s"%> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 	<head>
@@ -56,34 +56,43 @@
 
 	<body>
 		<div id="wrapper">
-			<form id="fm" action="lookbook_update.action" method="post" target="main"  enctype="multipart/form-data">
+			<form id="fmt" action="lookbook_update.action" method="post" target="main"  enctype="multipart/form-data">
 				<input type="hidden" name="lookbook.lookbookid" value="<s:property value='lookbook.lookbookid'/>" />
 				<input type="hidden" name="lookbook.imgs" value="<s:property value='lookbook.imgs'/>">
 				<div class="rowElem">
 					<label>
 						Lookbook Name(EN):
 					</label>
-					<input type="text" name="lookbook.lookbookEname" value="<s:property value='lookbook.lookbookEname'/>"  />
+					<input type="text" name="lookbook.lookbookEname" value="<s:property value='lookbookvo.lookbook.lookbookEname'/>"  />
 				</div>
 				<div class="rowElem">
 					<label>
 						Lookbook Name(ZH):
 					</label>
-					<input type="text" name="lookbook.lookbookCname" value="<s:property value='lookbook.lookbookCname'/>" />
+					<input type="text" name="lookbook.lookbookCname" value="<s:property value='lookbookvo.lookbook.lookbookCname'/>" />
 				</div>
-					<div class="rowElem">
-					<label>
-						Lookbook Image:
-					</label>
-					<input type="button" name="addFile" id="addFile" value="addFile"/>
-					<table id="fileWrapper">
-						<tr>
-							<td>
-								<input type="file" name="imageFiles" /><span><img src="../comm_images/X.gif"/></span>
-							</td>
-						</tr>
-					</table>
-					</div>
+					<div id="uploadbox">
+				<div id="title">
+		        	<p>Lookbook Images:</p>
+		            <hr />
+		        </div>
+		        <div id="container">
+		        <div id="imagecontainer">
+		        	<ul>
+		                <s:iterator value="lookbookvo.imageThumbnailUrls" var="thumbnail">
+		                	<li class="list_common">
+			                	<div class="imgLiquidFill imgLuid pic">
+			                    	<img src="<%=basePath %><s:property value='#thumbnail'/>"  width="100" height="100"/>
+			                    </div>
+			                </li>
+		                </s:iterator>
+		        	</ul>
+		        </div>
+		        </div>
+		        <div id="uploader">
+					<input type="file" name="imageFiles" multiple="multiple" />
+		        </div>
+		     </div>
 					<div class="rowElem">
 					<label>
 						Lookbook Date:

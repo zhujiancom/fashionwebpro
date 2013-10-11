@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 
+import com.zj.common.exception.ServiceException;
+
 public class FileUtil extends FileUtils {
 	public static boolean isDirectory(String directoryPath){
 		boolean isDirectory = false;
@@ -20,7 +22,13 @@ public class FileUtil extends FileUtils {
 		return rootPath;
 	}
 	
-	public static void main(String[] args){
-		System.out.println(FileUtil.getRoot());
+	public static File generateDirectory(String dirPath) throws ServiceException{
+		File directory = new File(dirPath);
+		if(!directory.exists()){
+			if(!directory.mkdirs()){
+				throw new ServiceException("generate directory error!");
+			}
+		}
+		return directory;
 	}
 }
