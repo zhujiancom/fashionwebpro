@@ -54,8 +54,8 @@
 	
 	<!-- Aspect configuration -->
 	<bean id="categoryValueConvertAspect" class="com.zj.common.aspect.CategoryValueConvertAspect" scope="prototype"></bean>
-	<bean id="cacheDiskStorePath" class="java.lang.String">
-		<constructor-arg index="0" value="${cache.diskStore.path}"></constructor-arg>
-	</bean>
+<!--	<bean id="cacheDiskStorePath" class="java.lang.String">-->
+<!--		<constructor-arg index="0" value="${cache.diskStore.path}"></constructor-arg>-->
+<!--	</bean>-->
 
 </beans>

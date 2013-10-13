@@ -1,9 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" isELIgnored="false"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
-			+ path + "/";
+	String serverPath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+	String basePath = serverPath + path + "/";
 %>
 <%@taglib uri="/struts-tags"  prefix="s"%>
 <%@ taglib uri="http://ckeditor.com"  prefix="ckeditor"%>
@@ -20,7 +19,7 @@
 	    <link href="<%=basePath %>comm_script/fileuploader/css/jquery.fileupload-ui.css" rel="stylesheet">
 	    <link href="<%=basePath %>comm_script/fileuploader/css/jquery.fileupload-ui-noscript.css" rel="stylesheet">
 	    <script type="text/javascript" 
-	    		src="<%=basePath %>comm_script/jquery-1.9.1.min.js">
+	    		src="<%=basePath %>comm_script/jquery-1.7.2.min.js">
 	    </script>
 	    <script type="text/javascript" 
 	    		src="<%=basePath%>comm_script/jquery-plugin/jquery-ui-1.8.16.custom.min.js">
@@ -47,76 +46,46 @@
 	    <script type="text/javascript" src="<%=basePath %>comm_script/fileuploader/js/jquery.fileupload-validate.js"></script>
 	    <script type="text/javascript" src="<%=basePath %>comm_script/fileuploader/js/jquery.fileupload-ui.js"></script>
 	    <script type="text/javascript" src="<%=basePath %>comm_script/fileuploader/js/main.js"></script>
-	    <script type="text/javascript">
-		    $(function(){
-	     		$( "#designerName" ).autocomplete({
-	     			source: "designer_fuzzySearch.action"
-	     		});
-	     		var editor = null;
-	    		$(document).ready(function(){
-	    			editor = CKEDITOR.replaceAll(function(textarea,config){
-	    				config.customConfig="<%=basePath%>/ckeditor/backend_config.js";
-	    				config.on={
-	    						instanceReady:function(ev){
-	        						this.dataProcessor.writer.setRules('p', {
-	        	                        indent: false,
-	        	                        breakBeforeOpen: false,   //<p>之前不加换行
-	        	                        breakAfterOpen: false,    //<p>之后不加换行
-	        	                        breakBeforeClose: false,  //</p>之前不加换行
-	        	                        breakAfterClose: false    //</p>之后不加换行7
-	        	                    });
-	        					}
-	    				};
-	    			});
-	    			$(".imgLiquidFill").imgLiquid({
-						fill:true,
-						horizontalAlign:"center",
-						verticalAlign:"top"  
-						  
-					  });
-	    		});
-	    		CKFinder.setupCKEditor(editor, "<%=basePath%>ckfinder/");
-			});
-	    </script>
+	    
 	</head>
 
 	<body>
 		<div id="wrapper">
 			<form id="fmt" action="brand_update.action" method="post" target="main" enctype="multipart/form-data">
 				<input type="hidden" name="brand.brandid" value="<s:property value='brandvo.id'/>" />
-				<input type="hidden" name="brand.brandimg" value="<s:property value='brandvo.brand.brandimg'/>"/>
+<%--				<input type="hidden" name="brand.brandimg" value="<s:property value='brandvo.brand.brandimg'/>"/>--%>
 				<div class="rowElem">
 					<label>
-						Brand Name(EN):
+						<h4>Brand Name(EN):</h4>
 					</label>
 					<input type="text" name="brand.brandEname" value="<s:property value='brandvo.brand.brandEname' />" />
 				</div>
 				<div class="rowElem">
 					<label>
-						Brand Name(ZH):
+						<h4>Brand Name(ZH):</h4>
 					</label>
 					<input type="text" name="brand.brandCname" value="<s:property value='brandvo.brand.brandCname' />" />
 				</div>
-				<div id="uploadbox">
-					<div id="title">
-			        	<p>Brand Thumbnail Image:</p>
-			            <hr />
-			        </div>
-			        <div id="container">
-			        <div id="imagecontainer">
-			        	<ul>
-		                	<li class="list_common">
-			                	<div class="imgLiquidFill imgLuid pic">
-			                    	<img src="<%=basePath %><s:property value='brandvo.thumbnailUrl'/>"  width="80" height="80"/>
-			                    </div>
-			                </li>
-			        	</ul>
-			        </div>
-			        </div>
-			        <div id="uploader">
-						<input type="file" name="imageFile" />
-			        </div>
-			     </div>
+<%--				<div id="uploadbox">--%>
+<%--					<div id="title">--%>
+<%--			        	<p>Brand Thumbnail Image:</p>--%>
+<%--			            <hr />--%>
+<%--			        </div>--%>
+<%--			        <div id="container">--%>
+<%--			        <div id="imagecontainer">--%>
+<%--			        	<ul>--%>
+<%--		                	<li class="list_common">--%>
+<%--			                	<div class="imgLiquidFill imgLuid pic">--%>
+<%--			                    	<img src="<%=serverPath %>/<s:property value='brandvo.thumbnailUrl'/>"  width="80" height="80"/>--%>
+<%--			                    </div>--%>
+<%--			                </li>--%>
+<%--			        	</ul>--%>
+<%--			        </div>--%>
+<%--			        </div>--%>
+<%--			        <div id="uploader">--%>
+<%--						<input type="file" name="imageFile" />--%>
+<%--			        </div>--%>
+<%--			     </div>--%>
 <%--				<div id="uploadbox">--%>
 <%--					<div id="title">--%>
 <%--			        	<p>Brand Image:</p>--%>
@@ -176,17 +145,17 @@
 <%--					</div>--%>
 <%--				</div>--%>
 				<div>
-					<label>Detail Content(CH):</label>
+					<label><h4>Detail Content(CH):</h4></label>
 					<textarea name="brand.detailContentCH"><s:property value="brandvo.brand.detailContentCH"/></textarea>
 				</div>
 				<br/>
 				<div>
-					<label>Detail Content(EN):</label>
+					<label><h4>Detail Content(EN):</h4></label>
 					<textarea name="brand.detailContentEN"><s:property value="brandvo.brand.detailContentEN"/></textarea>
 				</div>
 				<br />
 				<div class="ui-widget">
-					<label for="designerName">Designer Name(EN): </label>
+					<label for="designerName"><h4>Designer Name(EN):</h4></label>
 					<input id="designerName" type="text" name="designer.ename" value="<s:property value='brandvo.brand.designer.ename'/>"/>
 				</div>
 				<br />
@@ -197,5 +166,36 @@
 			</div>
 			</form>
 		</div>
+		<script type="text/javascript">
+		    $(function(){
+	     		$( "#designerName" ).autocomplete({
+	     			source: "designer_fuzzySearch.action"
+	     		});
+	     		var editor = null;
+	    		$(document).ready(function(){
+	    			editor = CKEDITOR.replaceAll(function(textarea,config){
+	    				config.customConfig="<%=basePath%>/ckeditor/backend_config.js";
+	    				config.on={
+	    						instanceReady:function(ev){
+	        						this.dataProcessor.writer.setRules('p', {
+	        	                        indent: false,
+	        	                        breakBeforeOpen: false,   //<p>之前不加换行
+	        	                        breakAfterOpen: false,    //<p>之后不加换行
+	        	                        breakBeforeClose: false,  //</p>之前不加换行
+	        	                        breakAfterClose: false    //</p>之后不加换行7
+	        	                    });
+	        					}
+	    				};
+	    			});
+	    			$(".imgLiquidFill").imgLiquid({
+						fill:true,
+						horizontalAlign:"center",
+						verticalAlign:"top"  
+						  
+					  });
+	    		});
+	    		CKFinder.setupCKEditor(editor, "<%=basePath%>ckfinder/");
+			});
+	    </script>
 	</body>
 </html>

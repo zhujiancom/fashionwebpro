@@ -4,6 +4,7 @@ package com.zj.core.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -63,7 +64,11 @@ public class SysUserServiceImpl extends CommonServiceImpl implements
 	@Override
 	public void logout(SysUser user) throws ServiceException {
 		user.setStatus(GlobalParam.OFFLINE_STATUS);
-		merge(user, user.getUserId(), UpdateMode.MINI);
+		SysUser dbUser = get(SysUser.class, user.getUserId());
+		BeanUtils.copyProperties(dbUser, user);
+		update(user);
+//		merge(user, user.getUserId(), UpdateMode.MINI);
+		
 	}
 
 }

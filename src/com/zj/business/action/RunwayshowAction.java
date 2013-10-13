@@ -3,20 +3,26 @@ package com.zj.business.action;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.ckfinder.connector.utils.ImageUtils;
+import com.zj.bigdefine.CommonConstant;
 import com.zj.bigdefine.GlobalParam;
+import com.zj.business.observer.Language;
 import com.zj.business.playlist.RunwayshowPlayList;
 import com.zj.business.po.Brand;
 import com.zj.business.po.Runwayshow;
 import com.zj.business.service.IRunwayshowService;
 import com.zj.business.vo.RunwayshowVO;
+import com.zj.business.vo.VOFactory;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
 import com.zj.common.utils.JSONUtil;
@@ -39,6 +45,8 @@ public class RunwayshowAction extends BaseAction {
 	private Brand brand;
 	@Resource
 	private IRunwayshowService runwayshowService;
+	@Value("#{envConfig['upload.runwayshow.dir']}")
+	private String fileUploadPath;
 	private int rp; // page size
 	private int page; // page num
 	private String ids; // users id which need to be deleted
@@ -60,19 +68,23 @@ public class RunwayshowAction extends BaseAction {
 	public String save(){
 		String posterurl = "";
 		String videourl = "";
+		String posterThumbnailUrl = "";
 		boolean isAddVideo = false;
 		boolean isAddPoster = false;
 		try{
-			if(videoFileFileName != null && !"".equals(videoFileFileName)){
+			if(videoFile != null){
 				isAddVideo = true;
-				String videoFileName = new Date().getTime()+getExtention(videoFileFileName);
-				videourl = "upload/runwayshow/video"+"/"+videoFileName;
+				String fileType = getExtention(videoFileFileName);
+				String videoName = UUID.randomUUID().toString();
+				videourl = fileUploadPath+videoName+fileType;
 				runwayshow.setRunwayshowUrl(getWebRootPath()+videourl);
 			}
-			if(posterFileFileName != null && !"".equals(posterFileFileName)){
+			if(posterFile != null){
 				isAddPoster = true;
-				String posterFileName = new Date().getTime()+getExtention(posterFileFileName);
-				posterurl = "upload/runwayshow/video"+"/"+posterFileName;
+				String fileType = getExtention(posterFileFileName);
+				String posterFileName =UUID.randomUUID().toString();
+				posterurl = fileUploadPath+posterFileName+fileType;
+				posterThumbnailUrl = fileUploadPath+posterFileName+CommonConstant.ThumbnailSuffix+ fileType;
 				runwayshow.setPoster(getWebRootPath()+posterurl);
 			}
 			runwayshow.setCreater(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
@@ -80,11 +92,14 @@ public class RunwayshowAction extends BaseAction {
 			runwayshowService.save(runwayshow,brand);
 			if(isAddPoster){
 				String absoluteUrl = getBasePath()+posterurl;
+				String absoluteThumbnailUrl = getBasePath() +posterThumbnailUrl;
 				File destFile = new File(absoluteUrl);
 				if(!destFile.getParentFile().exists()){
 					destFile.getParentFile().mkdirs();
 				}
+				File destThumbnail = new File(absoluteThumbnailUrl);
 				copyByChannel(posterFile,destFile);
+				ImageUtils.createResizedImage(posterFile, destThumbnail, Integer.valueOf(System.getProperty("thumbnail.size.width")), Integer.valueOf(System.getProperty("thumbnail.size.height")),Float.valueOf( System.getProperty("thumbnail.size.quality")));
 			}
 			if(isAddVideo){
 				String absoluteUrl = getBasePath()+videourl;
@@ -110,7 +125,7 @@ public class RunwayshowAction extends BaseAction {
 		catch(Exception e){
 			e.printStackTrace();
 			log.debug(e);
-			getValueStack().set("msg", "create RunwayShow ["+runwayshow.getRunwayshowEname()+"] Failed, because of session time out ,please relogin! ");
+			getValueStack().set("msg", "create RunwayShow ["+runwayshow.getRunwayshowEname()+"] Failed, root cause is "+e.getMessage());
 			return "save_failure";
 		}
 	}
@@ -170,11 +185,12 @@ public class RunwayshowAction extends BaseAction {
 	public String modifyForward(){
 		try {
 			Runwayshow dbrunwayshow = runwayshowService.get(Runwayshow.class, id);
-			getValueStack().setValue("runwayshow", dbrunwayshow);
+			RunwayshowVO vo = VOFactory.getObserverVO(RunwayshowVO.class,dbrunwayshow);
+			getValueStack().set("runwayshowvo", vo);
 			return "modify_forward_successful";
 		} catch (ServiceException e) {
 			e.printStackTrace();
-			log.debug("The brand is not exist!",e);
+			log.debug("The runwayshow is not exist!",e);
 			getValueStack().set("msg", "the object is not exist in DataBase, then cannot forward to modify page!");
 			return "modify_forward_failure";
 		}
@@ -185,23 +201,33 @@ public class RunwayshowAction extends BaseAction {
 	 * @return
 	 */
 	public String update(){
-		int prefixLen = getWebRootPath().length();
+		int startIndx = getWebRootPath().length();
 		String oldPosterurl = runwayshow.getPoster();
+		if(!StringUtil.isEmpty(oldPosterurl)){
+			oldPosterurl = oldPosterurl.substring(startIndx);
+		}
 		String oldVideourl = runwayshow.getRunwayshowUrl();
+		if(!StringUtil.isEmpty(oldVideourl)){
+			oldVideourl = oldVideourl.substring(startIndx);
+		}
 		String posterurl = "";
 		String videourl = "";
+		String posterThumbnailUrl = "";
 		boolean isUpdatePoster = false;
 		boolean isUpdateVideo = false;
 		try{
-			if(videoFileFileName != null && !"".equals(videoFileFileName)){
-				String videoFileName = new Date().getTime()+getExtention(videoFileFileName);
-				videourl = "upload/runwayshow/video"+"/"+videoFileName;
+			if(videoFile != null ){
+				String fileType = getExtention(videoFileFileName);
+				String videoFileName = UUID.randomUUID().toString();
+				videourl = fileUploadPath+videoFileName+fileType;
 				runwayshow.setRunwayshowUrl(getWebRootPath()+videourl);
 				isUpdateVideo = true;
 			}
-			if(posterFileFileName != null && !"".equals(posterFileFileName)){
-				String posterFileName = new Date().getTime()+getExtention(posterFileFileName);
-				posterurl = "upload/runwayshow/video"+"/"+posterFileName;
+			if(posterFile != null){
+				String fileType = getExtention(posterFileFileName);
+				String posterFileName =  UUID.randomUUID().toString();
+				posterurl = fileUploadPath+posterFileName+fileType;
+				posterThumbnailUrl = fileUploadPath+posterFileName+CommonConstant.ThumbnailSuffix+ fileType;
 				runwayshow.setPoster(getWebRootPath()+posterurl);
 				isUpdatePoster = true;
 			}
@@ -209,24 +235,19 @@ public class RunwayshowAction extends BaseAction {
 			runwayshow.setModifier(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
 			runwayshowService.update(runwayshow,brand);
 			if(isUpdatePoster){
-				if(oldPosterurl != null){
-					oldPosterurl = oldPosterurl.substring(prefixLen);
-					String absoluteUrl = getBasePath()+oldPosterurl;
-					preDeleteFile(absoluteUrl);
-				}
+				preDeleteFile(getBasePath()+oldPosterurl);
 				String absoluteUrl = getBasePath()+posterurl;
+				String absoluteThumbnailUrl = getBasePath()+posterThumbnailUrl;
 				File destFile = new File(absoluteUrl);
 				if(!destFile.getParentFile().exists()){
 					destFile.getParentFile().mkdirs();
 				}
+				File destThumbnail = new File(absoluteThumbnailUrl);
 				copyByChannel(posterFile,destFile);
+				ImageUtils.createResizedImage(posterFile, destThumbnail, Integer.valueOf(System.getProperty("thumbnail.size.width")), Integer.valueOf(System.getProperty("thumbnail.size.height")),Float.valueOf( System.getProperty("thumbnail.size.quality")));
 			}
 			if(isUpdateVideo){
-				if(oldVideourl != null){
-					oldVideourl = oldVideourl.substring(prefixLen);
-					String absoluteUrl = getBasePath()+oldVideourl;
-					preDeleteFile(absoluteUrl);
-				}
+				preDeleteFile(getBasePath()+oldVideourl);
 				String absoluteUrl = getBasePath()+videourl;
 				File destFile = new File(absoluteUrl);
 				if(!destFile.getParentFile().exists()){
@@ -254,22 +275,17 @@ public class RunwayshowAction extends BaseAction {
 	
 	//below methods for frontend
 	public String showByBrand(){
-		String language = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-            Locale locale = (Locale) sessionLocale;
-            language = locale.getLanguage()+"_"+locale.getCountry();
-        } 
+		Language language = Language.getInstance();
 		try{
 			List<Runwayshow> runwayshows = runwayshowService.getRunwayShowByBrand(brand.getBrandid());
-			String basePath = getBasePath();
+			String basePath = getBasePath() + ServletActionContext.getRequest().getContextPath();;
 			XmlParse parse = new RunwayshowPlayList(runwayshows);
 			String outputfile = basePath+"frontend/menus/brand/playlist.xml";
 			parse.generateXMLFile(outputfile);
 			Runwayshow show = runwayshows.get(0);
-			RunwayshowVO rvo = new RunwayshowVO(show);
-//			rvo.process(language);
-			getValueStack().set("runwayshowVO", rvo);
+			RunwayshowVO rvo = VOFactory.getObserverVO(RunwayshowVO.class, show);
+			language.setLanguage(getLanguageType());
+			getValueStack().set("runwayshowvo", rvo);
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		} 

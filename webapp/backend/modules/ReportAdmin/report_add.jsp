@@ -33,33 +33,6 @@
 		<script type="text/javascript"
 				src="<%=basePath %>/ckfinder/ckfinder.js">
 		</script>
-
-    	<script type="text/javascript" >
-				$(function(){
-					$( "#designerName" ).autocomplete({
-	         			source: "designer_fuzzySearch.action"
-	         		});
-					var editor = null;
-		    		$(document).ready(function(){
-		    			editor = CKEDITOR.replaceAll(function(textarea,config){
-		    				config.customConfig="<%=basePath%>/ckeditor/backend_config.js";
-		    				config.on={
-		    						instanceReady:function(ev){
-		        						this.dataProcessor.writer.setRules('p', {
-		        	                        indent: false,
-		        	                        breakBeforeOpen: false,   //<p>之前不加换行
-		        	                        breakAfterOpen: false,    //<p>之后不加换行
-		        	                        breakBeforeClose: false,  //</p>之前不加换行
-		        	                        breakAfterClose: false    //</p>之后不加换行7
-		        	                    });
-		        					}
-		    				};
-		    			});
-		    			CKFinder.setupCKEditor(editor, "<%=basePath%>ckfinder/");
-		    		});
-				});
-		</script>
-
 	</head>
 
 	<body>
@@ -67,20 +40,20 @@
 			<form id="fmt" action="report_save.action" method="post" target="main" enctype="multipart/form-data">
 				<div class="rowElem">
 					<label>
-						Report English Name:
+						<h4>Report English Name:</h4>
 					</label>
 					<input type="text" name="report.reportEname" />
 				</div>
 				<div class="rowElem">
-					<label>Report Chinese Name:</label>
+					<label><h4>Report Chinese Name:</h4></label>
 					<input type="text" name="report.reportCname" />
 				</div>
 			
 				<div class="rowElem">
 					<label>
-						<h4>Report Images:</h4>
+						<h4><h4>Report Thumbnail Image:</h4></h4>
 					</label>
-					<input type="file" name="imageFile"/>
+					<input type="file" value="upload" name="imageFile"/>
 				</div>
 				<br/>
 				<div class="rowElem">
@@ -116,12 +89,12 @@
 				</div>
 				<br/>
 				<div class="rowElem">
-					<label>Report Introduction(EN):</label>
+					<label><h4>Report Introduction(EN):</h4></label>
 					<textarea name="report.detailContentEN" cols="80" rows="5"></textarea>
 				</div>
 				<br/>
 				<div class="rowElem">
-					<label>Report Introduction(ZH):</label>
+					<label><h4>Report Introduction(ZH):</h4></label>
 					<textarea name="report.detailContentCH" cols="80" rows="5" ></textarea>
 				</div>
 				<br/>
@@ -137,5 +110,30 @@
 			</div>
 			</form>
 		</div>
+		<script type="text/javascript" >
+				$(function(){
+					$( "#designerName" ).autocomplete({
+	         			source: "designer_fuzzySearch.action"
+	         		});
+					var editor = null;
+		    		$(document).ready(function(){
+		    			editor = CKEDITOR.replaceAll(function(textarea,config){
+		    				config.customConfig="<%=basePath%>/ckeditor/backend_config.js";
+		    				config.on={
+		    						instanceReady:function(ev){
+		        						this.dataProcessor.writer.setRules('p', {
+		        	                        indent: false,
+		        	                        breakBeforeOpen: false,   //<p>之前不加换行
+		        	                        breakAfterOpen: false,    //<p>之后不加换行
+		        	                        breakBeforeClose: false,  //</p>之前不加换行
+		        	                        breakAfterClose: false    //</p>之后不加换行7
+		        	                    });
+		        					}
+		    				};
+		    			});
+		    			CKFinder.setupCKEditor(editor, "<%=basePath%>ckfinder/");
+		    		});
+				});
+		</script>
 	</body>
 </html>

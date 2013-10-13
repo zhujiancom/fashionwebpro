@@ -40,7 +40,6 @@ public class Editorial extends AbstractEntity implements Serializable {
 	private String editorialCname;
 	@UpdateColumn
 	private String editorialEname;
-	@UpdateColumn(filterColumn=true)
 	private String imgs;
 	@UpdateColumn
 	private Date editdate;

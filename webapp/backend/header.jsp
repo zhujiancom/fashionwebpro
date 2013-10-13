@@ -40,7 +40,7 @@
 					<A style="COLOR: #fff" href="#" onclick="modify()">Change</A> &nbsp;&nbsp;
 					<A style="COLOR: #fff"
 						onclick="if (confirm('Sure logout?')) return true; else return false;"
-						href="<%=basePath %>backend/sysuser_logout.action" target=_top>Logout</A>
+						href="<%=basePath %>backend/user_logout.action" target=_top>Logout</A>
 				</TD>
 				<TD align=right width=268>
 					<IMG height=56 src="images/header_right.jpg" width=268>

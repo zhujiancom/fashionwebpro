@@ -9,13 +9,13 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.zj.bigdefine.CommonConstant;
 import com.zj.bigdefine.GlobalParam;
 import com.zj.business.observer.Language;
-import com.zj.business.observer.LanguageType;
 import com.zj.business.po.Designer;
 import com.zj.business.po.Report;
 import com.zj.business.service.IReportService;
@@ -42,8 +42,9 @@ public class ReportAction extends BaseAction {
 	private Designer designer;
 	@Resource
 	private IReportService reportService;
+	@Value("#{envConfig['upload.report.dir']}")
+	private String fileUploadPath;
 	
-	private String errorMsg;
 	private int rp; // page size
 	private int page; // page num
 	private String ids; // users id which need to be deleted
@@ -63,8 +64,8 @@ public class ReportAction extends BaseAction {
 				isAddImg = true;
 				String fileType = getExtention(imageFileFileName);
 				String imageName = UUID.randomUUID().toString();
-				imgUrl = "upload/pressreport/"+imageName+fileType;
-				thumbnailUrl = "upload/pressreport/"+imageName+CommonConstant.ThumbnailSuffix+ getExtention(imageFileFileName);
+				imgUrl = fileUploadPath+imageName+fileType;
+				thumbnailUrl = fileUploadPath+imageName+CommonConstant.ThumbnailSuffix+ getExtention(imageFileFileName);
 				report.setReportimg(imgUrl);
 			}
 			report.setCreater(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
@@ -157,8 +158,8 @@ public class ReportAction extends BaseAction {
 				String fileType = getExtention(imageFileFileName);
 				isUpdateImg = true;
 				String imageName =UUID.randomUUID().toString();
-				imgurl = "upload/pressreport/" + imageName+fileType;
-				thumbnailUrl="upload/pressreport/"+imageName+CommonConstant.ThumbnailSuffix+fileType;
+				imgurl = fileUploadPath + imageName+fileType;
+				thumbnailUrl=fileUploadPath+imageName+CommonConstant.ThumbnailSuffix+fileType;
 				report.setReportimg(imgurl);
 			}
 			report.setModifier(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
@@ -186,7 +187,6 @@ public class ReportAction extends BaseAction {
 	}
 	// below methods are using in frontend
 	public String showReports(){
-		LanguageType type = getLanguageType();
 		Language language = Language.getInstance();
 		try {
 			List<Report> reports = reportService.getReportsByDesinger(designer.getDesignerId());
@@ -196,7 +196,7 @@ public class ReportAction extends BaseAction {
 				reportlist.add(vo);
 				language.addObserver(vo);
 			}
-			language.setLanguage(type);
+			language.setLanguage(getLanguageType());
 			getValueStack().set("reportlist", reportlist);
 			return "load_reports_success";
 		} catch (ServiceException e) {
@@ -206,13 +206,12 @@ public class ReportAction extends BaseAction {
 	}
 	
 	public String showDetails(){
-		LanguageType type = getLanguageType();
 		Language language = Language.getInstance();
 		try {
 			Report dbreport = reportService.get(Report.class, report.getReportid());
 			ReportVO vo = VOFactory.getObserverVO(ReportVO.class, dbreport);
 			language.addObserver(vo);
-			language.setLanguage(type);
+			language.setLanguage(getLanguageType());
 			getValueStack().set("specreport", vo);
 			return "open_report_success";
 		} catch (ServiceException e) {
@@ -223,9 +222,12 @@ public class ReportAction extends BaseAction {
 	}
 	
 	public String showPreItem(){
+		Language language = Language.getInstance();
 		try {
 			Report preReport = reportService.getPreReport(report.getReportid());
 			ReportVO vo =  VOFactory.getObserverVO(ReportVO.class, preReport);
+			language.addObserver(vo);
+			language.setLanguage(getLanguageType());
 			getValueStack().set("specreport", vo);
 			return "open_report_success";
 		} catch (ServiceException e) {
@@ -233,6 +235,8 @@ public class ReportAction extends BaseAction {
 			try {
 				report = reportService.get(Report.class, report.getReportid());
 				ReportVO vo =  VOFactory.getObserverVO(ReportVO.class, report);
+				language.addObserver(vo);
+				language.setLanguage(getLanguageType());
 				getValueStack().set("specreport",vo);
 			} catch (ServiceException e1) {
 				// TODO Auto-generated catch block
@@ -252,14 +256,6 @@ public class ReportAction extends BaseAction {
 
 	public void setReport(Report report) {
 		this.report = report;
-	}
-
-	public String getErrorMsg() {
-		return errorMsg;
-	}
-
-	public void setErrorMsg(String errorMsg) {
-		this.errorMsg = errorMsg;
 	}
 
 	public int getRp() {

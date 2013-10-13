@@ -39,7 +39,6 @@ public class Interview extends AbstractEntity implements Serializable {
 	private String interviewEname;
 	@UpdateColumn
 	private String interviewCname;
-	@UpdateColumn(filterColumn=true)
 	private String interviewurl;
 	@UpdateColumn
 	private String interviewer;
@@ -51,7 +50,6 @@ public class Interview extends AbstractEntity implements Serializable {
 	private String interviewCintro;
 	@UpdateColumn
 	private String interviewEintro;
-	@UpdateColumn(filterColumn=true)
 	private String poster;
 	@UpdateColumn
 	private Designer designer;

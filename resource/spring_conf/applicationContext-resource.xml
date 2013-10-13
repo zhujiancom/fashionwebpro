@@ -14,19 +14,19 @@
 	<context:component-scan base-package="com.zj"/>
 	<aop:aspectj-autoproxy />
 	<!-- 载入properties配置文件 -->
-	<bean id="placeholderProperties"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean id="envConfig"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 		<property name="locations">
 			<list>
 				<value>classpath:/hibernate.properties</value>
 				<value>classpath:/environment.properties</value>
 			</list>
 		</property>
-		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
-		<property name="ignoreUnresolvablePlaceholders" value="true" />
-		<property name="ignoreResourceNotFound" value="true" />
-		<property name="order" value="1" />
 	</bean>
+	
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+        <property name="properties" ref="envConfig" />
+    </bean> 
 
 	<!-- 数据源配置 -->
 	<!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" -->

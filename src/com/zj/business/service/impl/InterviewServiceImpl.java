@@ -70,8 +70,10 @@ public class InterviewServiceImpl extends CommonServiceImpl implements
 				interview.setDesigner(designer);
 				designer.getInterviews().add(interview);
 			}
+			insert(interview);
+		}else{
+			throw new ServiceException("you didn't select designer, please type a designer!");
 		}
-		insert(interview);
 		log.debug("out of <interview save> transaction");
 	}
 
@@ -86,8 +88,10 @@ public class InterviewServiceImpl extends CommonServiceImpl implements
 				interview.setDesigner(designer);
 				designer.getInterviews().add(interview);
 			}
+			update(interview);
+		}else{
+			throw new ServiceException("you didn't select designer, please type a designer!");
 		}
-		update(interview);
 		log.debug("out of <interview update> transaction");
 		
 	}

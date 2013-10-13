@@ -1,9 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" isELIgnored="false"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
-			+ path + "/";
+	String serverPath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+	String basePath = serverPath + path + "/";
 %>
 <%@ taglib uri="/struts-tags" prefix="s" %>
 <%@ taglib uri="http://ckeditor.com"  prefix="ckeditor"%>
@@ -35,41 +34,6 @@
 		<script type="text/javascript"
 				src="<%=basePath %>/ckfinder/ckfinder.js">
 		</script>
-		<script type="text/javascript" >
-				$(function(){
-					var _fileWrapper = $("#fileWrapper");
-					$("#addFile").click(function(event){
-						_fileWrapper.append("<tr><td><input type='file' name='imageFiles' /><span class='imgt'><img src='../comm_images/X.gif'/></td></tr>");
-					});
-					$("span",_fileWrapper).live("click",function(event){
-						event.stopPropagation();
-						$(this).parent().parent().remove();
-					});
-					$( "#designerName" ).autocomplete({
-	         			source: "designer_fuzzySearch.action"
-	         		});
-					var editor = null;
-		    		$(document).ready(function(){
-		    			editor = CKEDITOR.replaceAll(function(textarea,config){
-		    				config.customConfig="<%=basePath%>/ckeditor/backend_config.js";
-		    				config.on={
-		    						instanceReady:function(ev){
-		        						this.dataProcessor.writer.setRules('p', {
-		        	                        indent: false,
-		        	                        breakBeforeOpen: false,   //<p>之前不加换行
-		        	                        breakAfterOpen: false,    //<p>之后不加换行
-		        	                        breakBeforeClose: false,  //</p>之前不加换行
-		        	                        breakAfterClose: false    //</p>之后不加换行7
-		        	                    });
-		        					}
-		    				};
-		    			});
-		    			CKFinder.setupCKEditor(editor, "<%=basePath%>ckfinder/");
-		    		});
-				});
-		</script>
-    
-
 	</head>
 
 	<body>
@@ -79,12 +43,12 @@
 				<input type="hidden" name="report.reportimg" value="<s:property value='reportvo.report.reportimg'/>">
 				<div class="rowElem">
 					<label>
-						Report English Name:
+						<h4>Report English Name:</h4>
 					</label>
 					<input type="text" name="report.reportEname" value="<s:property value='reportvo.report.reportEname'/>"  />
 				</div>
 				<div class="rowElem">
-					<label>Report Chinese Name:</label>
+					<label><h4>Report Chinese Name:</h4></label>
 					<input type="text" name="report.reportCname" value="<s:property value='reportvo.report.reportCname'/>"  />
 				</div>
 			
@@ -98,14 +62,14 @@
 			        	<ul>
 		                	<li class="list_common">
 			                	<div class="imgLiquidFill imgLuid pic">
-			                    	<img src="<%=basePath %><s:property value='reportvo.thumbnail'/>"  width="80" height="80"/>
+			                    	<img src="<%=serverPath %>/<s:property value='reportvo.thumbnail'/>"  width="80" height="80"/>
 			                    </div>
 			                </li>
 			        	</ul>
 			        </div>
 			        </div>
 			        <div id="uploader">
-						<input type="file" name="imageFile" />
+						<input type="file" value="upload" name="imageFile" />
 			        </div>
 			     </div>
 				<br/>
@@ -143,17 +107,17 @@
 				
 				<br/>
 				<div class="rowElem">
-					<label>Report Introduction(EN):</label>
+					<label><h4>Report Introduction(EN):</h4></label>
 					<textarea name="report.detailContentCH" cols="80" rows="5" ><s:property value='reportvo.report.detailContentCH'/></textarea>
 				</div>
 				<br/>
 				<div class="rowElem">
-					<label>Report Introduction(ZH):</label>
+					<label><h4>Report Introduction(ZH):</h4></label>
 					<textarea name="report.detailContentEN" cols="80" rows="5" ><s:property value='reportvo.report.detailContentEN'/></textarea>
 				</div>
 				<br/>
 				<div class="ui-widget">
-					<label for="designerName">Designer Name(EN): </label>
+					<label for="designerName"><h4>Designer Name(EN): </h4></label>
 					<input id="designerName" type="text" name="designer.ename" value="<s:property value='designer.ename'/>"/>
 				</div>
 				<br />
@@ -164,5 +128,30 @@
 			</div>
 			</form>
 		</div>
+		<script type="text/javascript" >
+				$(function(){
+					$( "#designerName" ).autocomplete({
+	         			source: "designer_fuzzySearch.action"
+	         		});
+					var editor = null;
+		    		$(document).ready(function(){
+		    			editor = CKEDITOR.replaceAll(function(textarea,config){
+		    				config.customConfig="<%=basePath%>/ckeditor/backend_config.js";
+		    				config.on={
+		    						instanceReady:function(ev){
+		        						this.dataProcessor.writer.setRules('p', {
+		        	                        indent: false,
+		        	                        breakBeforeOpen: false,   //<p>之前不加换行
+		        	                        breakAfterOpen: false,    //<p>之后不加换行
+		        	                        breakBeforeClose: false,  //</p>之前不加换行
+		        	                        breakAfterClose: false    //</p>之后不加换行7
+		        	                    });
+		        					}
+		    				};
+		    			});
+		    			CKFinder.setupCKEditor(editor, "<%=basePath%>ckfinder/");
+		    		});
+				});
+		</script>
 	</body>
 </html>

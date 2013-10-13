@@ -30,32 +30,14 @@ body {
 }
 -->
 </style>
-	<link rel="stylesheet" href="../comm_script/dialog/common.css" type="text/css"></link>
-	<script type="text/javascript" src="../comm_script/jquery-1.6.2.min.js"></script>
-	<script type="text/javascript" src="../comm_script/dialog/lhgdialog.min.js"></script>
-	<script type="text/javascript">
-		$(function(){
-			var s = "${errorMsg}";
-			$("#loginid").focus();
-			if(s){
-				$.dialog.alert(s,function(){
-					$("#loginid").empty().focus();
-				});
-			}
-			var faragoMessage = "<s:property value='faragoMessage'/>";
-			if(faragoMessage){
-				$.dialog.alert(faragoMessage,function(){
-					$("#loginid").empty().focus();
-				});
-			}
-		});
-	</script>
-	
+	<link rel="stylesheet" href="<%=basePath %>comm_script/dialog/common.css" type="text/css"></link>
+	<script type="text/javascript" src="<%=basePath %>comm_script/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="<%=basePath %>comm_script/base.js"></script>
+	<script type="text/javascript" src="<%=basePath %>comm_script/dialog/lhgdialog.min.js"></script>
 	</head>
 
 	<body>
-		<form action="sysuser_login.action" method="post" name="loginform">
-			<input type="hidden" name="request_locale" value="en_US"/>
+		<form id="loginform">
 			<table width="100%" height="100%" border="0" cellpadding="0"
 				cellspacing="0">
 				<tr>
@@ -107,8 +89,9 @@ body {
 														</td>
 														<td height="25">
 															<div align="left">
-																<input type="image" src="images/dl.gif" width="49"
-																	height="18" border="0" />
+<%--																<input type="image" src="images/dl.gif" width="49" id="submit"--%>
+<%--																	height="18" border="0" />--%>
+																	<img src="images/dl.gif" style="cursor:pointer;"  width="49" height="18" border="0" id="submit"/>
 															</div>
 														</td>
 													</tr>
@@ -131,5 +114,31 @@ body {
 				</tr>
 			</table>
 		</form>
+		<script type="text/javascript">
+		if(parent.frames.length > 1){
+			parent.location.href = "index.jsp";
+		}
+		$(function(){
+			$("#submit").click(function(){
+				var loginId = $("#loginid").val();
+				var passwd = $("#pswd").val();
+				$.ajax({
+					type:"POST",
+					url:'user_login.action',
+					data:$('#loginform').serialize(),
+					dataType:"json",
+					success:function(json){
+						var msg = json.msg;
+						if(msg != ""){
+							feedbackInfo(msg,"alert");
+							$("#loginid").focus();
+						}else{
+							window.location.href="index.html";
+						}
+					}
+				});
+			});
+		});
+	</script>
 	</body>
 </html>

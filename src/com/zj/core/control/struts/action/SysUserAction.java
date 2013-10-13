@@ -3,7 +3,6 @@ package com.zj.core.control.struts.action;
 import java.io.File;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -21,10 +20,8 @@ import com.zj.common.utils.JSONUtil;
 import com.zj.common.utils.PageInfo;
 import com.zj.common.utils.StringUtil;
 import com.zj.core.control.struts.BaseAction;
-import com.zj.core.po.SysModule;
 import com.zj.core.po.SysRole;
 import com.zj.core.po.SysUser;
-import com.zj.core.service.ISysModuleService;
 import com.zj.core.service.ISysRoleService;
 import com.zj.core.service.ISysUserService;
 
@@ -41,8 +38,6 @@ public class SysUserAction extends BaseAction {
 	private SysUser user;
 	@Resource
 	private ISysUserService userService;
-	@Resource
-	private ISysModuleService moduleService;
 	@Resource
 	private ISysRoleService roleService;
 	private String errorMsg;
@@ -70,28 +65,28 @@ public class SysUserAction extends BaseAction {
 	 * user login
 	 * @return
 	 */
-	public String login(){
-		SysUser login_user = null;
-		try {
-			login_user = userService.login(user);
-			if (login_user == null) {
-				errorMsg = "UserName or Password error !";
-				return "login_invalid";
-			}
-			if (GlobalParam.ENABLE != login_user.getIsEnable()) {
-				errorMsg = "The Account has been disabled, please reEnable !";//该账号被禁用,请启用
-				return "login_failed";
-			}
-			Set<SysRole> roles = login_user.getSysRoles();
-			List<SysModule> modules = moduleService.loadModulesByRoles(roles);
-			session.put(GlobalParam.LOGIN_USER_SESSION, login_user);
-			session.put(GlobalParam.LOGIN_USER_MODULE_PRIV, modules);
-			return "login_success";
-		} catch (ServiceException e) {
-			e.printStackTrace();
-			return "login_failed";
-		}
-	}
+//	public String login(){
+//		SysUser login_user = null;
+//		try {
+//			login_user = userService.login(user);
+//			if (login_user == null) {
+//				errorMsg = "UserName or Password error !";
+//				return "login_invalid";
+//			}
+//			if (GlobalParam.ENABLE != login_user.getIsEnable()) {
+//				errorMsg = "The Account has been disabled, please reEnable !";//该账号被禁用,请启用
+//				return "login_failed";
+//			}
+//			Set<SysRole> roles = login_user.getSysRoles();
+//			List<SysModule> modules = moduleService.loadModulesByRoles(roles);
+//			session.put(GlobalParam.LOGIN_USER_SESSION, login_user);
+//			session.put(GlobalParam.LOGIN_USER_MODULE_PRIV, modules);
+//			return "login_success";
+//		} catch (ServiceException e) {
+//			e.printStackTrace();
+//			return "login_failed";
+//		}
+//	}
 	
 	/**
 	 * show all users
@@ -412,17 +407,17 @@ public class SysUserAction extends BaseAction {
 	 *
 	 * @return
 	 */
-	public String logout(){
-		SysUser u = (SysUser) session.get(GlobalParam.LOGIN_USER_SESSION);
-		try {
-			userService.logout(u);
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		}
-		getValueStack().pop();
-		session.clear();
-		return "logout_success";
-	}
+//	public String logout(){
+//		SysUser u = (SysUser) session.get(GlobalParam.LOGIN_USER_SESSION);
+//		try {
+//			userService.logout(u);
+//		} catch (ServiceException e) {
+//			e.printStackTrace();
+//		}
+//		getValueStack().pop();
+//		session.clear();
+//		return "logout_success";
+//	}
 	
 	public String getErrorMsg() {
 		return errorMsg;

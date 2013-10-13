@@ -12,19 +12,13 @@
 	<head>
 		<base href="<%=basePath%>backend/">
 
-		<title>My JSP 'brandAdd.jsp' starting page</title>
+		<title>brand add</title>
 
-		<meta http-equiv="pragma" content="no-cache">
-		<meta http-equiv="cache-control" content="no-cache">
-		<meta http-equiv="expires" content="0">
-		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
-		<meta http-equiv="description" content="This is my page">
 		<link href="<%=basePath %>comm_style/base.css" rel="stylesheet" type="text/css" />
     	<link href="<%=basePath %>comm_script/bootstrap/css/bootstrap.css" rel="stylesheet">
-<%--		<link href="<%=basePath %>comm_script/bootstrap/css/bootstrap-formhelpers.css" rel="stylesheet">--%>
     
 	    <script type="text/javascript" 
-	    		src="<%=basePath %>comm_script/jquery-1.6.2.min.js">
+	    		src="<%=basePath %>comm_script/jquery-1.7.2.min.js">
 	    </script>
 	    <script type="text/javascript" 
 	    		src="<%=basePath%>comm_script/jquery-plugin/jquery-ui-1.8.16.custom.min.js">
@@ -41,8 +35,53 @@
 		<script type="text/javascript"
 				src="<%=basePath %>/ckfinder/ckfinder.js">
 		</script>
+	</head>
 
-    	<script type="text/javascript">
+	<body>
+		<div id="wrapper">
+			<form id="fmt" action="brand_save.action" method="post" target="main" enctype="multipart/form-data">
+				<div class="rowElem">
+					<label>
+						<h4>Brand Name(EN):</h4>
+					</label>
+					<input type="text" name="brand.brandEname" />
+				</div>
+				<div class="rowElem">
+					<label>
+						<h4>Brand Name(ZH):</h4>
+					</label>
+					<input type="text" name="brand.brandCname" />
+<%--				</div>--%>
+<%--					<div class="rowElem">--%>
+<%--					<label>--%>
+<%--						Brand Image:--%>
+<%--					</label>--%>
+<%--					<input type="file" name="imageFile" />--%>
+<%--				</div>--%>
+				<br/>
+				<div class="rowElem">
+					<label><h4>Detail Content(ZH):</h4></label>
+					<textarea name="brand.detailContentCH"></textarea>
+				</div>
+				<br/>
+				<div class="rowElem">
+					<label><h4>Detail Content(EN):</h4></label>
+					<textarea name="brand.detailContentEN"></textarea>
+				</div>
+				<br />
+			<br />
+			<div class="ui-widget">
+				<label for="designerName"><h4>Designer Name(EN):</h4></label>
+				<input id="designerName" type="text" name="designer.ename"/>
+			</div>
+			<br/>
+			<div class="rowElem"
+				style="float: right; position: relative; right: 20px;">
+				<input type="submit" class="big_submitButton_class" value="保存/更新" />
+			</div>
+			</form>
+		</div>
+		<script type="text/javascript">
     		$(function(){
          		$( "#designerName" ).autocomplete({
          			source: "designer_fuzzySearch.action"
@@ -67,52 +106,5 @@
     			CKFinder.setupCKEditor(editor, "<%=basePath%>ckfinder/");
     		});
     	</script>
-
-	</head>
-
-	<body>
-		<div id="wrapper">
-			<form id="fmt" action="brand_save.action" method="post" target="main" enctype="multipart/form-data">
-				<div class="rowElem">
-					<label>
-						Brand Name(EN):
-					</label>
-					<input type="text" name="brand.brandEname" />
-				</div>
-				<div class="rowElem">
-					<label>
-						Brand Name(ZH):
-					</label>
-					<input type="text" name="brand.brandCname" />
-<%--				</div>--%>
-<%--					<div class="rowElem">--%>
-<%--					<label>--%>
-<%--						Brand Image:--%>
-<%--					</label>--%>
-<%--					<input type="file" name="imageFile" />--%>
-<%--				</div>--%>
-				<br/>
-				<div class="rowElem">
-					<label>Detail Content(ZH):</label>
-					<textarea name="brand.detailContentCH" class="ckeditorMark"></textarea>
-				</div>
-				<br/>
-				<div class="rowElem">
-					<label>Detail Content(EN):</label>
-					<textarea name="brand.detailContentEN" class="ckeditorMark"></textarea>
-				</div>
-				<br />
-			<br />
-			<div class="ui-widget">
-				<label for="designerName">Designer Name(EN): </label>
-				<input id="designerName" type="text" name="designer.ename"/>
-			</div>
-			<br/>
-			<div class="rowElem"
-				style="float: right; position: relative; right: 20px;">
-				<input type="submit" class="big_submitButton_class" value="保存/更新" />
-			</div>
-			</form>
-		</div>
 	</body>
 </html>

@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,6 +16,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -71,6 +71,9 @@ public class HomePagerAction extends BaseAction {
 	private ILookbookService lookbookService;
 	@Resource
 	private EHCacheService ehCacheService;
+	@Value("#{envConfig['upload.homepage.dir']}")
+	private String fileUploadPath;
+	
 	
 	//multiple file upload
 	private File[] imageFiles;
@@ -85,26 +88,18 @@ public class HomePagerAction extends BaseAction {
 	private String posterContentType;
 	private String posterFileName;
 	
-	private Locale locale = null;
-	
 	public String modify(){
 		try {
 			HomePager homepager = ehCacheService.getHomepagerCache().get(1L);
 			String oldVideoUrl = homepager.getVideoUrl();
 			String imageDir = homepager.getImageDir();
 			if(StringUtil.isEmpty(imageDir)){
-				imageDir = "upload/homepage/";
-				homepager.setImageDir(imageDir);
-			}
-			String dirPath = getBasePath()+imageDir;
-			File dir = new File(dirPath);
-			if(!dir.exists()){
-				dir.mkdirs();
+				homepager.setImageDir(fileUploadPath);
 			}
 			boolean hasVideoFile = false;
 			if(videoFile != null){
 				hasVideoFile = true;
-				homepager.setVideoUrl("upload/homepage/video/"+videoFileFileName);
+				homepager.setVideoUrl(fileUploadPath+"video/"+videoFileFileName);
 			}
 			//featured Designer
 			if(featuredDesignerId != null && featuredDesignerId !=0){
@@ -144,8 +139,9 @@ public class HomePagerAction extends BaseAction {
 			
 			ehCacheService.getHomepagerCache().put(1L, homepager);
 			
+			String dirPath = getBasePath()+imageDir;
 			if(imageFiles != null){
-				preDeleteDirectory(dir);
+				preDeleteDirectory(new File(dirPath));
 				for(int i=0;i<imageFiles.length;i++){
 					String imageName = UUID.randomUUID().toString();
 					String fileType = getExtention(imageFilesFileName[i]);
@@ -221,7 +217,7 @@ public class HomePagerAction extends BaseAction {
 			if(imageDirPath != null && !"".equals(imageDirPath)){
 				String absoluteDirPath = basePath + imageDirPath;
 				File imageDir = FileUtil.generateDirectory(absoluteDirPath);
-				Collection<File> thumbnails = FileUtil.listFiles(imageDir, FileFilterUtils.asFileFilter(new FilenameFilter() {
+				Collection<File> UnThumbnails = FileUtil.listFiles(imageDir, FileFilterUtils.asFileFilter(new FilenameFilter() {
 									
 									@Override
 									public boolean accept(File dir, String name) {
@@ -231,14 +227,14 @@ public class HomePagerAction extends BaseAction {
 										return false;
 									}
 								}),null);
-				for(File thumbnail:thumbnails){
-					String thumbnailPath = thumbnail.getAbsolutePath();
+				for(File unThumbnail:UnThumbnails){
+					String thumbnailPath = unThumbnail.getAbsolutePath();
 					String surfixPath = thumbnailPath.substring(basePath.length());
 					surfixPath = StringUtil.replaceChars(surfixPath, '\\', '/');
 					imageUrls.add(surfixPath);
 				}
 			}else{
-				String absoluteDirPath = basePath + "upload/homepage/";
+				String absoluteDirPath = basePath + fileUploadPath;
 				FileUtil.generateDirectory(absoluteDirPath);
 			}
 			

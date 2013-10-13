@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -12,6 +11,7 @@ import javax.annotation.Resource;
 import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,6 @@ import com.ckfinder.connector.utils.ImageUtils;
 import com.zj.bigdefine.CommonConstant;
 import com.zj.bigdefine.GlobalParam;
 import com.zj.business.observer.Language;
-import com.zj.business.observer.LanguageType;
 import com.zj.business.po.Brand;
 import com.zj.business.po.Designer;
 import com.zj.business.po.Style;
@@ -50,10 +49,13 @@ public class BrandAction extends BaseAction {
 	private static final Logger log = Logger.getLogger(BrandAction.class);
 	private Brand brand;
 	private Designer designer;
-	private List<Style> style;
+//	private List<Style> style;
 	private Style styleobj;
 	@Resource
 	private IBrandService brandService;
+	@Value("#{envConfig['upload.brand.dir']}")
+	private String fileUploadPath;
+	
 	private String errorMsg;
 	private int rp; // page size
 	private int page; // page num
@@ -80,8 +82,8 @@ public class BrandAction extends BaseAction {
 			if (imageFileFileName != null && !"".equals(imageFileFileName)) {
 				isAddImg = true;
 				String imageName = UUID.randomUUID().toString();
-				imgUrl = "upload/headImg/brand/" + imageName+ getExtention(imageFileFileName);;
-				thumbnailUrl = "upload/headImg/brand/"+imageName+CommonConstant.ThumbnailSuffix+ getExtention(imageFileFileName);
+				imgUrl = fileUploadPath + imageName+ getExtention(imageFileFileName);
+				thumbnailUrl = fileUploadPath+imageName+CommonConstant.ThumbnailSuffix+ getExtention(imageFileFileName);
 				brand.setBrandimg(imgUrl);
 			}
 			brand.setCreater(((SysUser) session
@@ -183,8 +185,8 @@ public class BrandAction extends BaseAction {
 				String fileType = getExtention(imageFileFileName);
 				isUpdateImg = true;
 				String imageName =UUID.randomUUID().toString();
-				imgurl = "upload/headImg/brand/" + imageName+fileType;
-				thumbnailUrl="upload/headImg/designer/"+imageName+CommonConstant.ThumbnailSuffix+fileType;
+				imgurl = fileUploadPath + imageName+fileType;
+				thumbnailUrl=fileUploadPath +imageName+CommonConstant.ThumbnailSuffix+fileType;
 				brand.setBrandimg(imgurl);
 			}
 			
@@ -260,14 +262,7 @@ public class BrandAction extends BaseAction {
 	 * load all brands in brand browser page
 	 */
 	public String loadAll() {
-		String lang = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-			Locale locale = (Locale) sessionLocale;
-			lang = locale.getLanguage() + "_" + locale.getCountry();
-		}
 		try {
-			LanguageType type = LanguageType.toLanguageType(lang.toUpperCase());
 			Language language = Language.getInstance();
 			List<Brand> brands = brandService.getAll(Brand.class);
 			List<BrandVO> brandvos = new ArrayList<BrandVO>();
@@ -276,7 +271,7 @@ public class BrandAction extends BaseAction {
 				brandvos.add(bvo);
 				language.addObserver(bvo);
 			}
-			language.setLanguage(type);
+			language.setLanguage(getLanguageType());
 			getValueStack().set("brandlist", brandvos);
 			return "load_success";
 		} catch (ServiceException e) {
@@ -318,20 +313,13 @@ public class BrandAction extends BaseAction {
 	}
 
 	public String showBrandInfo() {
-		String lang = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-			Locale locale = (Locale) sessionLocale;
-			lang = locale.getLanguage() + "_" + locale.getCountry();
-		}
-		LanguageType type = LanguageType.toLanguageType(lang.toUpperCase());
         Language language = Language.getInstance();
 		try {
 			Long id = brand.getBrandid();
 			Brand b = brandService.get(Brand.class, id);
 			BrandVO bvo = VOFactory.getObserverVO(BrandVO.class, b);
 			language.addObserver(bvo);
-			language.setLanguage(type);
+			language.setLanguage(getLanguageType());
 			getValueStack().set("brandvo", bvo);
 			return "load_brand_success";
 		} catch (ServiceException e) {
@@ -472,13 +460,13 @@ public class BrandAction extends BaseAction {
 		this.term = term;
 	}
 
-	public List<Style> getStyle() {
-		return style;
-	}
-
-	public void setStyle(List<Style> style) {
-		this.style = style;
-	}
+//	public List<Style> getStyle() {
+//		return style;
+//	}
+//
+//	public void setStyle(List<Style> style) {
+//		this.style = style;
+//	}
 
 	public String getTreeid() {
 		return treeid;

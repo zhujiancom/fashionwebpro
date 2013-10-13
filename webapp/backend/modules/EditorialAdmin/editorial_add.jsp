@@ -6,87 +6,87 @@
 			+ path + "/";
 %>
 <%@taglib uri="/struts-tags"  prefix="s"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML>
 <html>
 	<head>
 		<base href="<%=basePath%>backend/">
 
-		<title>My JSP 'designerAdd.jsp' starting page</title>
+		<title>editorial add </title>
 
-		<meta http-equiv="pragma" content="no-cache">
-		<meta http-equiv="cache-control" content="no-cache">
-		<meta http-equiv="expires" content="0">
-		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
-		<meta http-equiv="description" content="This is my page">
 		<link href="<%=basePath %>comm_style/base.css" rel="stylesheet" type="text/css" />
+    	<link href="<%=basePath %>comm_script/bootstrap/css/bootstrap.css" rel="stylesheet">
+    	<link href="<%=basePath %>comm_script/bootstrap/css/bootstrap-formhelpers.css" rel="stylesheet">
+    	
 	    <script type="text/javascript" 
-	    		src="<%=basePath %>comm_script/jquery-1.6.2.min.js">
+	    		src="<%=basePath %>comm_script/jquery-1.7.2.min.js">
 	    </script>
-	    <script type="text/javascript" 
-	    		src="<%=basePath%>comm_script/dialog/lhgdialog.min.js">
-	    </script>
+	    <script src="<%=basePath %>comm_script/bootstrap/js/bootstrap-formhelpers-datepicker.en_US.js"></script>
+	    <script src="<%=basePath %>comm_script/bootstrap/js/bootstrap-formhelpers-datepicker.js"></script>
 	    <script type="text/javascript" 
 	    		src="<%=basePath%>comm_script/jquery-plugin/jquery-ui-1.8.16.custom.min.js">
 	    </script>
 	    <script type="text/javascript" 
 	    		src="<%=basePath %>comm_script/base.js">
 	    </script>
-		<script type="text/javascript" >
-			$(function(){
-				var language = "<s:property value='#session.WW_TRANS_I18N_LOCALE'/>";
-				var _fileWrapper = $("#fileWrapper");
-				$("#addFile").click(function(event){
-					_fileWrapper.append("<tr><td><input type='file' name='imageFiles' /><span class='imgt'><img src='../comm_images/X.gif'/></td></tr>");
-				});
-				$("span",_fileWrapper).live("click",function(event){
-					event.stopPropagation();
-					$(this).parent().parent().remove();
-				});
-				$( "#brandName" ).autocomplete({
-					source: "brand_fuzzySearch.action"
-				});
-			});
-		</script>
 	</head>
 
 	<body>
 		<div id="wrapper">
-			<form id="fm" action="editorial_save.action" method="post" target="main" enctype="multipart/form-data">
+			<form action="editorial_save.action" method="post" target="main" enctype="multipart/form-data">
 				<div class="rowElem">
 					<label>
-						Editorial Name(EN):
+						<h4>Editorial Name(EN):</h4>
 					</label>
 					<input type="text" name="editorial.editorialEname" />
 				</div>
 				<div class="rowElem">
 					<label>
-						Editorial Name(ZH):
+						<h4>Editorial Name(ZH):</h4>
 					</label>
 					<input type="text" name="editorial.editorialCname" />
 				</div>
 				<div class="rowElem">
 					<label>
-						Editorial Image:
+						<h4>Editorial Image:</h4>
 					</label>
-					<input type="button" name="addFile" id="addFile" value="addFile"/>
-					<table id="fileWrapper">
-						<tr>
-							<td>
-								<input type="file" name="imageFiles" /><span><img src="../comm_images/X.gif"/></span>
-							</td>
-						</tr>
-					</table>
+					<input type="file" name="imageFiles" multiple="multiple"/>
 				</div>
 				<div class="rowElem">
-					<label>
-						Editorial Date:
-					</label>
-					<input type="text" name="editorial.editdate"  class="datepicker"/>
+					<label><h4>Editorial Date:</h4></label>
+						<div class="bfh-datepicker" data-format="y-m-d">
+		              <div class="input-prepend bfh-datepicker-toggle" data-toggle="bfh-datepicker">
+		                <span class="add-on"><i class="icon-calendar"></i></span>
+		                <input type="text" class="input-medium" name="editorial.editdate" readonly>
+		              </div>
+		              <div class="bfh-datepicker-calendar">
+		                <table class="calendar table table-bordered">
+		                  <thead>
+		                    <tr class="months-header">
+		                      <th class="month" colspan="4">
+		                        <a class="previous" href="#"><i class="icon-chevron-left"></i></a>
+		                        <span></span>
+		                        <a class="next" href="#"><i class="icon-chevron-right"></i></a>
+		                      </th>
+		                      <th class="year" colspan="3">
+		                        <a class="previous" href="#"><i class="icon-chevron-left"></i></a>
+		                        <span></span>
+		                        <a class="next" href="#"><i class="icon-chevron-right"></i></a>
+		                      </th>
+		                    </tr>
+		                    <tr class="days-header">
+		                    </tr>
+		                  </thead>
+		                  <tbody>
+		                  </tbody>
+		                </table>
+		              </div>
+		            </div>
 				</div>
+				
 				<div class="rowElem">
 					<div class="ui-widget">
-						<label for="brandName">Brand Name(EN): </label>
-						<input id="brandName" name="brand.brandEname" />
+						<label for="brandName"><h4>Brand Name(EN): </h4></label>
+						<input id="brandName" type="text" name="brand.brandEname" />
 					</div>
 				</div>
 				<br />
@@ -97,5 +97,12 @@
 				</div>
 			</form>
 		</div>
+		<script type="text/javascript" >
+			$(function(){
+				$( "#brandName" ).autocomplete({
+					source: "brand_fuzzySearch.action"
+				});
+			});
+		</script>
 	</body>
 </html>

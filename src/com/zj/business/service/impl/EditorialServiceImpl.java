@@ -72,8 +72,10 @@ public class EditorialServiceImpl extends CommonServiceImpl implements
 				editorial.setBrand(brand);
 				brand.getEditorials().add(editorial);
 			}
+			insert(editorial);
+		}else{
+			throw new ServiceException("you didn't select brand, please type a brand!");
 		}
-		insert(editorial);
 		log.debug("out of <editorial save> transaction");
 	}
 
@@ -88,8 +90,10 @@ public class EditorialServiceImpl extends CommonServiceImpl implements
 				editorial.setBrand(brand);
 				brand.getEditorials().add(editorial);
 			}
+			update(editorial);
+		}else{
+			throw new ServiceException("you didn't select brand, please type a brand!");
 		}
-		update(editorial);
 		log.debug("out of <editorial update> transaction");
 	}
 

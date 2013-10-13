@@ -4,23 +4,24 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.zj.bigdefine.GlobalParam;
+import com.zj.business.observer.Language;
 import com.zj.business.po.Brand;
 import com.zj.business.po.Lookbook;
 import com.zj.business.service.ILookbookService;
 import com.zj.business.vo.LookbookVO;
+import com.zj.business.vo.VOFactory;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
 import com.zj.common.utils.DateUtil;
-import com.zj.common.utils.FileUtil;
 import com.zj.common.utils.JSONUtil;
 import com.zj.common.utils.PageInfo;
 import com.zj.common.utils.StringUtil;
@@ -40,7 +41,9 @@ public class LookbookAction extends BaseAction {
 	private Brand brand;
 	@Resource
 	private ILookbookService lookbookService;
-	private String errorMsg;
+	@Value("#{envConfig['upload.lookbook.dir']}")
+	private String fileUploadPath;
+	
 	private int rp; // page size
 	private int page; // page num
 	private String ids; // users id which need to be deleted
@@ -54,23 +57,15 @@ public class LookbookAction extends BaseAction {
 	
 	public String save(){
 		try{
-			String attachmentDirPath = "upload/lookbook/"+DateUtil.date2Str(new Date(),"yyyyMMdd")+"_"+System.currentTimeMillis();
-			String absoluteUrl = getBasePath()+attachmentDirPath;
-			File dir = new File(absoluteUrl);
-			if(!dir.exists()){
-				dir.mkdirs();
-			}
+			String attachmentDirPath = fileUploadPath+DateUtil.date2Str(new Date(),"yyyyMMdd")+"_"+System.currentTimeMillis()+"/";
 			lookbook.setImgs(attachmentDirPath);
 			lookbook.setCreater(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
 			lookbook.setCreateTime(new Date());
 			lookbookService.save(lookbook,brand);
 			if(imageFiles != null){
-				for(int i=0;i<imageFiles.length;i++){
-					String attachFileName = (i+1)+getExtention(imageFilesFileName[i]);
-					String filePath = absoluteUrl+"/"+attachFileName;
-					File destFile = new File(filePath);
-					copyByChannel(imageFiles[i], destFile);
-				}
+				String absoluteUrl = getBasePath()+attachmentDirPath;
+				preDeleteDirectory(new File(absoluteUrl));
+				transferFilesToDirectory(imageFiles,imageFilesFileName,absoluteUrl);
 			}
 			getValueStack().set("msg","Add Lookbook ["+lookbook.getLookbookEname()+"] Successfully!");
 			return "save_success";
@@ -130,7 +125,8 @@ public class LookbookAction extends BaseAction {
 	public String modifyForward(){
 		try {
 			Lookbook dbLookbook = lookbookService.get(Lookbook.class, id);
-			getValueStack().setValue("lookbookvo", dbLookbook);
+			LookbookVO vo = VOFactory.getObserverVO(LookbookVO.class, dbLookbook,getBasePath());
+			getValueStack().set("lookbookvo", vo);
 			return "modify_forward_successful";
 		} catch (ServiceException e) {
 			e.printStackTrace();
@@ -143,22 +139,19 @@ public class LookbookAction extends BaseAction {
 	public String update(){
 		String attachmentDirPath = lookbook.getImgs();
 		try{
+			if(StringUtil.isEmpty(attachmentDirPath) && imageFiles != null && imageFiles.length > 0){
+				attachmentDirPath = fileUploadPath+DateUtil.date2Str(new Date(),"yyyyMMdd")+"_"+System.currentTimeMillis()+"/";
+				lookbook.setImgs(attachmentDirPath);
+			}
+			
 			lookbook.setModifier(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
 			lookbook.setModifiedTime(new Date());
 			lookbookService.update(lookbook, brand);
 			if(imageFiles != null){
 				String absoluteUrl = getBasePath()+attachmentDirPath;
-				if(FileUtil.isDirectory(absoluteUrl)){
-					File directory = new File(absoluteUrl);
-					preDeleteDirectory(directory);
-					//add new files
-					for(int i=0;i<imageFiles.length;i++){
-						String imageFileName = (i+1)+getExtention(imageFilesFileName[i]);
-						String fileUrl = absoluteUrl+"/"+imageFileName;
-						File destFile = new File(fileUrl);
-						FileUtil.copyFile(imageFiles[i], destFile);
-					}
-				}
+				preDeleteDirectory(new File(absoluteUrl));
+				//add new files
+				transferFilesToDirectory(imageFiles,imageFilesFileName,absoluteUrl);
 			}
 			getValueStack().set("msg", "update lookbook ["+lookbook.getLookbookEname()+"] successfully");
 		}catch(ServiceException se){
@@ -178,21 +171,17 @@ public class LookbookAction extends BaseAction {
 	
 	//below methods for frontend
 	public String showByBrand(){
-		String language = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-            Locale locale = (Locale) sessionLocale;
-            language = locale.getLanguage()+"_"+locale.getCountry();
-        } 
+		Language language = Language.getInstance();
 		try {
 			List<Lookbook> lookbooks = lookbookService.getLookbookByBrand(brand.getBrandid());
 			List<LookbookVO> vos = new ArrayList<LookbookVO>();
 			String basePath = getBasePath();
 			for(Lookbook lookbook:lookbooks){
-				LookbookVO vo = new LookbookVO(lookbook,basePath);
-//				vo.process(language);
+				LookbookVO vo = VOFactory.getObserverVO(LookbookVO.class, lookbook, basePath);
 				vos.add(vo);
+				language.addObserver(vo);
 			}
+			language.setLanguage(getLanguageType());
 			getValueStack().set("lookbooklist",vos);
 		} catch (ServiceException e) {
 			e.printStackTrace();
@@ -206,14 +195,6 @@ public class LookbookAction extends BaseAction {
 
 	public void setLookbook(Lookbook lookbook) {
 		this.lookbook = lookbook;
-	}
-
-	public String getErrorMsg() {
-		return errorMsg;
-	}
-
-	public void setErrorMsg(String errorMsg) {
-		this.errorMsg = errorMsg;
 	}
 
 	public int getRp() {

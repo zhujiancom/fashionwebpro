@@ -1,12 +1,10 @@
 package com.zj.business.action;
 
 import java.io.File;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,6 +13,7 @@ import javax.annotation.Resource;
 import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +21,6 @@ import com.ckfinder.connector.utils.ImageUtils;
 import com.zj.bigdefine.CommonConstant;
 import com.zj.bigdefine.GlobalParam;
 import com.zj.business.observer.Language;
-import com.zj.business.observer.LanguageType;
 import com.zj.business.po.Brand;
 import com.zj.business.po.Designer;
 import com.zj.business.service.IDesignerService;
@@ -54,6 +52,8 @@ public class DesignerAction extends BaseAction {
 	private Designer designer;
 	@Resource
 	private IDesignerService designerService;
+	@Value("#{envConfig['upload.designer.dir']}")
+	private String fileUploadPath;
 	private String errorMsg;
 	private int rp; // page size
 	private int page; // page num
@@ -79,8 +79,8 @@ public class DesignerAction extends BaseAction {
 			if(imageFileFileName != null && !"".equals(imageFileFileName)){
 				isAddImg = true;
 				String imageName = UUID.randomUUID().toString();
-				imgUrl = "upload/headImg/designer/"+imageName+getExtention(imageFileFileName);
-				thumbnailUrl = "upload/headImg/designer/"+imageName+ CommonConstant.ThumbnailSuffix +getExtention(imageFileFileName);
+				imgUrl = fileUploadPath+imageName+getExtention(imageFileFileName);
+				thumbnailUrl = fileUploadPath+imageName+ CommonConstant.ThumbnailSuffix +getExtention(imageFileFileName);
 				designer.setImgURL(imgUrl);
 			}
 			designer.setCreater(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
@@ -111,7 +111,7 @@ public class DesignerAction extends BaseAction {
 			return "save_failure";
 		}
 		catch(Exception e){
-			getValueStack().set("msg", "create designer ["+designer.getEname()+"] Failure! beacuse of session time out! ");
+			getValueStack().set("msg", "create designer ["+designer.getEname()+"] Failure! root cause is "+e.getMessage());
 			log.debug(e);
 			if(!"".equals(imgUrl)){
 				File destFile = new File(imgUrl);
@@ -217,8 +217,8 @@ public class DesignerAction extends BaseAction {
 				String fileType = getExtention(imageFileFileName);
 				isUpdateImg = true;
 				String imageName =UUID.randomUUID().toString();
-				imgurl = "upload/headImg/designer/"+imageName+fileType;
-				thumbnailUrl="upload/headImg/designer/"+imageName+CommonConstant.ThumbnailSuffix+fileType;
+				imgurl = fileUploadPath+imageName+fileType;
+				thumbnailUrl=fileUploadPath+imageName+CommonConstant.ThumbnailSuffix+fileType;
 				designer.setImgURL(imgurl);
 			}
 			designer.setModifier(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
@@ -251,7 +251,7 @@ public class DesignerAction extends BaseAction {
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			getValueStack().set("msg", "update Designer ["+designer.getEname()+"] failed, because of seesion time out, please relogin!");
+			getValueStack().set("msg", "update Designer ["+designer.getEname()+"] failed, root cause is "+e.getMessage());
 		}
 		return "modify";
 	}
@@ -285,13 +285,6 @@ public class DesignerAction extends BaseAction {
 	
 	// below methods all requests from frontend
 	public String loadAll(){
-		String lang = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-            Locale locale = (Locale) sessionLocale;
-            lang = locale.getLanguage()+"_"+locale.getCountry();
-        }
-		LanguageType type = LanguageType.toLanguageType(lang.toUpperCase());
         Language language = Language.getInstance();
 		try {
 			List<Designer> designers = designerService.getAll(Designer.class);
@@ -301,7 +294,7 @@ public class DesignerAction extends BaseAction {
 				designervos.add(dvo);
 				language.addObserver(dvo);
 			}
-			language.setLanguage(type);
+			language.setLanguage(getLanguageType());
 			getValueStack().set("designers",designervos);
 			return "load_success";
 		} catch (ServiceException e) {
@@ -311,20 +304,13 @@ public class DesignerAction extends BaseAction {
 	}
 	
 	public String showProfile(){
-		String lang = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-            Locale locale = (Locale) sessionLocale;
-            lang = locale.getLanguage()+"_"+locale.getCountry();
-        }
-		LanguageType type = LanguageType.toLanguageType(lang.toUpperCase());
         Language language = Language.getInstance();
 		try {
 			Long id = designer.getDesignerId();
 			Designer d = designerService.get(Designer.class,id);
 			DesignerVO dvo = VOFactory.getObserverVO(DesignerVO.class, d);
 			language.addObserver(dvo);
-			language.setLanguage(type);
+			language.setLanguage(getLanguageType());
 			getValueStack().set("designervo",dvo);
 			return "load_profile_success";
 		} catch (ServiceException e) {
@@ -363,23 +349,6 @@ public class DesignerAction extends BaseAction {
 			return "serviceException";
 		}
 		return "loadMenu_success";
-	}
-	
-	public void fetchInfo(){
-		try {
-			Designer fetchFeaturedDesigner = designerService.fetchFeaturedDesigner();
-			Blob contentENBlob = fetchFeaturedDesigner.getDetailContentEN();
-			String contentEN = StringUtil.getStrFromBlob(contentENBlob);
-			Blob contentCHBlob = fetchFeaturedDesigner.getDetailContentCH();
-			String contentCH = StringUtil.getStrFromBlob(contentCHBlob);
-			List<String> contents = new ArrayList<String>();
-			contents.add(contentCH);
-			contents.add(contentEN);
-			String json = JSONUtil.listToJson(contents);
-			sendJSONdata(json);
-		} catch (ServiceException e) {
-			
-		}
 	}
 	
 	public Designer getDesigner() {

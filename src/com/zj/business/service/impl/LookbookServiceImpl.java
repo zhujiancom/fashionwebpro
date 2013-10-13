@@ -71,8 +71,10 @@ public class LookbookServiceImpl extends CommonServiceImpl implements
 				lookbook.setBrand(brand);
 				brand.getLookbooks().add(lookbook);
 			}
+			insert(lookbook);
+		}else{
+			throw new ServiceException("you didn't select brand, please type a brand!");
 		}
-		insert(lookbook);
 		log.debug("out of <lookbook save> transaction");
 	}
 
@@ -86,8 +88,10 @@ public class LookbookServiceImpl extends CommonServiceImpl implements
 				lookbook.setBrand(brand);
 				brand.getLookbooks().add(lookbook);
 			}
+			update(lookbook);
+		}else{
+			throw new ServiceException("you didn't select brand, please type a brand!");
 		}
-		update(lookbook);
 		log.debug("out of <lookbook update> transaction");
 	}
 

@@ -1,26 +1,27 @@
 package com.zj.business.action;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.zj.bigdefine.GlobalParam;
+import com.zj.business.observer.Language;
 import com.zj.business.po.Brand;
 import com.zj.business.po.Editorial;
 import com.zj.business.service.IEditorialService;
 import com.zj.business.vo.EditorialVO;
+import com.zj.business.vo.VOFactory;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
 import com.zj.common.utils.DateUtil;
-import com.zj.common.utils.FileUtil;
 import com.zj.common.utils.JSONUtil;
 import com.zj.common.utils.PageInfo;
 import com.zj.common.utils.StringUtil;
@@ -41,7 +42,9 @@ public class EditorialAction extends BaseAction {
 	private Brand brand;
 	@Resource
 	private IEditorialService editorialService;
-	private String errorMsg;
+	@Value("#{envConfig['upload.editorial.dir']}")
+	private String fileUploadPath;
+	
 	private int rp; // page size
 	private int page; // page num
 	private String ids; // users id which need to be deleted
@@ -55,24 +58,16 @@ public class EditorialAction extends BaseAction {
 	
 	public String save(){
 		try{
-			String attachmentDirPath = "upload/editorial/"+DateUtil.date2Str(new Date(),"yyyyMMdd")+"_"+System.currentTimeMillis();
-			String absoluteUrl = getBasePath()+attachmentDirPath;
-			File dir = new File(absoluteUrl);
-			if(!dir.exists()){
-				dir.mkdirs();
-			}
+			String attachmentDirPath = fileUploadPath+DateUtil.date2Str(new Date(),"yyyyMMdd")+"_"+System.currentTimeMillis()+"/";
 			editorial.setImgs(attachmentDirPath);
 			editorial.setCreater(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
 			editorial.setCreateTime(new Date());
 			editorialService.save(editorial, brand);
 			
 			if(imageFiles != null){
-				for(int i=0;i<imageFiles.length;i++){
-					String attachFileName = (i+1)+getExtention(imageFilesFileName[i]);
-					String filePath = absoluteUrl+"/"+attachFileName;
-					File destFile = new File(filePath);
-					copyByChannel(imageFiles[i], destFile);
-				}
+				String absoluteUrl = getBasePath()+attachmentDirPath;
+				preDeleteDirectory(new File(absoluteUrl));
+				transferFilesToDirectory(imageFiles,imageFilesFileName,absoluteUrl);
 			}
 			getValueStack().set("msg","Add Editorial ["+editorial.getEditorialEname()+"] successfully!");
 			return "save_success";
@@ -89,7 +84,7 @@ public class EditorialAction extends BaseAction {
 		}catch(Exception e){
 			e.printStackTrace();
 			log.debug(e);
-			getValueStack().set("msg", "Add Editorial ["+editorial.getEditorialEname()+"] failed , because session timeout, please relogin!" );
+			getValueStack().set("msg", "Add Editorial ["+editorial.getEditorialEname()+"] failed , root cause is "+e.getMessage() );
 			return "save_failure";
 		}
 	}
@@ -133,7 +128,8 @@ public class EditorialAction extends BaseAction {
 	public String modifyForward(){
 		try {
 			Editorial dbEditorial = editorialService.get(Editorial.class, id);
-			getValueStack().setValue("editorial", dbEditorial);
+			EditorialVO vo = VOFactory.getObserverVO(EditorialVO.class, dbEditorial,getBasePath());
+			getValueStack().set("editorialvo", vo);
 			return "modify_forward_successful";
 		} catch (ServiceException e) {
 			log.debug("cannot find this editorial in db",e);
@@ -145,23 +141,18 @@ public class EditorialAction extends BaseAction {
 	public String update(){
 		String attachmentDirPath = editorial.getImgs();
 		try{
+			if(StringUtil.isEmpty(attachmentDirPath) && imageFiles != null && imageFiles.length > 0){
+				attachmentDirPath = fileUploadPath+DateUtil.date2Str(new Date(),"yyyyMMdd")+"_"+System.currentTimeMillis()+"/";
+				editorial.setImgs(attachmentDirPath);
+			}
 			editorial.setModifier(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
 			editorial.setModifiedTime(new Date());
 			editorialService.update(editorial,brand);
 			if(imageFiles != null){
 				String absoluteUrl = getBasePath()+attachmentDirPath;
-				
-				if(FileUtil.isDirectory(absoluteUrl)){
-					File directory = new File(absoluteUrl);
-					preDeleteDirectory(directory);
-					//add new files
-					for(int i=0;i<imageFiles.length;i++){
-						String imageFileName = (i+1)+getExtention(imageFilesFileName[i]);
-						String fileUrl = absoluteUrl+"/"+imageFileName;
-						File destFile = new File(fileUrl);
-						FileUtil.copyFile(imageFiles[i], destFile);
-					}
-				}
+				preDeleteDirectory(new File(absoluteUrl));
+				//add new files
+				transferFilesToDirectory(imageFiles,imageFilesFileName,absoluteUrl);
 			}
 			getValueStack().set("msg", "update editorial ["+editorial.getEditorialEname()+"] successfully");
 		}catch(ServiceException se){
@@ -182,21 +173,16 @@ public class EditorialAction extends BaseAction {
 	
 	//below methods for frontend
 	public String showByBrand(){
-		String language = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-            Locale locale = (Locale) sessionLocale;
-            language = locale.getLanguage()+"_"+locale.getCountry();
-        } 
+		Language language = Language.getInstance();
 		try {
 			List<Editorial> editorials = editorialService.getEditorialByBrand(brand.getBrandid());
-			List<EditorialVO> vos = new ArrayList<EditorialVO>();
-			String basePath = getBasePath();
+			List<EditorialVO> vos = new LinkedList<EditorialVO>();
 			for(Editorial editorial:editorials){
-//				EditorialVO vo = new EditorialVO(editorial,basePath);
-//				vo.process(language);
-//				vos.add(vo);
+				EditorialVO vo = VOFactory.getObserverVO(EditorialVO.class, editorial,getBasePath());
+				language.addObserver(vo);
+				vos.add(vo);
 			}
+			language.setLanguage(getLanguageType());
 			getValueStack().set("editoriallist",vos);
 		} catch (ServiceException e) {
 			e.printStackTrace();
@@ -210,14 +196,6 @@ public class EditorialAction extends BaseAction {
 
 	public void setEditorial(Editorial editorial) {
 		this.editorial = editorial;
-	}
-
-	public String getErrorMsg() {
-		return errorMsg;
-	}
-
-	public void setErrorMsg(String errorMsg) {
-		this.errorMsg = errorMsg;
 	}
 
 	public int getRp() {

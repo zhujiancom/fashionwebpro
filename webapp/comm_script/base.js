@@ -2604,9 +2604,10 @@ $(function() {
 	});
 });
 
-function feedbackInfo(msg){
+function feedbackInfo(msg,title){
+	title=(title == null || title == "")?"INFO":title.toUpperCase();
 	$.dialog({
-		title:"INFO",
+		title:title,
 		content:msg,
 		width : 390,
 		height : 40,

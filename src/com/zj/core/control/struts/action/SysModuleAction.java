@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import net.sf.json.JSONArray;
 
+import com.zj.common.cache.EHCacheService;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.utils.JSONUtil;
 import com.zj.common.ztreenode.ZTreeNode;
@@ -31,6 +32,8 @@ public class SysModuleAction extends BaseAction {
 	private JSONArray jsonArray;
 	private Long parentId;
 	@Resource
+	private EHCacheService ehCacheService;
+	@Resource
 	private ISysModuleService moduleService;
 	@Resource
 	private ISysUserService userService;
@@ -41,10 +44,17 @@ public class SysModuleAction extends BaseAction {
 	
 	public String moduleList(){
 		try {
-			SysUser user = userService.get(SysUser.class, userId);
-			Set<SysRole> roles = user.getSysRoles();
-			List<ZTreeNode> modules = moduleService.loadModulesByRoles(roles, parentId);
-			jsonArray = JSONUtil.sendArray(modules, null);
+			String key = userId+"_"+parentId;
+			List<ZTreeNode> modules = ehCacheService.getModuleCache().get(key);
+			if( modules != null){
+				jsonArray = JSONUtil.sendArray(modules, null);
+			}else{
+				SysUser user = userService.get(SysUser.class, userId);
+				Set<SysRole> roles = user.getSysRoles();
+				modules = moduleService.loadModulesByRoles(roles, parentId);
+				jsonArray = JSONUtil.sendArray(modules, null);
+				ehCacheService.addOrUpdateModuleCache(key, modules);
+			}
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		}

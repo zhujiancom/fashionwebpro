@@ -17,7 +17,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link href="<%=basePath %>comm_script/fileuploader/css/custom_uploader.css" rel="stylesheet">
 	
 	<script type="text/javascript"
-			src="<%=basePath%>comm_script/jquery-1.6.2.min.js">
+			src="<%=basePath%>comm_script/jquery-1.7.2.min.js">
 	</script>
 	<script type="text/javascript" 
 			src="<%=basePath%>comm_script/base.js">
@@ -34,17 +34,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <script type="text/javascript" 
     		src="<%=basePath%>comm_script/jqmodal/jqModal.js">
     </script>
-	<script type="text/javascript">
-   		$(function(){
-       		$( "#designerName" ).autocomplete({
-       			source: "designer_fuzzySearch.action"
-       		});
-       		var msg = "${msg}";
-			if(msg != ""){
-				feedbackInfo(msg);			
-			}
-   		});
-   	</script>
   </head>
   
   <body>
@@ -144,5 +133,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 	  	</form>
   	</div>
+  	<script type="text/javascript">
+   		$(function(){
+       		$( "#designerName" ).autocomplete({
+       			source: "designer_fuzzySearch.action"
+       		});
+       		var msg = "${msg}";
+			if(msg != ""){
+				feedbackInfo(msg);			
+			}
+   		});
+   	</script>
   </body>
 </html>

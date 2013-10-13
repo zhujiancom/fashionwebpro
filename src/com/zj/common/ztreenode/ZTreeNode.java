@@ -1,5 +1,7 @@
 package com.zj.common.ztreenode;
 
+import java.io.Serializable;
+
 /**
  * 
  * @author zj
@@ -17,7 +19,11 @@ package com.zj.common.ztreenode;
  *         文件名称：ZTreeNode.java
  * 
  */
-public class ZTreeNode {
+public class ZTreeNode implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4470399643047688891L;
 	private Object id;
 	private Object treeid;
 	private Object pid;

@@ -71,9 +71,11 @@ public class RunwayshowServiceImpl extends CommonServiceImpl implements
 				runwayshow.setBrand(brand);
 				brand.getRunwayshows().add(runwayshow);
 			}
+			insert(runwayshow);
+		}else{
+			throw new ServiceException("you didn't select brand, please type a brand!");
 		}
-		insert(runwayshow);
-		log.debug("out of <editorial save> transaction");
+		log.debug("out of <runwayshow save> transaction");
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED)
@@ -87,8 +89,10 @@ public class RunwayshowServiceImpl extends CommonServiceImpl implements
 				runwayshow.setBrand(brand);
 				brand.getRunwayshows().add(runwayshow);
 			}
+			update(runwayshow);
+		}else{
+			throw new ServiceException("you didn't select brand, please type a brand!");
 		}
-		update(runwayshow);
 		log.debug("out of <runwayshow update> transaction");
 	}
 

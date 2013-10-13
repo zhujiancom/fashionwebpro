@@ -14,8 +14,10 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
@@ -212,15 +214,17 @@ public class BaseAction extends ActionSupport implements SessionAware,RequestAwa
 	}
 	
 	public String getBasePath(){
-		return ServletActionContext.getServletContext().getRealPath("/");
+		String basePath = ServletActionContext.getServletContext().getRealPath("");
+		String serverPath = basePath.substring(0,basePath.lastIndexOf("\\"));
+		return serverPath+"/";
 	}
 	
 	public String getWebRootPath(){
 		String scheme = ServletActionContext.getRequest().getScheme(); // http
-		String contextPath = ServletActionContext.getRequest().getContextPath();  // project name
+//		String contextPath = ServletActionContext.getRequest().getContextPath();  // project name
 		String serverName = ServletActionContext.getRequest().getServerName(); //localhost
 		int port = ServletActionContext.getRequest().getServerPort(); // 8080
-		String path = scheme+"://"+serverName+":"+port+contextPath+"/";
+		String path = scheme+"://"+serverName+":"+port+"/";
 		return path;
 	}
 	
@@ -282,6 +286,9 @@ public class BaseAction extends ActionSupport implements SessionAware,RequestAwa
 			log.debug("clean directory <"+targetDir.getAbsolutePath()+"> success!");
 		}else{
 			log.debug("no directory need to clean!");
+			if(!targetDir.mkdirs()){
+				throw new UploadFileException("crate target directory error!");
+			}
 		}
 	}
 	
@@ -291,6 +298,10 @@ public class BaseAction extends ActionSupport implements SessionAware,RequestAwa
 		if (sessionLocale != null && sessionLocale instanceof Locale) {
             Locale locale = (Locale) sessionLocale;
             lang = locale.getLanguage()+"_"+locale.getCountry();
+        }else{
+        	HttpServletRequest req = ServletActionContext.getRequest();
+    		Locale loc = req.getLocale();
+    		lang = loc.getLanguage()+"_"+loc.getCountry();
         }
 		LanguageType type = LanguageType.toLanguageType(lang.toUpperCase());
 		return type;
@@ -314,6 +325,24 @@ public class BaseAction extends ActionSupport implements SessionAware,RequestAwa
 			log.debug("upload single image io exception", e);
 			throw new UploadFileException("upload single image io exception", e);
 		}
+	}
 	
+	protected void transferFilesToDirectory(File[] imageFiles,String[] fileNames,String absolutePath) throws UploadFileException{
+		for(int i=0;i<imageFiles.length;i++){
+			String imageName = UUID.randomUUID().toString();
+			String fileType = getExtention(fileNames[i]);
+			String imageFilePath = absolutePath+imageName+fileType;
+			String thumbnailPath = absolutePath+imageName+CommonConstant.ThumbnailSuffix+fileType;
+			File destFile = new File(imageFilePath);
+			File destThumbnail = new File(thumbnailPath);
+			copyByChannel(imageFiles[i],destFile);
+			try {
+				ImageUtils.createResizedImage(imageFiles[i], destThumbnail, Integer.valueOf(System.getProperty("thumbnail.size.width")), Integer.valueOf(System.getProperty("thumbnail.size.height")),Float.valueOf( System.getProperty("thumbnail.size.quality")));
+			} catch (NumberFormatException e) {
+				throw new UploadFileException(e);
+			} catch (IOException e) {
+				throw new UploadFileException(e);
+			}
+		}
 	}
 }

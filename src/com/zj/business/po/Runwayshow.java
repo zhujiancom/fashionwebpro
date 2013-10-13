@@ -38,7 +38,6 @@ public class Runwayshow extends AbstractEntity implements Serializable {
 	private String runwayshowCname;
 	@UpdateColumn
 	private String runwayshowEname;
-	@UpdateColumn(filterColumn=true)
 	private String runwayshowUrl;
 	@UpdateColumn
 	private Date runwayshowdate;
@@ -46,7 +45,6 @@ public class Runwayshow extends AbstractEntity implements Serializable {
 	private String runwayshowCintro;
 	@UpdateColumn
 	private String runwayshowEintro;
-	@UpdateColumn(filterColumn=true)
 	private String poster;
 	@UpdateColumn
 	private Brand brand;

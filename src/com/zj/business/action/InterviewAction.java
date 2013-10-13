@@ -3,20 +3,26 @@ package com.zj.business.action;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.ckfinder.connector.utils.ImageUtils;
+import com.zj.bigdefine.CommonConstant;
 import com.zj.bigdefine.GlobalParam;
+import com.zj.business.observer.Language;
 import com.zj.business.playlist.InterviewPlayList;
 import com.zj.business.po.Designer;
 import com.zj.business.po.Interview;
 import com.zj.business.service.IInterviewService;
 import com.zj.business.vo.InterviewVO;
+import com.zj.business.vo.VOFactory;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
 import com.zj.common.utils.JSONUtil;
@@ -39,6 +45,9 @@ public class InterviewAction extends BaseAction {
 	private Designer designer;
 	@Resource
 	private IInterviewService interviewService;
+	@Value("#{envConfig['upload.interview.dir']}")
+	private String fileUploadPath;
+	
 	private int rp; // page size
 	private int page; // page num
 	private String ids; // users id which need to be deleted
@@ -62,19 +71,23 @@ public class InterviewAction extends BaseAction {
 	public String save(){
 		String posterurl = "";
 		String videourl = "";
+		String posterThumbnailUrl = "";
 		boolean isAddVideo = false;
 		boolean isAddPoster = false;
 		try{
-			if(videoFileFileName != null && !"".equals(videoFileFileName)){
+			if(videoFile != null){
 				isAddVideo = true;
-				String videoFileName = new Date().getTime()+getExtention(videoFileFileName);
-				videourl = "upload/interview"+"/"+interview.getInterviewtype()+"/"+videoFileName;
+				String fileType = getExtention(videoFileFileName);
+				String videoName = UUID.randomUUID().toString();
+				videourl = fileUploadPath+interview.getInterviewtype()+"/"+videoName+fileType;
 				interview.setInterviewurl(getWebRootPath()+videourl);
 			}
-			if(posterFileFileName != null && !"".equals(posterFileFileName)){
+			if(posterFile != null){
 				isAddPoster = true;
-				String posterFileName = new Date().getTime()+getExtention(posterFileFileName);
-				posterurl = "upload/interview"+"/"+interview.getInterviewtype()+"/"+posterFileName;
+				String fileType = getExtention(posterFileFileName);
+				String posterFileName =UUID.randomUUID().toString();
+				posterurl = fileUploadPath+interview.getInterviewtype()+"/"+posterFileName+fileType;
+				posterThumbnailUrl = fileUploadPath+interview.getInterviewtype()+"/"+posterFileName+CommonConstant.ThumbnailSuffix+ fileType;
 				interview.setPoster(getWebRootPath()+posterurl);
 			}
 			interview.setCreater(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
@@ -82,11 +95,14 @@ public class InterviewAction extends BaseAction {
 			interviewService.save(interview, designer);
 			if(isAddPoster){
 				String absoluteUrl = getBasePath()+posterurl;
+				String absoluteThumbnailUrl = getBasePath() +posterThumbnailUrl;
 				File destFile = new File(absoluteUrl);
 				if(!destFile.getParentFile().exists()){
 					destFile.getParentFile().mkdirs();
 				}
+				File destThumbnail = new File(absoluteThumbnailUrl);
 				copyByChannel(posterFile,destFile);
+				ImageUtils.createResizedImage(posterFile, destThumbnail, Integer.valueOf(System.getProperty("thumbnail.size.width")), Integer.valueOf(System.getProperty("thumbnail.size.height")),Float.valueOf( System.getProperty("thumbnail.size.quality")));
 			}
 			if(isAddVideo){
 				String absoluteUrl = getBasePath()+videourl;
@@ -112,7 +128,7 @@ public class InterviewAction extends BaseAction {
 		catch(Exception e){
 			e.printStackTrace();
 			log.debug(e);
-			getValueStack().set("msg", "create Interview ["+interview.getInterviewEname()+"] Failed, because of session time out , please relogin! ");
+			getValueStack().set("msg", "create Interview ["+interview.getInterviewEname()+"] Failed, root cause is "+e.getMessage());
 			return "save_failure";
 		}
 	}
@@ -187,34 +203,45 @@ public class InterviewAction extends BaseAction {
 	public String modifyForward(){
 		try {
 			Interview dbinterview = interviewService.get(Interview.class, id);
-			getValueStack().setValue("interview", dbinterview);
+			InterviewVO vo = VOFactory.getObserverVO(InterviewVO.class, dbinterview);
+			getValueStack().set("interviewvo", vo);
 			return "modify_forward_successful";
 		} catch (ServiceException e) {
 			e.printStackTrace();
-			log.debug("The brand is not exist!");
+			log.debug("The interview is not exist!");
 			getValueStack().set("msg", "the object is not exist in DataBase, then cannot forward to modify page!");
 			return "modify_forward_failure";
 		}
 	}
 	
 	public String update(){
-		int prefixLen = getWebRootPath().length();
+		int startIndx = getWebRootPath().length();
 		String oldPosterurl = interview.getPoster();
-		String oldVideourl = interview.getInterviewurl();;
+		if(!StringUtil.isEmpty(oldPosterurl)){
+			oldPosterurl = oldPosterurl.substring(startIndx);
+		}
+		String oldVideourl = interview.getInterviewurl();
+		if(!StringUtil.isEmpty(oldVideourl)){
+			oldVideourl = oldVideourl.substring(startIndx);
+		}
 		String posterurl = "";
 		String videourl = "";
+		String posterThumbnailUrl = "";
 		boolean isUpdatePoster = false;
 		boolean isUpdateVideo = false;
 		try{
-			if(videoFileFileName != null && !"".equals(videoFileFileName)){
-				String videoFileName = new Date().getTime()+getExtention(videoFileFileName);
-				videourl = "upload/interview"+"/"+interview.getInterviewtype()+"/"+videoFileName;
+			if(videoFile != null){
+				String fileType = getExtention(videoFileFileName);
+				String videoFileName = UUID.randomUUID().toString();
+				videourl = fileUploadPath+interview.getInterviewtype()+"/"+videoFileName+fileType;
 				interview.setInterviewurl(getWebRootPath()+videourl);
 				isUpdateVideo = true;
 			}
-			if(posterFileFileName != null && !"".equals(posterFileFileName)){
-				String posterFileName = new Date().getTime()+getExtention(posterFileFileName);
-				posterurl = "upload/interview"+"/"+interview.getInterviewtype()+"/"+posterFileName;
+			if(posterFile != null){
+				String fileType = getExtention(posterFileFileName);
+				String posterFileName =  UUID.randomUUID().toString();
+				posterurl = fileUploadPath+interview.getInterviewtype()+"/"+posterFileName+fileType;
+				posterThumbnailUrl = fileUploadPath+interview.getInterviewtype()+"/"+posterFileName+CommonConstant.ThumbnailSuffix+ fileType;
 				interview.setPoster(getWebRootPath()+posterurl);
 				isUpdatePoster = true;
 			}
@@ -222,24 +249,19 @@ public class InterviewAction extends BaseAction {
 			interview.setModifier(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
 			interviewService.update(interview,designer);
 			if(isUpdatePoster){
-				if(oldPosterurl != null){
-					oldPosterurl = oldPosterurl.substring(prefixLen);
-					String absoluteUrl = getBasePath()+oldPosterurl;
-					preDeleteFile(absoluteUrl);
-				}
+				preDeleteFile(getBasePath()+oldPosterurl);
 				String absoluteUrl = getBasePath()+posterurl;
+				String absoluteThumbnailUrl = getBasePath()+posterThumbnailUrl;
 				File destFile = new File(absoluteUrl);
 				if(!destFile.getParentFile().exists()){
 					destFile.getParentFile().mkdirs();
 				}
+				File destThumbnail = new File(absoluteThumbnailUrl);
 				copyByChannel(posterFile,destFile);
+				ImageUtils.createResizedImage(posterFile, destThumbnail, Integer.valueOf(System.getProperty("thumbnail.size.width")), Integer.valueOf(System.getProperty("thumbnail.size.height")),Float.valueOf( System.getProperty("thumbnail.size.quality")));
 			}
 			if(isUpdateVideo){
-				if(oldVideourl != null){
-					oldVideourl = oldVideourl.substring(prefixLen);
-					String absoluteUrl = getBasePath()+oldVideourl;
-					preDeleteFile(absoluteUrl);
-				}
+				preDeleteFile(getBasePath()+oldVideourl);
 				String absoluteUrl = getBasePath()+videourl;
 				File destFile = new File(absoluteUrl);
 				if(!destFile.getParentFile().exists()){
@@ -266,23 +288,17 @@ public class InterviewAction extends BaseAction {
 	}
 	
 	public String showInterviews(){
-		String language = "en_US";
-		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-		if (sessionLocale != null && sessionLocale instanceof Locale) {
-            Locale locale = (Locale) sessionLocale;
-            language = locale.getLanguage()+"_"+locale.getCountry();
-        } 
-
+		Language language = Language.getInstance();
 		try {
 			List<Interview> interviews = interviewService.getInterviewsByDesingerAndType(designer.getDesignerId(), type);
-			String basePath = getBasePath();
+			String basePath = getBasePath() + ServletActionContext.getRequest().getContextPath();
 			XmlParse parse = new InterviewPlayList(interviews);
 			String outputfile = basePath+"frontend/menus/designer/playlist.xml";
 			parse.generateXMLFile(outputfile);
 			Interview i = interviews.get(0);
-			InterviewVO ivo = new InterviewVO(i);
-//			ivo.process(language);
-			getValueStack().set("interviewVO", ivo);
+			InterviewVO ivo = VOFactory.getObserverVO(InterviewVO.class, i);
+			language.setLanguage(getLanguageType());
+			getValueStack().set("interviewvo", ivo);
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		} 
