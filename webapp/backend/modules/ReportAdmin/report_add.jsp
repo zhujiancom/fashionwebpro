@@ -24,6 +24,7 @@
 	    <script type="text/javascript" 
 	    		src="<%=basePath%>comm_script/jquery-plugin/jquery-ui-1.8.16.custom.min.js">
 	    </script>
+	    <script type="text/javascript" src="<%=basePath %>comm_script/dialog/lhgdialog.min.js"></script>
 	    <script type="text/javascript" 
 	    		src="<%=basePath %>comm_script/base.js">
 	    </script>
@@ -33,6 +34,12 @@
 		<script type="text/javascript"
 				src="<%=basePath %>/ckfinder/ckfinder.js">
 		</script>
+		<style type="text/css">
+			.preview{
+				width:500px;
+				height:50px;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -89,13 +96,23 @@
 				</div>
 				<br/>
 				<div class="rowElem">
-					<label><h4>Report Introduction(EN):</h4></label>
+					<label><h4>Report Preview(EN):</h4></label>
+					<textarea name="report.previewEN" class="preview"></textarea>
+				</div>
+				<br/>
+				<div class="rowElem">
+					<label><h4>Report Preview(CH):</h4></label>
+					<textarea name="report.previewCH" class="preview"></textarea>
+				</div>
+				<br/>
+				<div class="rowElem">
+					<label><h4>Report Detail Content(EN):</h4></label>
 					<textarea name="report.detailContentEN" cols="80" rows="5"></textarea>
 				</div>
 				<br/>
 				<div class="rowElem">
-					<label><h4>Report Introduction(ZH):</h4></label>
-					<textarea name="report.detailContentCH" cols="80" rows="5" ></textarea>
+					<label><h4>Report Detail Content(ZH):</h4></label>
+					<textarea name="report.detailContentCH" cols="80" rows="5"></textarea>
 				</div>
 				<br/>
 				<div class="ui-widget">
@@ -119,19 +136,28 @@
 		    		$(document).ready(function(){
 		    			editor = CKEDITOR.replaceAll(function(textarea,config){
 		    				config.customConfig="<%=basePath%>/ckeditor/backend_config.js";
-		    				config.on={
-		    						instanceReady:function(ev){
-		        						this.dataProcessor.writer.setRules('p', {
-		        	                        indent: false,
-		        	                        breakBeforeOpen: false,   //<p>之前不加换行
-		        	                        breakAfterOpen: false,    //<p>之后不加换行
-		        	                        breakBeforeClose: false,  //</p>之前不加换行
-		        	                        breakAfterClose: false    //</p>之后不加换行7
-		        	                    });
-		        					}
-		    				};
+		    				if(textarea.className == "preview"){
+		    					return false;
+		    				}
 		    			});
 		    			CKFinder.setupCKEditor(editor, "<%=basePath%>ckfinder/");
+		    		});
+		    		
+		    		$(".preview").each(function(index){
+		    			$(this).blur(function(){
+		    				var _this = this;
+		    				var len = $(_this).val().length;
+		    				if(len > 200){
+		    					feedbackInfo("the max input characters amount is 200","WARNING");
+		    					$("form").submit(function(){
+		    						return false;
+		    					});
+		    				}else{
+		    					$("form").submit(function(){
+		    						return true;
+		    					});
+		    				}
+		    			});
 		    		});
 				});
 		</script>

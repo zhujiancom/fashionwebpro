@@ -3,6 +3,7 @@ package com.zj.business.action;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -248,6 +249,25 @@ public class ReportAction extends BaseAction {
 	
 	public String showNextItem(){
 		return null;
+	}
+	
+	public String loadReportsByOrder(){
+		Language language = Language.getInstance();
+		try {
+			List<Report> repotrs = reportService.loadAllReportsByDESC();
+			List<ReportVO> vos = new LinkedList<ReportVO>();
+			for(Report report:repotrs){
+				ReportVO vo = VOFactory.getObserverVO(ReportVO.class, report);
+				language.addObserver(vo);
+				vos.add(vo);
+			}
+			language.setLanguage(getLanguageType());
+			getValueStack().set("reportvolist", vos);
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "load_success";
 	}
 	
 	public Report getReport() {

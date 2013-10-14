@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>backend/">
     
-    <title>My JSP 'index.jsp' starting page</title>
+    <title> home page config</title>
     
 	<link rel="stylesheet" href="<%=basePath %>comm_style/base.css" type="text/css"/>
 	<link rel="stylesheet" href="<%=basePath %>comm_script/jquery-plugin/flexigrid/css/flexigrid-style.css" type="text/css"/>

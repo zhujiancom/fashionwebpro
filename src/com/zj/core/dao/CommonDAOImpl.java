@@ -24,7 +24,6 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import com.zj.bigdefine.GlobalParam;
-import com.zj.common.annotation.UpdateMode;
 import com.zj.common.exception.DAOException;
 import com.zj.common.log.Log;
 import com.zj.common.utils.ClassUtil;
@@ -128,17 +127,16 @@ public abstract class CommonDAOImpl implements ICommonDAO {
 			}
 		}
 		
-		public <T> void merge(T obj,Serializable key,UpdateMode mode) throws DAOException{
-			merge(obj,key,mode,DEFAULTDBNAME);
+		public <T> void merge(T obj) throws DAOException{
+			merge(obj,DEFAULTDBNAME);
 		}
 		
-		@SuppressWarnings("unchecked")
-		public <T> void merge(T obj, Serializable key,UpdateMode mode, String dbname) throws DAOException{
+		public <T> void merge(T obj, String dbname) throws DAOException{
 			HibernateTemplate ht = hibernateDaos.get(dbname);
-			T dbObj = (T) ht.get(obj.getClass(), key);
-//			T updateObj = (T) ClassUtil.megerObject(dbObj, obj);
-			T updateObj = (T) ClassUtil.megerPO(dbObj, obj,mode);
-			ht.update(updateObj);
+//			T dbObj = (T) ht.get(obj.getClass(), key);
+//			T updateObj = (T) ClassUtil.megerPO(dbObj, obj,mode);
+//			ht.update(updateObj);
+			ht.merge(obj);
 			ht.flush();
 			ht.clear();
 		}

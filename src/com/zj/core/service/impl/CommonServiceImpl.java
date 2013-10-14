@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.zj.bigdefine.GlobalParam;
-import com.zj.common.annotation.UpdateMode;
 import com.zj.common.exception.DAOException;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.log.Log;
@@ -251,9 +250,9 @@ public class CommonServiceImpl implements ICommonService{
 	}
 
 	@Override
-	public <T> void merge(T obj, Serializable key,UpdateMode mode) throws ServiceException {
+	public <T> void merge(T obj) throws ServiceException {
 		try{
-			dao.merge(obj, key,mode);
+			dao.merge(obj);
 		}catch(Exception e){
 			throw new ServiceException();
 		}

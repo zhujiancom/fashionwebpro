@@ -124,5 +124,17 @@ public class ReportServiceImpl extends CommonServiceImpl implements
 		log.debug("out of <pressreport update> transaction");
 	}
 
+	@Override
+	public List<Report> loadAllReportsByDESC() throws ServiceException {
+		String hql = "from Report r order by r.reportdate desc";
+		List<Report> reports = dao.queryHQL(hql);
+		if(reports != null && !reports.isEmpty()){
+			return reports;
+		}else{
+			throw new ServiceException("there are no any data!");
+		}
+		
+	}
+
 
 }

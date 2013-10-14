@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.zj.bigdefine.GlobalParam;
-import com.zj.common.annotation.UpdateMode;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.exception.UploadFileException;
 import com.zj.common.utils.JSONUtil;
@@ -247,72 +246,6 @@ public class SysUserAction extends BaseAction {
 		}
 	}
 	
-	/**
-	 * 
-	 *
-	 * Describle(描述)：update user info
-	 *
-	 * 方法名称：updateUser
-	 *
-	 * 所在类名：SysUserAction
-	 *
-	 * 返回类型：String
-	 *
-	 * Operate Time:2013-7-6 下午06:11:55
-	 *
-	 *
-	 * @return
-	 */
-	public String updateUser1(){
-		UpdateMode mode = UpdateMode.MINI;
-		String imgurl = "";
-		String oldImgurl = user.getImgUrl();
-		boolean isUpdateImg = false;
-		try{
-			if(imageFileFileName != null && !"".equals(imageFileFileName)){
-				mode = UpdateMode.NORMAL;
-				isUpdateImg = true;
-				String imageFileName = new Date().getTime()+getExtention(imageFileFileName);
-				imgurl = ServletActionContext.getServletContext().getRealPath("/upload/headImg/backendUser")+"\\"+imageFileName;
-				user.setImgUrl(imgurl);
-			}
-			user.setModifiedTime(new Date());
-			user.setModifier(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
-			userService.merge(user, user.getUserId(), mode);
-			getValueStack().set("msg", "update User ["+user.getLoginId()+"] successful!");
-			if(isUpdateImg){
-				if(oldImgurl != null){
-					File oldFile = new File(oldImgurl);
-					if(oldFile.exists()){
-						oldFile.delete();
-					}
-				}
-				File destFile = new File(imgurl);
-				if(!destFile.getParentFile().exists()){
-					destFile.getParentFile().mkdirs();
-				}
-				copyByChannel(imageFile, destFile);
-			}
-			return "modify";
-		}catch(ServiceException se){
-			getValueStack().set("msg", "update User ["+user.getLoginId()+"]failure!");
-			se.printStackTrace();
-			log.debug(se.getMessage());
-			return "modify";
-		}
-		catch(UploadFileException ue){
-			getValueStack().set("msg", "update User ["+user.getLoginId()+"]failure!");
-			ue.printStackTrace();
-			log.debug(ue.getMessage());
-			return "modify";
-		}
-		catch(Exception e){
-			getValueStack().set("msg", "update User ["+user.getLoginId()+"]failure!");
-			log.debug(e.getMessage());
-			return "modify";
-		}
-	}
-	
 	public String updateUser(){
 		String imgurl = "";
 		String oldImgurl = user.getImgUrl();
@@ -390,34 +323,6 @@ public class SysUserAction extends BaseAction {
 		}
 		sendJSONdata(json);
 	}
-	
-	/**
-	 * 
-	 *
-	 * Describle(描述)：user logout
-	 *
-	 * 方法名称：logout
-	 *
-	 * 所在类名：SysUserAction
-	 *
-	 * 返回类型：String
-	 *
-	 * Operate Time:2013-7-21 下午10:34:14
-	 *
-	 *
-	 * @return
-	 */
-//	public String logout(){
-//		SysUser u = (SysUser) session.get(GlobalParam.LOGIN_USER_SESSION);
-//		try {
-//			userService.logout(u);
-//		} catch (ServiceException e) {
-//			e.printStackTrace();
-//		}
-//		getValueStack().pop();
-//		session.clear();
-//		return "logout_success";
-//	}
 	
 	public String getErrorMsg() {
 		return errorMsg;

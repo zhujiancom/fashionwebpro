@@ -135,7 +135,7 @@ public class HomePagerAction extends BaseAction {
 				}
 				homepager.setLookbooks(lookbooks);
 			}
-			homepagerService.update(homepager);
+			homepagerService.merge(homepager);
 			
 			ehCacheService.getHomepagerCache().put(1L, homepager);
 			
@@ -244,7 +244,7 @@ public class HomePagerAction extends BaseAction {
 			Iterator<Lookbook> lookbookkey = lookbooks.iterator();
 			while(lookbookkey.hasNext()){
 				Lookbook po = lookbookkey.next();
-				LookbookVO vo = new LookbookVO(po,getBasePath());
+				LookbookVO vo = VOFactory.getObserverVO(LookbookVO.class, po,getBasePath());
 				lookbookVOs.add(vo);
 				language.addObserver(vo);
 			}

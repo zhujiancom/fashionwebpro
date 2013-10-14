@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.zj.common.annotation.UpdateMode;
 import com.zj.common.exception.DAOException;
 import com.zj.common.utils.PageInfo;
 
@@ -69,8 +68,8 @@ public interface ICommonDAO {
 	 * @param key
 	 * @throws DAOException
 	 */
-	public <T> void merge(T obj,Serializable key,UpdateMode mode) throws DAOException;
-	public <T> void merge(T obj,Serializable key,UpdateMode mode,String dbname) throws DAOException;
+	public <T> void merge(T obj) throws DAOException;
+	public <T> void merge(T obj,String dbname) throws DAOException;
 	/**
 	 * 批量更新持久化对象
 	 * @param objs

@@ -173,9 +173,9 @@
 		</action>
 		
 		<action name="homepager_modify" class="homepagerAction" method="modify">
-			<interceptor-ref name="sessionTimeout"/>
-			<interceptor-ref name="fileUploadStack"/>
-			<interceptor-ref name="defaultStack"/>
+<!--			<interceptor-ref name="sessionTimeout"/>-->
+<!--			<interceptor-ref name="fileUploadStack"/>-->
+<!--			<interceptor-ref name="defaultStack"/>-->
 			<result name="modify" type="chain">
 				<param name="actionName">homepager_loadDataForBackend</param>
 				<param name="namespace">/backend</param>
@@ -183,9 +183,9 @@
 		</action>
 		
 		<action name="homepager_loadDataForBackend" class="homepagerAction" method="loadDataForBackend">
-			<interceptor-ref name="sessionTimeout"/>
-			<interceptor-ref name="fileUploadStack"/>
-			<interceptor-ref name="defaultStack"/>
+<!--			<interceptor-ref name="sessionTimeout"/>-->
+<!--			<interceptor-ref name="fileUploadStack"/>-->
+<!--			<interceptor-ref name="defaultStack"/>-->
 			<result name="load_success">modules/HomePageAdmin/index.jsp</result>
 		</action>
 		

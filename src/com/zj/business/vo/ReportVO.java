@@ -10,6 +10,7 @@ public class ReportVO  extends AbstractVO{
 	private String thumbnail;
 	private String title;
 	private String content;
+	private String preview;
 	
 	public ReportVO(Report report){
 		this.report = report;
@@ -61,13 +62,23 @@ public class ReportVO  extends AbstractVO{
 		setTitle(convertTCSC(report.getReportCname(),language));
 		String detail = StringUtil.getStrFromBlob(report.getDetailContentCH());
 		setContent(convertTCSC(detail, language));
+		setPreview(convertTCSC(report.getPreviewCH(),language));
 	}
 
 	@Override
 	protected void setEnglishValue() {
 		setTitle(report.getReportEname());
 		String detail = StringUtil.getStrFromBlob(report.getDetailContentEN());
-		setTitle(detail);
+		setContent(detail);
+		setPreview(report.getPreviewEN());
+	}
+
+	public String getPreview() {
+		return preview;
+	}
+
+	public void setPreview(String preview) {
+		this.preview = preview;
 	}
 
 	

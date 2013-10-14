@@ -148,7 +148,7 @@ public class StyleAction extends BaseAction {
 			}
 			style.setModifiedTime(new Date());
 			style.setModifier(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
-			styleService.merge(style, style.getStyleid(), mode);
+//			styleService.merge(style, style.getStyleid(), mode);
 			if(isUpdateImg){
 				if(oldImgurl != null){
 					File oldFile = new File(oldImgurl);
@@ -165,13 +165,7 @@ public class StyleAction extends BaseAction {
 			}
 			getValueStack().set("msg", "update Style ["+style.getStyleEname()+"] successfully!");
 			return "modify";
-		}catch(ServiceException se){
-			getValueStack().set("msg", "update Style ["+style.getStyleEname()+"] failure!");
-			se.printStackTrace();
-			Log.debug(StyleAction.class, se.getMessage());
-			return "modify";
-		}
-		catch(UploadFileException ue){
+		}catch(UploadFileException ue){
 			getValueStack().set("msg", "update  Style ["+style.getStyleEname()+"] failure!");
 			ue.printStackTrace();
 			Log.debug(StyleAction.class, ue.getMessage());

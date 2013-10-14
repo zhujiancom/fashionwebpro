@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import com.zj.common.annotation.UpdateMode;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.utils.PageInfo;
 import com.zj.common.ztreenode.ZTreeNode;
@@ -14,7 +13,7 @@ public interface ICommonService {
 	
 	public <T> void update(T obj) throws ServiceException;
 	
-	public <T> void merge(T obj,Serializable key,UpdateMode mode) throws ServiceException;
+	public <T> void merge(T obj) throws ServiceException;
 	
 	public <T> void delete(T obj) throws ServiceException;
 	

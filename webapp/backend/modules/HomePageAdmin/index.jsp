@@ -1,7 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" isELIgnored="false"%>
 <%
 String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+String serverPath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+String basePath = serverPath + path + "/";
 %>
 <%@ taglib uri="/struts-tags" prefix="s" %>
 <!DOCTYPE html>
@@ -12,7 +13,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <title>My JSP 'index.jsp' starting page</title>
     
 	<link rel="stylesheet" href="<%=basePath %>comm_style/base.css" type="text/css"/>
-	<link rel="stylesheet" href="<%=basePath %>comm_script/jqmodal/jqModal.css" type="text/css"/>
 	
 	<link href="<%=basePath %>comm_script/fileuploader/css/custom_uploader.css" rel="stylesheet">
 	
@@ -30,9 +30,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</script>
 	<script type="text/javascript" 
     		src="<%=basePath%>comm_script/jquery-plugin/jquery-ui-1.8.16.custom.min.js">
-    </script>
-    <script type="text/javascript" 
-    		src="<%=basePath%>comm_script/jqmodal/jqModal.js">
     </script>
   </head>
   
@@ -67,7 +64,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                <s:iterator value="homevo.imageThumbnailUrls" var="thumbnail">
 		                	<li class="list_common">
 			                	<div class="imgLiquidFill imgLuid pic">
-			                    	<img src="<%=basePath %><s:property value='#thumbnail'/>"  width="100" height="100"/>
+			                    	<img src="<%=serverPath %>/<s:property value='#thumbnail'/>"  width="100" height="100"/>
 			                    </div>
 			                </li>
 		                </s:iterator>
@@ -122,7 +119,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<tr>
 							<td><input name="lookbooklist.lookbookid" type="hidden" value="<s:property value="#lookbook.lookbookid"/>"/></td>
 							<td><s:property value="#lookbook.lookbookEname"/></td>
-							<td colspan="2"><s:property value="#designer.lookbookCname"/></td>
+							<td colspan="2"><s:property value="#lookbook.lookbookCname"/></td>
 						</tr>
 					</s:iterator>
 				</table>

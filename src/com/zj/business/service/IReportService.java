@@ -16,4 +16,5 @@ public interface IReportService extends ICommonService {
 	public Report getNextReport(long currentReportId) throws ServiceException;
 	public void save(Report report,Designer designer) throws ServiceException;
 	public void update(Report report,Designer designer) throws ServiceException;
+	public List<Report> loadAllReportsByDESC() throws ServiceException;
 }

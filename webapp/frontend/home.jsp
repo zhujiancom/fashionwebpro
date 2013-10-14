@@ -1,7 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%
 String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+String serverPath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+String basePath = serverPath + path + "/";
 %>
 <%@ taglib uri="/struts-tags" prefix="s" %>
 <!DOCTYPE html>
@@ -50,7 +51,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               <div class="flexslider">
                 <ul class="slides">
                   <s:iterator value="homevo.imageUrls" var="imagesrc">
-						<li><img src="<%=basePath %><s:property value="#imagesrc"/>"/></li>
+						<li><img src="<%=serverPath %>/<s:property value="#imagesrc"/>"/></li>
 					</s:iterator>
                 </ul>
               </div>
@@ -63,7 +64,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <tr align="center" valign="middle">
                     	<td>
                         	<div class="imgLiquidFill imgLuid">
-                            	<a href="menus/designer/main.jsp?designerId=<s:property value='homevo.featuredDesignerVO.designer.designerId'/>"><img src="<%=basePath %><s:property value='homevo.featuredDesignerVO.thumbnailUrl'/>"  /></a>
+                            	<a href="menus/designer/main.jsp?designerId=<s:property value='homevo.featuredDesignerVO.designer.designerId'/>"><img src="<%=serverPath %>/<s:property value='homevo.featuredDesignerVO.thumbnailUrl'/>"  /></a>
                              </div>
                          </td>
                         <td><a href="menus/designer/main.jsp?designerId=<s:property value='homevo.featuredDesignerVO.designer.designerId'/>" ><s:property value="homevo.featuredDesignerVO.name"/></a></td>
@@ -72,7 +73,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     	 <tr align="center" valign="middle">
 	                    	<td>
 	                        	<div class="imgLiquidFill imgLuid">
-	                            	<a href="menus/designer/main.jsp?designerId=<s:property value='#designervo.designer.designerId'/>"><img src="<%=basePath %><s:property value='#designervo.thumbnailUrl'/>"  /></a>
+	                            	<a href="menus/designer/main.jsp?designerId=<s:property value='#designervo.designer.designerId'/>"><img src="<%=serverPath %>/<s:property value='#designervo.thumbnailUrl'/>"  /></a>
 	                             </div>
 	                         </td>
 	                        <td><a href="menus/designer/main.jsp?designerId=<s:property value='#designervo.designer.designerId'/>" ><s:property value="#designervo.name"/></a></td>
@@ -86,7 +87,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             	<h3><a href="#"><s:text name="video"/></a></h3>
                 <hr />
             	<video controls="controls" autoplay="autoplay"  height="340px" width="500px">
-                	<source src="<%=basePath %><s:property value='homevo.videoUrl'/>" >
+                	<source src="<%=serverPath %>/<s:property value='homevo.videoUrl'/>" >
                     Your browser dose not support the video tag.
                 </video>
             </div>
@@ -96,29 +97,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <textarea name="designerProfile"><s:property value="homevo.featuredDesignerVO.profile"/></textarea>
             </div>
           </div>
-          <div id="main_bottom" style="margin-top:2px;">
+          <div id="main_bottom" style="margin-top:2px;height:600px;">
           	<h3><a href="#"><s:text name="collection"/></a></h3>
             <hr />
-            <h4><a href="#">Title</a></h4>
-            <table width="895px">
-            <tr align="center" valign="middle">
-            	<td><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="testsource/01.png"</div></td>
-                <td><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="testsource/01.png"</div></td>
-                <td><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="testsource/01.png"</div></td>
-                <td><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="testsource/01.png"</div></td>
-                <td><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="testsource/01.png"</div></td>
-            </tr>
             <s:iterator value="homevo.lookbookVOs" var="lookbookvo">
-            	<tr align="center" valign="middle">
+            	<h4><a href="#"><s:property value="#lookbookvo.name"/></a></h4>
+            	<table width="895px">
+	            <tr align="center" valign="middle">
 	            	<s:iterator value="#lookbookvo.images" var="image">
-	            		<td><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="<%=basePath %><s:property value='#image'/>"</div></td>
+	            		<td><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="<%=serverPath %>/<s:property value='#image'/>"/></div></td>
 	            	</s:iterator>
 	            </tr>
+	            </table>
             </s:iterator>
-            </table>
           </div>
         </div>
-		</div>
-		<jsp:include page="footer.jsp"></jsp:include>
+        <div>
+        <jsp:include page="footer.jsp"></jsp:include>
+        </div>
   </body>
 </html>

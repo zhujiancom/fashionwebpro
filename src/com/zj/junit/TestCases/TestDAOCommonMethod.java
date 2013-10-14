@@ -386,7 +386,6 @@ public class TestDAOCommonMethod extends AbstractTestCase {
 		brand.setBrandCname("埃尔维");
 		brand.setDesigner(designer);
 		brands.add(brand);
-		dao.merge(brand,brand.getBrandid(),UpdateMode.NORMAL);
 	}
 	
 	//////////////////////////////////

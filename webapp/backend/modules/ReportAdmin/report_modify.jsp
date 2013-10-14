@@ -34,6 +34,12 @@
 		<script type="text/javascript"
 				src="<%=basePath %>/ckfinder/ckfinder.js">
 		</script>
+		<style type="text/css">
+			.preview{
+				width:500px;
+				height:50px;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -104,16 +110,25 @@
 		              </div>
 		            </div>
 				</div>
-				
+				<br/>
+				<div class="rowElem">
+					<label><h4>Report Preview(EN):</h4></label>
+					<textarea name="report.previewEN" cols="200" rows="2" class="preview"><s:property value="reportvo.report.previewEN"/></textarea>
+				</div>
+				<br/>
+				<div class="rowElem">
+					<label><h4>Report Preview(CH):</h4></label>
+					<textarea name="report.previewCH" cols="200" rows="2" class="preview"><s:property value="reportvo.report.previewCH"/></textarea>
+				</div>
 				<br/>
 				<div class="rowElem">
 					<label><h4>Report Introduction(EN):</h4></label>
-					<textarea name="report.detailContentCH" cols="80" rows="5" ><s:property value='reportvo.report.detailContentCH'/></textarea>
+					<textarea name="report.detailContentEN" cols="80" rows="5" ><s:property value='reportvo.report.detailContentEN'/></textarea>
 				</div>
 				<br/>
 				<div class="rowElem">
 					<label><h4>Report Introduction(ZH):</h4></label>
-					<textarea name="report.detailContentEN" cols="80" rows="5" ><s:property value='reportvo.report.detailContentEN'/></textarea>
+					<textarea name="report.detailContentCH" cols="80" rows="5" ><s:property value='reportvo.report.detailContentCH'/></textarea>
 				</div>
 				<br/>
 				<div class="ui-widget">
@@ -148,8 +163,28 @@
 		        	                    });
 		        					}
 		    				};
+		    				if(textarea.className == "preview"){
+		    					return false;
+		    				}
 		    			});
 		    			CKFinder.setupCKEditor(editor, "<%=basePath%>ckfinder/");
+		    		});
+		    		
+		    		$(".preview").each(function(index){
+		    			$(this).blur(function(){
+		    				var _this = this;
+		    				var len = $(_this).val().length;
+		    				if(len > 200){
+		    					feedbackInfo("the max input characters amount is 200","WARNING");
+		    					$("form").submit(function(){
+		    						return false;
+		    					});
+		    				}else{
+		    					$("form").submit(function(){
+		    						return true;
+		    					});
+		    				}
+		    			});
 		    		});
 				});
 		</script>

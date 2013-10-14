@@ -57,6 +57,9 @@ public class Report extends AbstractEntity implements Serializable {
 	private Blob detailContentCH;
 	private Blob detailContentEN;
 	
+	private String previewCH;
+	private String previewEN;
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY, generator = "commSEQ")
 	@Column(name="REPORT_ID", nullable=false)
@@ -155,5 +158,19 @@ public class Report extends AbstractEntity implements Serializable {
 	}
 	public void setDetailContentEN(Blob detailContentEN) {
 		this.detailContentEN = detailContentEN;
+	}
+	@Column(name="PREVIEW_CH",length=500)
+	public String getPreviewCH() {
+		return previewCH;
+	}
+	public void setPreviewCH(String previewCH) {
+		this.previewCH = previewCH;
+	}
+	@Column(name="PREVIEW_EN",length=500)
+	public String getPreviewEN() {
+		return previewEN;
+	}
+	public void setPreviewEN(String previewEN) {
+		this.previewEN = previewEN;
 	}
 }
