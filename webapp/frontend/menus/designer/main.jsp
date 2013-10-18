@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>frontend/">
     
-    <title>My JSP 'main.jsp' starting page</title>
+    <title>Designer Browser</title>
     <script src="<%=basePath %>comm_script/jquery-1.9.1.min.js" type="text/javascript"></script> 
     <script src="<%=basePath %>frontend/javascript/jquery-plugin/magnific-popup/jquery.magnific-popup.js" type="text/javascript"></script> 
     <style type="text/css">

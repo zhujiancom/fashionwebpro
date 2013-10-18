@@ -293,7 +293,7 @@ public class InterviewAction extends BaseAction {
 			List<Interview> interviews = interviewService.getInterviewsByDesingerAndType(designer.getDesignerId(), type);
 			String basePath = getBasePath() + ServletActionContext.getRequest().getContextPath();
 			XmlParse parse = new InterviewPlayList(interviews);
-			String outputfile = basePath+"frontend/menus/designer/playlist.xml";
+			String outputfile = basePath+"/frontend/menus/designer/playlist.xml";
 			parse.generateXMLFile(outputfile);
 			Interview i = interviews.get(0);
 			InterviewVO ivo = VOFactory.getObserverVO(InterviewVO.class, i);

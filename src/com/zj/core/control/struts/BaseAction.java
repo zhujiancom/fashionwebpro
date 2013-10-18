@@ -214,9 +214,12 @@ public class BaseAction extends ActionSupport implements SessionAware,RequestAwa
 	}
 	
 	public String getBasePath(){
-		String basePath = ServletActionContext.getServletContext().getRealPath("");
-		String serverPath = basePath.substring(0,basePath.lastIndexOf("\\"));
-		return serverPath+"/";
+		String basePath = ServletActionContext.getServletContext().getRealPath("/");
+//		int endIndex_win = basePath.lastIndexOf("\\");
+//		int endIndex_linux = basePath.lastIndexOf("/");
+//		int endIndex = (endIndex_win != -1)? endIndex_win:endIndex_linux;
+//		String serverPath = basePath.substring(0,endIndex);
+		return basePath;
 	}
 	
 	public String getWebRootPath(){

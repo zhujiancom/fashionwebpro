@@ -1,59 +1,22 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" isELIgnored="false"%>
 <%
 String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+String serverPath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+String basePath = serverPath + path + "/";
 %>
 <%@ taglib uri="/struts-tags" prefix="s" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML>
 <html>
   <head>
     <base href="<%=basePath%>frontend/">
-    
-    <title>My JSP 'profile.jsp' starting page</title>
-    
-	
-	<link href="css/newsbrowser.css" rel="stylesheet" />
-	<link href="javascript/jquery-plugin/jpages/jPages.css" rel="stylesheet"/>
-	<script src="javascript/jquery-1.7.2.min.js" type="application/javascript"></script>
-	<script src="javascript/jquery-plugin/imgLiquid/imgLiquid.js" type="application/javascript"></script>
-	<script src="javascript/jquery-plugin/jpages/jPages.js" type="application/javascript"></script>
-	<script type="text/javascript"
-			src="<%=basePath%>comm_script/dialog/lhgdialog.min.js">
-	</script>
-	
-	
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$(".imgLiquidFill").imgLiquid();
-
-			/* initiate plugin */
-    		$("div.holder").jPages({
-      			containerID : "itemContainer",
-				perPage:5
-    		});
-
-    		/* when button is clicked */
-    		$("button").click(function(){
-     			 /* get given page */
-     			 var page = parseInt( $("input").val() );
-
-	     		 /* jump to that page */
-	     		 $("div.holder").jPages( page );
-
-   	 		});
-			
-			var msg = "${msg}";
-			if(msg != ""){
-				$.dialog.tips(msg);			
-			}
-		});
-
-		
-	</script>
-	
+	<link href="<%=basePath %>frontend/css/press.css" rel="stylesheet" />
+	<link href="<%=basePath %>frontend/javascript/jquery-plugin/jpages/jPages.css" rel="stylesheet"/>
+	<script src="<%=basePath %>comm_script/jquery-1.7.2.min.js" type="application/javascript"></script>
+	<script src="<%=basePath %>frontend/javascript/jquery-plugin/imgLiquid/imgLiquid.js" type="application/javascript"></script>
+	<script src="<%=basePath %>frontend/javascript/jquery-plugin/jpages/jPages.js" type="application/javascript"></script>
 	<style type="text/css">
 		.holder {
-		  margin: 15px 270px 0;
+		  margin: 15px 200px 0;
 		}
 		
 		.holder a {
@@ -87,30 +50,72 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		}
 		
 		.holder span { margin: 0 5px; }
-		  
+		
+		#main{
+			margin:0;
+			padding:0;
+		}
+		
+		 #itemContainer{
+			list-style: none;
+		}
+		
+		#contents{
+			margin:0;
+			padding:0;
+		}
   </style>
   </head>
   
   <body  oncontextmenu="return false" onselectstart="return false">
-  	<div id="wrapper">
-  		 <div id="main_wrapper">
-			<div id="main_lower" class="defaults">
+  	<div id="main">
+  		 <div id="contents">
+            <div class="ulwrapper" class="defaults">
 			    <ul id="itemContainer">
-			    	<s:iterator value="reportlist" var="report">
-			    		 <li>
-	                    	<table class="tablestyle">
-	                        	<tr>
-	                            	<td class="newsheadImg commonstyle imgLiquidFill imgLiquid"><img src="<%=basePath %><s:property value='#report.headImg'/>" /></td>
-	                                <td class="commonstyle"><a href="report_showDetails.action?report.reportid=<s:property value='#report.report.reportid'/>"><s:property value="#report.title"/></a></td>
-	                        	</tr>
-	                        </table>
-		                  </li>
-			    	</s:iterator>
+			    	<s:iterator value="reportvolist" var="reportvo">
+	                	<li>
+	                		<div class="item">
+				            	<div class="imgLiquidFill imgLuid pic">
+				                	<img src="<%=basePath %><s:property value='#reportvo.thumbnail'/>" />
+				                </div>
+				            	<div class="preview">
+				                	<p class="pretitle"><a href="report_showDetail.action?report.reportid=<s:property value='#reportvo.id'/>"><s:property value='#reportvo.title'/></a></p>
+				                	<p class="precontent"><s:property value='#reportvo.preview'/></p>
+				                </div>
+				            </div>
+	                	</li>
+	                </s:iterator>
                </ul>      
 		      <!-- navigation holder -->
      			<div class="holder"></div>
 			</div>
 	    </div>
   	</div>
+  	<script type="application/javascript">
+		$(document).ready(function(){
+			$(".imgLiquidFill").imgLiquid({
+				fill:true,
+				horizontalAlign:"center",
+				verticalAlign:"top"  
+					  
+			});
+
+			/* initiate plugin */
+    		$("div.holder").jPages({
+      			containerID : "itemContainer",
+				perPage:8
+    		});
+
+    		/* when button is clicked */
+    		$("button").click(function(){
+     			 /* get given page */
+     			 var page = parseInt( $("input").val() );
+
+	     		 /* jump to that page */
+	     		 $("div.holder").jPages( page );
+
+   	 		});
+		});
+	</script>
   </body>
 </html>

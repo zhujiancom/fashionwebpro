@@ -89,11 +89,14 @@
 			<result name="open_report_success">menus/designer/report.jsp</result>
 			<result name="open_report_failure">menus/designer/report.jsp</result>
 			<result name="load_success">menus/interviews/reportSummary.jsp</result>
+			<result name="show_report_success">menus/interviews/reportDetail.jsp</result>
 		</action>
 		
 		<!-- Action for search -->
 		<action name="search_*" class="searchAction" method="{1}">
 			<result name="head_search">menus/search/result.jsp</result>
+			<result name="find_designer">menus/designer/main.jsp?designerId=${designer.designerId}</result>
+			<result name="find_brand">menus/brand/main.jsp?brandId=${brand.brandid}</result>
 		</action>
 		
 		<!-- Action for style -->

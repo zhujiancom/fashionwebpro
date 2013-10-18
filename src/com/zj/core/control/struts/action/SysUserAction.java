@@ -4,11 +4,12 @@ import java.io.File;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
-import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +40,9 @@ public class SysUserAction extends BaseAction {
 	private ISysUserService userService;
 	@Resource
 	private ISysRoleService roleService;
+	@Value("#{envConfig['upload.sysuser.dir']}")
+	private String fileUploadPath;
+	
 	private String errorMsg;
 	// parameters from flexgird
 	private int rp; // page size
@@ -58,35 +62,6 @@ public class SysUserAction extends BaseAction {
 	private String imageFileContentType;  // 文件名 + ContentType (固定写法)
 	private String imageFileFileName;  //文件名 + FileName (固定写法)
 
-	// image upload relative params
-	
-	/**
-	 * user login
-	 * @return
-	 */
-//	public String login(){
-//		SysUser login_user = null;
-//		try {
-//			login_user = userService.login(user);
-//			if (login_user == null) {
-//				errorMsg = "UserName or Password error !";
-//				return "login_invalid";
-//			}
-//			if (GlobalParam.ENABLE != login_user.getIsEnable()) {
-//				errorMsg = "The Account has been disabled, please reEnable !";//该账号被禁用,请启用
-//				return "login_failed";
-//			}
-//			Set<SysRole> roles = login_user.getSysRoles();
-//			List<SysModule> modules = moduleService.loadModulesByRoles(roles);
-//			session.put(GlobalParam.LOGIN_USER_SESSION, login_user);
-//			session.put(GlobalParam.LOGIN_USER_MODULE_PRIV, modules);
-//			return "login_success";
-//		} catch (ServiceException e) {
-//			e.printStackTrace();
-//			return "login_failed";
-//		}
-//	}
-	
 	/**
 	 * show all users
 	 */
@@ -154,8 +129,9 @@ public class SysUserAction extends BaseAction {
 		try{
 			if(imageFileFileName != null && !"".equals(imageFileFileName)){
 				isAddImg = true;
-				String imageFileName = new Date().getTime()+getExtention(imageFileFileName);
-				imgUrl = ServletActionContext.getServletContext().getRealPath("/upload/headImg/backendUser")+"\\"+imageFileName;
+				String fileType = getExtention(imageFileFileName);
+				String imageFileName = UUID.randomUUID().toString();
+				imgUrl = fileUploadPath+imageFileName+fileType;
 				user.setImgUrl(imgUrl);
 			}
 			Set<SysRole> roles = new HashSet<SysRole>();
@@ -253,11 +229,9 @@ public class SysUserAction extends BaseAction {
 		try {
 			if (imageFileFileName != null && !"".equals(imageFileFileName)) {
 				isUpdateImg = true;
-				String imageFileName = new Date().getTime()
-						+ getExtention(imageFileFileName);
-				imgurl = ServletActionContext.getServletContext().getRealPath(
-						"/upload/headImg/backendUser")
-						+ "\\" + imageFileName;
+				String fileType = getExtention(imageFileFileName);
+				String imageFileName = UUID.randomUUID().toString();
+				imgurl = fileUploadPath + imageFileName+fileType;
 				user.setImgUrl(imgurl);
 			}
 			user.setModifiedTime(new Date());

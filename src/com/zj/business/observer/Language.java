@@ -1,15 +1,15 @@
 package com.zj.business.observer;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 public class Language {
 	public static Language language;
-	private List<LanguageObserver> obs;
+	private Vector<LanguageObserver> obs;
 	private LanguageType languageType;
 
 	private Language() {
-		obs = new LinkedList<LanguageObserver>();
+		obs = new Vector<LanguageObserver>();
 	};
 
 	public synchronized static Language getInstance() {

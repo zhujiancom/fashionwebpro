@@ -25,6 +25,8 @@ public class SearchAction extends BaseAction {
 	private static final long serialVersionUID = -833389843083658746L;
 	private String keywords;
 	private String searchType;
+	private Designer designer;
+	private Brand brand;
 	@Resource
 	private IDesignerService designerService;
 	@Resource
@@ -56,14 +58,21 @@ public class SearchAction extends BaseAction {
 		}else if(searchType.equals(SearchType.DESIGNER.toString())){
 			try {
 				List<Designer> designers = designerService.fuzzySearchByName(keywords);
-				getValueStack().set("designers", designers);
+				if(designers != null && !designers.isEmpty()){
+					designer = designers.get(0);
+					setDesigner(designer);
+				}
+				return "find_designer";
 			} catch (ServiceException e) {
 				getValueStack().set("designerMsg", e.getMessage());
 			}
 		}else if(searchType.equals(SearchType.BRAND.toString())){
 			try {
 				List<Brand> brands = brandService.fuzzySearchByName(keywords);
-				getValueStack().set("brands", brands);
+				if(brands != null && !brands.isEmpty()){
+					brand = brands.get(0);
+				}
+				return "find_brand";
 			} catch (ServiceException e) {
 				getValueStack().set("brandMsg", e.getMessage());
 			}
@@ -92,5 +101,21 @@ public class SearchAction extends BaseAction {
 
 	public void setSearchType(String searchType) {
 		this.searchType = searchType;
+	}
+
+	public Designer getDesigner() {
+		return designer;
+	}
+
+	public void setDesigner(Designer designer) {
+		this.designer = designer;
+	}
+
+	public Brand getBrand() {
+		return brand;
+	}
+
+	public void setBrand(Brand brand) {
+		this.brand = brand;
 	}
 }

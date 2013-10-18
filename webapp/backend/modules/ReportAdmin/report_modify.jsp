@@ -68,7 +68,7 @@
 			        	<ul>
 		                	<li class="list_common">
 			                	<div class="imgLiquidFill imgLuid pic">
-			                    	<img src="<%=serverPath %>/<s:property value='reportvo.thumbnail'/>"  width="80" height="80"/>
+			                    	<img src="<%=basePath %><s:property value='reportvo.thumbnail'/>"  width="80" height="80"/>
 			                    </div>
 			                </li>
 			        	</ul>

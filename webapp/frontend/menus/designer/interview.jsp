@@ -7,27 +7,47 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
-    <base href="<%=basePath%>frontend/">
-    
-    <title>My JSP 'profile.jsp' starting page</title>
-    
+	<link href="<%=basePath%>frontend/css/video.css" rel="stylesheet" />
+	<link href="<%=basePath%>frontend/javascript/jquery-plugin/osmplayer/osmplayer-2.x/jquery-ui/ui-darkness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
+	<link href="<%=basePath%>frontend/javascript/jquery-plugin/osmplayer/osmplayer-2.x/templates/default/css/osmplayer_default.css" rel="stylesheet"/>
 	
-	<link href="css/video.css" rel="stylesheet" />
-	<link href="javascript/jquery-plugin/osmplayer/osmplayer-2.x/jquery-ui/ui-darkness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
-	<link href="javascript/jquery-plugin/osmplayer/osmplayer-2.x/templates/default/css/osmplayer_default.css" rel="stylesheet"/>
-	
-	<script src="javascript/jquery-1.7.2.min.js" type="application/javascript"></script>
+	<script src="<%=basePath%>comm_script/jquery-1.7.2.min.js" type="application/javascript"></script>
 	<script type="text/javascript" 
     		src="<%=basePath%>comm_script/jquery-plugin/jquery-ui-1.8.16.custom.min.js">
     </script>
-	<script src="javascript/jquery-plugin/osmplayer/osmplayer-2.x/bin/osmplayer.compressed.js" type="application/javascript"></script>
-	<script src="javascript/jquery-plugin/osmplayer/osmplayer-2.x/templates/default/osmplayer.default.js" type="application/javascript"></script>
-	<script src="javascript/jquery-plugin/osmplayer/osmplayer-2.x/minplayer/src/minplayer.players.flash.js" type="application/javascript"></script>
-	<script src="javascript/jquery-plugin/imgLiquid/imgLiquid.js" type="application/javascript"></script>
-	<script type="text/javascript">
+	<script src="<%=basePath%>frontend/javascript/jquery-plugin/osmplayer/osmplayer-2.x/bin/osmplayer.compressed.js" type="application/javascript"></script>
+	<script src="<%=basePath%>frontend/javascript/jquery-plugin/osmplayer/osmplayer-2.x/templates/default/osmplayer.default.js" type="application/javascript"></script>
+	<script src="<%=basePath%>frontend/javascript/jquery-plugin/osmplayer/osmplayer-2.x/minplayer/src/minplayer.players.flash.js" type="application/javascript"></script>
+	<script src="<%=basePath%>frontend/javascript/jquery-plugin/imgLiquid/imgLiquid.js" type="application/javascript"></script>
+  </head>
+  
+  <body oncontextmenu="return false" onselectstart="return false">
+  	<div id="wrapper">
+  		 <div id="mainwrapper">
+    		<div id="videowrapper">
+	        	<div id="osmplayer"></div>
+        		<video src="<s:property value='interviewvo.videoUrl'/>" poster="<s:property value='interviewvo.posterthumnail'/>"></video>
+<%--        		<h2 id="introduction"><s:text name="introduction" /></h2>--%>
+<%--	        	<div id="intro">--%>
+<%--		        	<div class="msg_caption">--%>
+<%--		           	 <span class="up imgLiquidFill imgLiquid" >--%>
+<%--		             <img src="images/up-arrow-circle-hi.png" />--%>
+<%--		             </span>--%>
+<%--		        	</div>--%>
+<%--	            	<textarea id="comment"><s:property value="interviewvo.introduction"/></textarea>--%>
+<%--	              	<div class="msg_caption">--%>
+<%--	            		<span class="down imgLiquidFill imgLiquid">--%>
+<%--	                		<img src="images/down-arrow-circle-hi.png" />--%>
+<%--	                	</span>--%>
+<%--	        	  	</div>--%>
+<%--	       		</div>--%>
+    		</div>
+		</div>
+  	</div>
+  	<script type="text/javascript">
 	  $(function() {
 	    $("video").osmplayer({
-		  playlist:'menus/designer/playlist.xml',
+		  playlist:'<%=basePath%>frontend/menus/designer/playlist.xml',
 	      width: '80%',
 	      height: '500px'
 	    });
@@ -48,46 +68,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}
 			});
 		});
-	 </script>
-	
-	
-	<script type="text/javascript">
-		$(document).ready(function() {
+	    
+	    $(document).ready(function() {
 			$(".imgLiquidFill").imgLiquid();
 
 		});
-
-		
-	</script>
-
-  </head>
-  
-  <body oncontextmenu="return false" onselectstart="return false">
-  	<div id="wrapper">
-  		 <div id="mainwrapper">
-    		<div id="videowrapper">
-        	<div id="osmplayer"></div>
-        	<video src="<s:property value='interviewVO.interview.interviewurl'/>" poster="<s:property value='interviewVO.interview.poster'/>"></video>
-        	<h2 id="introduction"><s:text name="introduction" /></h2>
-        
-        	<div id="intro">
-        	<div class="msg_caption">
-           	 <span class="up imgLiquidFill imgLiquid" >
-             <img src="images/up-arrow-circle-hi.png" />
-             </span>
-        	</div>
-            <textarea id="comment"><s:property value="interviewVO.content"/>
-              </textarea>
-              <div class="msg_caption">
-            	<span class="down imgLiquidFill imgLiquid">
-                	<img src="images/down-arrow-circle-hi.png" />
-                </span>
-        	  </div>
-       </div>
-        
-        
-    </div>
-</div>
-  	</div>
+	 </script>
   </body>
 </html>

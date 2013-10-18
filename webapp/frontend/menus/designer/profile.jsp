@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>frontend/">
     
-    <title>My JSP 'profile.jsp' starting page</title>
+    <title>Designers</title>
     
 	<script src="<%=basePath %>comm_script/jquery-1.9.1.min.js" type="application/javascript"></script>
 	<script type="text/javascript"

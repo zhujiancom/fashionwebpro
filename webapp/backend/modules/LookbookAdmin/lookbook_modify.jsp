@@ -58,7 +58,7 @@
 			                <s:iterator value="lookbookvo.thumbnailUrls" var="thumbnail">
 			                	<li class="list_common">
 				                	<div class="imgLiquidFill imgLuid pic">
-				                    	<img src="<%=serverPath %>/<s:property value='#thumbnail'/>"  width="100" height="100"/>
+				                    	<img src="<%=basePath %><s:property value='#thumbnail'/>"  width="100" height="100"/>
 				                    </div>
 				                </li>
 			                </s:iterator>

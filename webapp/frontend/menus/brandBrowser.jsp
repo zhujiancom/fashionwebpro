@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>frontend/">
     
-    <title>My JSP 'profile.jsp' starting page</title>
+    <title>Brands Browser</title>
     
 	
 	<link href="css/brandbrowser.css" rel="stylesheet" />

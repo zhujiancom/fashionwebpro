@@ -280,7 +280,7 @@ public class RunwayshowAction extends BaseAction {
 			List<Runwayshow> runwayshows = runwayshowService.getRunwayShowByBrand(brand.getBrandid());
 			String basePath = getBasePath() + ServletActionContext.getRequest().getContextPath();;
 			XmlParse parse = new RunwayshowPlayList(runwayshows);
-			String outputfile = basePath+"frontend/menus/brand/playlist.xml";
+			String outputfile = basePath+"/frontend/menus/brand/playlist.xml";
 			parse.generateXMLFile(outputfile);
 			Runwayshow show = runwayshows.get(0);
 			RunwayshowVO rvo = VOFactory.getObserverVO(RunwayshowVO.class, show);

@@ -4,16 +4,9 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
 
-<!DOCTYPE html>
-<html>
-  <head>
-    
-    <title>My JSP 'footer.jsp' starting page</title>
-    
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link href="<%=basePath%>frontend/css/footer.css" type="text/css" rel="stylesheet"/>
 
-  </head>
   	<div style="width:895px;height:50px;margin:0 auto;padding:0;position:relative;">
         <div id="information">
         	<ul>

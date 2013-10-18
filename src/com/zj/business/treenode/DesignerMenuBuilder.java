@@ -82,21 +82,21 @@ public class DesignerMenuBuilder implements IMenuBuilder {
 			MenuItem lookbookItem = new MenuItem(
 					MenuVO.menuMap.get(CommonConstant.LOOKBOOK_IMAGES));
 			String lookbookAttr = "href='lookbook_showByBrand.action?brand.brandid="
-					+ brandvo.getId() + "'";
+					+ brandvo.getId() + "' target='mainPanel'";
 			lookbookItem.setAttributes(lookbookAttr);
 			subMenu.addItem(lookbookItem);
 			// editorial Item
 			MenuItem editorialItem = new MenuItem(
 					MenuVO.menuMap.get(CommonConstant.EDITORIAL_IMAGES));
 			String editorialAttr = "href='editorial_showByBrand.action?brand.brandid="
-					+ brandvo.getId() + "'";
+					+ brandvo.getId() + "' target='mainPanel'";
 			editorialItem.setAttributes(editorialAttr);
 			subMenu.addItem(editorialItem);
 			// runway shows Item
 			MenuItem runwayshowItem = new MenuItem(
 					MenuVO.menuMap.get(CommonConstant.RUNWAY_SHOWS));
 			String runwayshowAttr = "href='runwayshow_showByBrand.action?brand.brandid="
-					+ brandvo.getId() + "'";
+					+ brandvo.getId() + "' target='mainPanel'";
 			runwayshowItem.setAttributes(runwayshowAttr);
 			subMenu.addItem(runwayshowItem);
 			menu.addSubMenu(subMenu);
@@ -110,10 +110,10 @@ public class DesignerMenuBuilder implements IMenuBuilder {
 			List<Menu> menuTree = new LinkedList<Menu>();
 			menuTree.add(createDesingerMenu());
 			menuTree.add(createBrandsMenu());
-			if (isPermission) {
+//			if (isPermission) {
 				menuTree.add(createInterviewMenu());
 				menuTree.add(createCollectionMenu());
-			}
+//			}
 			return menuTree;
 		}catch(Exception e){
 			throw new ServiceException("create menu Tree error!",e);

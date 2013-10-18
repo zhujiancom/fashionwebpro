@@ -10,7 +10,7 @@
 <html>
 	<head>
 		<base href="<%=basePath%>backend/">
-
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 		<title>My JSP 'designerAdd.jsp' starting page</title>
 		
 		<link href="<%=basePath %>comm_script/bootstrap/css/bootstrap.min.css" rel="stylesheet">

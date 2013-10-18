@@ -1,7 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" isELIgnored="false"%>
 <%
 String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+String serverPath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+String basePath = serverPath + path + "/";
 %>
 <%@ taglib uri="/struts-tags" prefix="s" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -9,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>frontend/">
     
-    <title>My JSP 'profile.jsp' starting page</title>
+    <title>Designers Browser</title>
     
 	
 	<link href="css/designerbrowser.css" rel="stylesheet" />
@@ -115,7 +116,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                    <table class="tablestyle">
 		                        <tr>
 		                            <td rowspan="3" class="portraite imgLiquidFill imgLiquid" ><img src="<%=basePath %><s:property value='#designervo.designer.imgURL'/>" /></td>
-		                            <td colspan="2" class="columnstyle titlestyle"><a href="menus/designer/main.jsp?designerId=<s:property value='#designervo.designer.designerId'/>"><s:property value="#designervo.name" /></a></td>
+		                            <td colspan="2" class="columnstyle titlestyle"><a href="menus/designer/main.jsp?designerId=<s:property value='#designervo.id'/>"><s:property value="#designervo.name" /></a></td>
 		                        </tr>
 		                    </table>
 		                </li>

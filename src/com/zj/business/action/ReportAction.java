@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
+import java.util.UUID; 
 
 import javax.annotation.Resource;
 
@@ -198,7 +198,7 @@ public class ReportAction extends BaseAction {
 				language.addObserver(vo);
 			}
 			language.setLanguage(getLanguageType());
-			getValueStack().set("reportlist", reportlist);
+			getValueStack().set("reportvolist", reportlist);
 			return "load_reports_success";
 		} catch (ServiceException e) {
 			getValueStack().set("msg", e.getMessage());
@@ -206,22 +206,63 @@ public class ReportAction extends BaseAction {
 		}
 	}
 	
-	public String showDetails(){
+//	public String showDetails(){
+//		Language language = Language.getInstance();
+//		try {
+//			Report dbreport = reportService.get(Report.class, report.getReportid());
+//			ReportVO vo = VOFactory.getObserverVO(ReportVO.class, dbreport);
+//			language.addObserver(vo);
+//			language.setLanguage(getLanguageType());
+//			getValueStack().set("specreport", vo);
+//			return "open_report_success";
+//		} catch (ServiceException e) {
+//			e.printStackTrace();
+//			getValueStack().set("msg",e.getMessage());
+//			return "open_report_failure";
+//		}
+//	}
+//	
+//	public String showPreItem1(){
+//		Language language = Language.getInstance();
+//		try {
+//			Report preReport = reportService.getPreReport(report.getReportid());
+//			ReportVO vo =  VOFactory.getObserverVO(ReportVO.class, preReport);
+//			language.addObserver(vo);
+//			language.setLanguage(getLanguageType());
+//			getValueStack().set("specreport", vo);
+//			return "open_report_success";
+//		} catch (ServiceException e) {
+//			log.debug(e);
+//			try {
+//				report = reportService.get(Report.class, report.getReportid());
+//				ReportVO vo =  VOFactory.getObserverVO(ReportVO.class, report);
+//				language.addObserver(vo);
+//				language.setLanguage(getLanguageType());
+//				getValueStack().set("specreport",vo);
+//			} catch (ServiceException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//			return "open_report_failure";
+//		}
+//	}
+	
+	/////////////////////////////////////////////// new function ////////////////////////////////////////
+	public String showDetail(){
 		Language language = Language.getInstance();
 		try {
 			Report dbreport = reportService.get(Report.class, report.getReportid());
 			ReportVO vo = VOFactory.getObserverVO(ReportVO.class, dbreport);
 			language.addObserver(vo);
 			language.setLanguage(getLanguageType());
-			getValueStack().set("specreport", vo);
-			return "open_report_success";
+			getValueStack().set("reportvo", vo);
+			return "show_report_success";
 		} catch (ServiceException e) {
 			e.printStackTrace();
 			getValueStack().set("msg",e.getMessage());
-			return "open_report_failure";
+			return "serviceException";
 		}
 	}
-	
 	public String showPreItem(){
 		Language language = Language.getInstance();
 		try {
@@ -229,8 +270,8 @@ public class ReportAction extends BaseAction {
 			ReportVO vo =  VOFactory.getObserverVO(ReportVO.class, preReport);
 			language.addObserver(vo);
 			language.setLanguage(getLanguageType());
-			getValueStack().set("specreport", vo);
-			return "open_report_success";
+			getValueStack().set("reportvo", vo);
+			return "show_report_success";
 		} catch (ServiceException e) {
 			log.debug(e);
 			try {
@@ -238,18 +279,40 @@ public class ReportAction extends BaseAction {
 				ReportVO vo =  VOFactory.getObserverVO(ReportVO.class, report);
 				language.addObserver(vo);
 				language.setLanguage(getLanguageType());
-				getValueStack().set("specreport",vo);
+				getValueStack().set("reportvo",vo);
+				return "show_report_success";
 			} catch (ServiceException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				return "serviceException";
 			}
-			return "open_report_failure";
 		}
 	}
 	
 	public String showNextItem(){
-		return null;
+		Language language = Language.getInstance();
+		try {
+			Report preReport = reportService.getNextReport(report.getReportid());
+			ReportVO vo =  VOFactory.getObserverVO(ReportVO.class, preReport);
+			language.addObserver(vo);
+			language.setLanguage(getLanguageType());
+			getValueStack().set("reportvo", vo);
+			return "show_report_success";
+		} catch (ServiceException e) {
+			log.debug(e);
+			try {
+				report = reportService.get(Report.class, report.getReportid());
+				ReportVO vo =  VOFactory.getObserverVO(ReportVO.class, report);
+				language.addObserver(vo);
+				language.setLanguage(getLanguageType());
+				getValueStack().set("reportvo",vo);
+				return "show_report_success";
+			} catch (ServiceException e1) {
+				e1.printStackTrace();
+				return "serviceException";
+			}
+		}
 	}
+/////////////////////////////////////////////// new function ////////////////////////////////////////
 	
 	public String loadReportsByOrder(){
 		Language language = Language.getInstance();

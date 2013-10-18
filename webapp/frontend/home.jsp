@@ -51,7 +51,7 @@ String basePath = serverPath + path + "/";
               <div class="flexslider">
                 <ul class="slides">
                   <s:iterator value="homevo.imageUrls" var="imagesrc">
-						<li><img src="<%=serverPath %>/<s:property value="#imagesrc"/>"/></li>
+						<li><img src="<%=basePath %><s:property value="#imagesrc"/>"/></li>
 					</s:iterator>
                 </ul>
               </div>
@@ -64,7 +64,7 @@ String basePath = serverPath + path + "/";
                     <tr align="center" valign="middle">
                     	<td>
                         	<div class="imgLiquidFill imgLuid">
-                            	<a href="menus/designer/main.jsp?designerId=<s:property value='homevo.featuredDesignerVO.designer.designerId'/>"><img src="<%=serverPath %>/<s:property value='homevo.featuredDesignerVO.thumbnailUrl'/>"  /></a>
+                            	<a href="menus/designer/main.jsp?designerId=<s:property value='homevo.featuredDesignerVO.designer.designerId'/>"><img src="<%=basePath %><s:property value='homevo.featuredDesignerVO.thumbnailUrl'/>"  /></a>
                              </div>
                          </td>
                         <td><a href="menus/designer/main.jsp?designerId=<s:property value='homevo.featuredDesignerVO.designer.designerId'/>" ><s:property value="homevo.featuredDesignerVO.name"/></a></td>
@@ -73,7 +73,7 @@ String basePath = serverPath + path + "/";
                     	 <tr align="center" valign="middle">
 	                    	<td>
 	                        	<div class="imgLiquidFill imgLuid">
-	                            	<a href="menus/designer/main.jsp?designerId=<s:property value='#designervo.designer.designerId'/>"><img src="<%=serverPath %>/<s:property value='#designervo.thumbnailUrl'/>"  /></a>
+	                            	<a href="menus/designer/main.jsp?designerId=<s:property value='#designervo.designer.designerId'/>"><img src="<%=basePath %><s:property value='#designervo.thumbnailUrl'/>"  /></a>
 	                             </div>
 	                         </td>
 	                        <td><a href="menus/designer/main.jsp?designerId=<s:property value='#designervo.designer.designerId'/>" ><s:property value="#designervo.name"/></a></td>
@@ -87,7 +87,7 @@ String basePath = serverPath + path + "/";
             	<h3><a href="#"><s:text name="video"/></a></h3>
                 <hr />
             	<video controls="controls" autoplay="autoplay"  height="340px" width="500px">
-                	<source src="<%=serverPath %>/<s:property value='homevo.videoUrl'/>" >
+                	<source src="<%=basePath %><s:property value='homevo.videoUrl'/>" >
                     Your browser dose not support the video tag.
                 </video>
             </div>
@@ -105,7 +105,7 @@ String basePath = serverPath + path + "/";
             	<table width="895px">
 	            <tr align="center" valign="middle">
 	            	<s:iterator value="#lookbookvo.images" var="image">
-	            		<td><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="<%=serverPath %>/<s:property value='#image'/>"/></div></td>
+	            		<td><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="<%=basePath %><s:property value='#image'/>"/></div></td>
 	            	</s:iterator>
 	            </tr>
 	            </table>
