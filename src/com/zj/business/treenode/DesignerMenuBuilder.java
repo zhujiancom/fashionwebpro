@@ -31,8 +31,9 @@ public class DesignerMenuBuilder implements IMenuBuilder {
 
 	public Menu createDesingerMenu() {
 		Menu menu = new Menu(designer.getName().toUpperCase());
-		String attributes = "href='designer_showProfile.action?designer.designerId="
-				+ designer.getId() + "' target='mainPanel'";
+//		String attributes = "href='designer_showProfile.action?designer.designerId="
+//				+ designer.getId() + "' target='mainPanel'";
+		String attributes = "href='designer/"+ designer.getId() + ".html' target='mainPanel'";
 		menu.setAttributes(attributes);
 		return menu;
 	}
@@ -41,8 +42,9 @@ public class DesignerMenuBuilder implements IMenuBuilder {
 		Menu menu = new Menu(MenuVO.menuMap.get(CommonConstant.BRAND));
 		for (BrandVO brand : brands) {
 			MenuItem item = new MenuItem(brand.getName().toUpperCase());
-			String attributes = "href='brand_showBrandInfo.action?brand.brandid="
-					+ brand.getId() + "' target='mainPanel'";
+//			String attributes = "href='brand_showBrandInfo.action?brand.brandid="
+//					+ brand.getId() + "' target='mainPanel'";
+			String attributes = "href='brand/brand_"+brand.getId()+".html' target='mainPanel'";
 			item.setAttributes(attributes);
 			menu.addItem(item);
 		}
@@ -53,22 +55,25 @@ public class DesignerMenuBuilder implements IMenuBuilder {
 		Menu menu = new Menu(MenuVO.menuMap.get(CommonConstant.INTERVIEWS));
 		MenuItem videoItem = new MenuItem(
 				MenuVO.menuMap.get(CommonConstant.VIDEOS));
-		String videoAttr = "href='interview_showInterviews.action?designer.designerId="
-				+ designer.getId()
-				+ "&type=video' target='mainPanel'";
+//		String videoAttr = "href='interview_showInterviews.action?designer.designerId="
+//				+ designer.getId()
+//				+ "&type=video' target='mainPanel'";
+		String videoAttr = "href='interview/videos/"+designer.getId()+"' target='mainPanel'";
 		videoItem.setAttributes(videoAttr);
 		menu.addItem(videoItem);
 		MenuItem audioItem = new MenuItem(
 				MenuVO.menuMap.get(CommonConstant.AUDIOS));
-		String audioAttr = "href='interview_showInterviews.action?designer.designerId="
-				+ designer.getId()
-				+ "&type=audio' target='mainPanel'";
+//		String audioAttr = "href='interview_showInterviews.action?designer.designerId="
+//				+ designer.getId()
+//				+ "&type=audio' target='mainPanel'";
+		String audioAttr = "href='interview/audios/"+designer.getId()+"' target='mainPanel'";
 		audioItem.setAttributes(audioAttr);
 		menu.addItem(audioItem);
 		MenuItem pressreportItem = new MenuItem(
 				MenuVO.menuMap.get(CommonConstant.PRESSROPORTS));
-		String reportAttr = "href='report_showReports.action?designer.designerId="
-				+ designer.getId() + "' target='mainPanel'";
+//		String reportAttr = "href='report_showReports.action?designer.designerId="
+//				+ designer.getId() + "' target='mainPanel'";
+		String reportAttr = "href='reports/"+designer.getId()+"' target='mainPanel'";
 		pressreportItem.setAttributes(reportAttr);
 		menu.addItem(pressreportItem);
 		return menu;
@@ -81,22 +86,25 @@ public class DesignerMenuBuilder implements IMenuBuilder {
 			// lookbook Item
 			MenuItem lookbookItem = new MenuItem(
 					MenuVO.menuMap.get(CommonConstant.LOOKBOOK_IMAGES));
-			String lookbookAttr = "href='lookbook_showByBrand.action?brand.brandid="
-					+ brandvo.getId() + "' target='mainPanel'";
+//			String lookbookAttr = "href='lookbook_showByBrand.action?brand.brandid="
+//					+ brandvo.getId() + "' target='mainPanel'";
+			String lookbookAttr = "href='collections/"+brandvo.getId()+"/lookbooks/' target='mainPanel'";
 			lookbookItem.setAttributes(lookbookAttr);
 			subMenu.addItem(lookbookItem);
 			// editorial Item
 			MenuItem editorialItem = new MenuItem(
 					MenuVO.menuMap.get(CommonConstant.EDITORIAL_IMAGES));
-			String editorialAttr = "href='editorial_showByBrand.action?brand.brandid="
-					+ brandvo.getId() + "' target='mainPanel'";
+//			String editorialAttr = "href='editorial_showByBrand.action?brand.brandid="
+//					+ brandvo.getId() + "' target='mainPanel'";
+			String editorialAttr = "href='collections/"+brandvo.getId()+"/editorials/' target='mainPanel'";
 			editorialItem.setAttributes(editorialAttr);
 			subMenu.addItem(editorialItem);
 			// runway shows Item
 			MenuItem runwayshowItem = new MenuItem(
 					MenuVO.menuMap.get(CommonConstant.RUNWAY_SHOWS));
-			String runwayshowAttr = "href='runwayshow_showByBrand.action?brand.brandid="
-					+ brandvo.getId() + "' target='mainPanel'";
+//			String runwayshowAttr = "href='runwayshow_showByBrand.action?brand.brandid="
+//					+ brandvo.getId() + "' target='mainPanel'";
+			String runwayshowAttr = "href='collections/"+brandvo.getId()+"/runwayshows/' target='mainPanel'";
 			runwayshowItem.setAttributes(runwayshowAttr);
 			subMenu.addItem(runwayshowItem);
 			menu.addSubMenu(subMenu);
@@ -110,10 +118,10 @@ public class DesignerMenuBuilder implements IMenuBuilder {
 			List<Menu> menuTree = new LinkedList<Menu>();
 			menuTree.add(createDesingerMenu());
 			menuTree.add(createBrandsMenu());
-//			if (isPermission) {
+			if (isPermission) {
 				menuTree.add(createInterviewMenu());
 				menuTree.add(createCollectionMenu());
-//			}
+			}
 			return menuTree;
 		}catch(Exception e){
 			throw new ServiceException("create menu Tree error!",e);

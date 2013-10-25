@@ -29,8 +29,9 @@ public class BrandMenuBuilder implements IMenuBuilder {
 
 	public Menu createBrandMenu() {
 		Menu menu = new Menu(brand.getName().toUpperCase());
-		String attributes = "href='brand_showBrandInfo.action?brand.brandid="
-				+ brand.getId() + "' target=mainPanel";
+//		String attributes = "href='brand_showBrandInfo.action?brand.brandid="
+//				+ brand.getId() + "' target=mainPanel";
+		String attributes = "href='brand/brand_"+brand.getId()+".html' target='mainPanel'";
 		menu.setAttributes(attributes);
 		return menu;
 	}
@@ -39,8 +40,9 @@ public class BrandMenuBuilder implements IMenuBuilder {
 		Menu menu = new Menu(MenuVO.menuMap.get(CommonConstant.UNKNOW));
 		if (designer != null) {
 			menu = new Menu(designer.getName().toUpperCase());
-			String attributes = "href='designer_showProfile.action?designer.designerId="
-					+ designer.getId() + "' target='mainPanel'";
+//			String attributes = "href='designer_showProfile.action?designer.designerId="
+//					+ designer.getId() + "' target='mainPanel'";
+			String attributes = "href='designer/"+ designer.getId() + ".html' target='mainPanel'";
 			menu.setAttributes(attributes);
 		}
 		return menu;
@@ -55,14 +57,19 @@ public class BrandMenuBuilder implements IMenuBuilder {
 		MenuItem pressreportItem = new MenuItem(
 				MenuVO.menuMap.get(CommonConstant.PRESSROPORTS));
 		if (designer != null) {
-			String videoAttr = "href='interview_showInterviews.action?designer.designerId="
-					+ designer.getId() + "&type=video' target='mainPanel'";
+//			String videoAttr = "href='interview_showInterviews.action?designer.designerId="
+//					+ designer.getId() + "&type=video' target='mainPanel'";
+			
+			String videoAttr = "href='interview/videos/"+designer.getId()+"' target='mainPanel'";
 			videoItem.setAttributes(videoAttr);
-			String audioAttr = "href='interview_showInterviews.action?designer.designerId="
-					+ designer.getId() + "&type=audio' target='mainPanel'";
+//			String audioAttr = "href='interview_showInterviews.action?designer.designerId="
+//					+ designer.getId() + "&type=audio' target='mainPanel'";
+			String audioAttr = "href='interview/audios/"+designer.getId()+"' target='mainPanel'";
+
 			audioItem.setAttributes(audioAttr);
-			String reportAttr = "href='report_showReports.action?designer.designerId="
-					+ designer.getId() + "' target='mainPanel'";
+//			String reportAttr = "href='report_showReports.action?designer.designerId="
+//					+ designer.getId() + "' target='mainPanel'";
+			String reportAttr = "href='reports/"+designer.getId()+"' target='mainPanel'";
 			pressreportItem.setAttributes(reportAttr);
 		}
 		menu.addItem(videoItem);
@@ -83,14 +90,17 @@ public class BrandMenuBuilder implements IMenuBuilder {
 		MenuItem runwayshowItem = new MenuItem(
 				MenuVO.menuMap.get(CommonConstant.RUNWAY_SHOWS));
 		if (brand != null) {
-			String lookbookAttr = "href='lookbook_showByBrand.action?brand.brandid="
-					+ brand.getId() + "' target='mainPanel'";
+//			String lookbookAttr = "href='lookbook_showByBrand.action?brand.brandid="
+//					+ brand.getId() + "' target='mainPanel'";
+			String lookbookAttr = "href='collections/"+brand.getId()+"/lookbooks/' target='mainPanel'";
 			lookbookItem.setAttributes(lookbookAttr);
-			String editorialAttr = "href='editorial_showByBrand.action?brand.brandid="
-					+ brand.getId() + "' target='mainPanel'";
+//			String editorialAttr = "href='editorial_showByBrand.action?brand.brandid="
+//					+ brand.getId() + "' target='mainPanel'";
+			String editorialAttr = "href='collections/"+brand.getId()+"/editorials/' target='mainPanel'";
 			editorialItem.setAttributes(editorialAttr);
-			String runwayshowAttr = "href='runwayshow_showByBrand.action?brand.brandid="
-					+ brand.getId() + "' target='mainPanel'";
+//			String runwayshowAttr = "href='runwayshow_showByBrand.action?brand.brandid="
+//					+ brand.getId() + "' target='mainPanel'";
+			String runwayshowAttr = "href='collections/"+brand.getId()+"/runwayshows/' target='mainPanel'";
 			runwayshowItem.setAttributes(runwayshowAttr);
 		}
 
@@ -105,10 +115,10 @@ public class BrandMenuBuilder implements IMenuBuilder {
 		List<Menu> menuTree = new LinkedList<Menu>();
 		menuTree.add(createBrandMenu());
 		menuTree.add(createDesignerMenu());
-//		if (isPermission) {
+		if (isPermission) {
 			menuTree.add(createInterviewMenu());
 			menuTree.add(createCollectionMenu());
-//		}
+		}
 		return menuTree;
 	}
 

@@ -5,14 +5,14 @@ String serverPath = request.getScheme() + "://" + request.getServerName() + ":" 
 String basePath = serverPath + path + "/";
 %>
 <%@ taglib uri="/struts-tags" prefix="s" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML >
 <html>
   <head>
     <base href="<%=basePath%>frontend/">
     
     <title>Designers Browser</title>
     
-	
+	<link rel="icon" type="image/png" href="<%=basePath %>favicon.ico" />
 	<link href="css/designerbrowser.css" rel="stylesheet" />
 	<link href="javascript/jquery-plugin/jpages/jPages.css" rel="stylesheet"/>
 	<script src="javascript/jquery-1.7.2.min.js" type="application/javascript"></script>
@@ -55,42 +55,6 @@ String basePath = serverPath + path + "/";
 	</script>
 	
 	<style type="text/css">
-		.holder {
-		  margin: 15px 0;
-		}
-		
-		.holder a {
-		  font-size: 12px;
-		  cursor: pointer;
-		  margin: 0 5px;
-		  color: #333;
-		}
-		
-		.holder a:hover {
-		  background-color: #222;
-		  color: #fff;
-		}
-		
-		.holder a.jp-previous { margin-right: 15px; }
-		.holder a.jp-next { margin-left: 15px; }
-		
-		.holder a.jp-current, a.jp-current:hover {
-		  color: #FF4242;
-		  font-weight: bold;
-		}
-		
-		.holder a.jp-disabled, a.jp-disabled:hover {
-		  color: #bbb;
-		}
-		
-		.holder a.jp-current, a.jp-current:hover,
-		.holder a.jp-disabled, a.jp-disabled:hover {
-		  cursor: default;
-		  background: none;
-		}
-		
-		.holder span { margin: 0 5px; }
-		  
 		.listNav { margin:0 0 10px; }
 		.ln-letters { overflow:hidden; }
 		.ln-letters a { font-size:0.9em; display:block; float:left; padding:2px 6px; border:1px solid silver; border-right:none; text-decoration:none; }
@@ -116,7 +80,7 @@ String basePath = serverPath + path + "/";
 		                    <table class="tablestyle">
 		                        <tr>
 		                            <td rowspan="3" class="portraite imgLiquidFill imgLiquid" ><img src="<%=basePath %><s:property value='#designervo.designer.imgURL'/>" /></td>
-		                            <td colspan="2" class="columnstyle titlestyle"><a href="menus/designer/main.jsp?designerId=<s:property value='#designervo.id'/>"><s:property value="#designervo.name" /></a></td>
+		                            <td colspan="2" class="columnstyle titlestyle"><a href="../designer/main/<s:property value='#designervo.id'/>.html"><s:property value="#designervo.name" /></a></td>
 		                        </tr>
 		                    </table>
 		                </li>

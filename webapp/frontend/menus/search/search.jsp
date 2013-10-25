@@ -10,6 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <base href="<%=basePath%>frontend/">
     
     <title><s:text name="search"/></title>
+    <link rel="icon" type="image/png" href="<%=basePath %>favicon.ico" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	
 	<style type="text/css">

@@ -224,10 +224,10 @@ public class BaseAction extends ActionSupport implements SessionAware,RequestAwa
 	
 	public String getWebRootPath(){
 		String scheme = ServletActionContext.getRequest().getScheme(); // http
-//		String contextPath = ServletActionContext.getRequest().getContextPath();  // project name
+		String contextPath = ServletActionContext.getRequest().getContextPath();  // project name
 		String serverName = ServletActionContext.getRequest().getServerName(); //localhost
 		int port = ServletActionContext.getRequest().getServerPort(); // 8080
-		String path = scheme+"://"+serverName+":"+port+"/";
+		String path = scheme+"://"+serverName+":"+port+contextPath+"/";
 		return path;
 	}
 	

@@ -7,7 +7,6 @@
 
 a:link{
 	text-decoration: none;
-	color: inherit;
 }
 
 a:hover{
@@ -16,7 +15,7 @@ a:hover{
 }
 
 .login a:visited{
-	color:#0CF;
+	color:#ffffff;
 	text-decoration:none;
 }
 

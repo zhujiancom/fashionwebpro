@@ -106,6 +106,18 @@ public class ContactUsAction extends BaseAction {
 		return "load_success";
 	}
 	
+	public String submitMsg(){
+		try {
+			contactService.insert(contactus);
+			getValueStack().set("msg", "create Contacter ["+contactus.getContactName()+"] Successfully! ");
+			return "submit_message_success";
+		} catch (ServiceException e) {
+			e.printStackTrace();
+			getValueStack().set("msg", "create Contacter ["+contactus.getContactName()+"] Failure! ");
+			return "submit_message_failure";
+		}
+	}
+	
 	public ContactUs getContactus() {
 		return contactus;
 	}

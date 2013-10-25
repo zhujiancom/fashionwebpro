@@ -2045,7 +2045,7 @@ function getProjectName(){
 						if($input.hasClass("require")){
 							var value = $input.val();
 							if(value == ""){
-								$wrapper.after("<span style='color:red'><img src=/"+projectName+"/comm_images/error.png width='16px' height='16px'/>&nbsp;&nbsp;此项为必填项!</span>");
+								$wrapper.after("<span style='color:red'><img src=/"+projectName+"/comm_images/error.png width='16px' height='16px'/>&nbsp;&nbsp;this field is required!</span>");
 								$input.attr("result",false);
 								return;
 							}
@@ -2081,9 +2081,9 @@ function getProjectName(){
 								data:key+"="+param,
 								success:function(data){
 									if(data.msg == "true"){
-										$wrapper.after("<span style='color:green'><img src=/"+projectName+"/comm_images/correct.png width='16px' height='16px'/>&nbsp;&nbsp;The account can be register!</span>");
+										$wrapper.after("<span style='color:green'><img src=/"+projectName+"/comm_images/correct.png width='16px' height='16px'/>&nbsp;&nbsp;The account can be registered!</span>");
 									}else if(data.msg == "false"){
-										$wrapper.after("<span style='color:red'><img src=/"+projectName+"/comm_images/error.png width='16px' height='16px'/>&nbsp;&nbsp;The same account has existed, please type a new account!</span>");
+										$wrapper.after("<span style='color:red'><img src=/"+projectName+"/comm_images/error.png width='16px' height='16px'/>&nbsp;&nbsp;The same account has been used!</span>");
 										$input.attr("result",false);
 									}
 								}

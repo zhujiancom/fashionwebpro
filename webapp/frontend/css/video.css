@@ -7,17 +7,15 @@
 
 #mainwrapper{
 	width:1000px;
-	height:1000px;
 	margin:0 auto;
+	padding:0px;
 }
 #menu{
-	height:100%;
 	width:15%;
 	float:left;
 	border:3px solid green;
 }
 #videowrapper{
-	height:100%;
 	width:85%;
 	padding-top:5%;
 }

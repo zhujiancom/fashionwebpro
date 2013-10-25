@@ -38,17 +38,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	      width: '80%',
 	      height: '500px'
 	    });
-	    var $comment = $('#comment');//获取评论框
-	    $('.up').click(function(){ //向上按钮绑定单击事件
-		   if(!$comment.is(":animated")){//判定是否处于<a href='http://www.21edu8.com/pcnet/3d/' target='_blank'><u>动画</u></a>
-				$comment.animate({ scrollTop  : "-=50" } , 400);
-			}
-		});
-		$('.down').click(function(){//向下按钮绑定单击事件
-		   if(!$comment.is(":animated")){
-				$comment.animate({ scrollTop  : "+=50" } , 400);
-			}
-		});
 	  });
 	</script>
   </body>

@@ -15,21 +15,20 @@
 		<action name="account_*" class="accountAction" method="{1}">
 			<interceptor-ref name="fileUploadStack"/>
 			<interceptor-ref name="defaultStack"/>
-			<result name="login_success" type="redirectAction">
-				<param name="actionName">homepager_loadData</param>
-				<param name="namespace">/frontend</param>
-				<param name="accountname">${account.accountname}</param>
-			</result>
+<!--			<result name="login_success" type="redirectAction">-->
+<!--				<param name="actionName">homepager_loadData</param>-->
+<!--				<param name="namespace">/frontend</param>-->
+<!--				<param name="accountname">${account.accountname}</param>-->
+<!--			</result>-->
+			<result name="login_success" type="redirect">${referer}</result>
 			<result name="login_invalid">index.jsp</result>
 			<result name="login_failed">index.jsp</result>
-			<result name="logout_success">index.jsp</result>
-			<result name="forward_success">register.jsp</result>
+			<result name="logout_success" type="redirect">${referer}</result>
 			<result name="register_account_successful" type="redirectAction">
 				<param name="actionName">homepager_loadData</param>
 				<param name="namespace">/frontend</param>
-				<param name="accountname">${account.accountname}</param>
 			</result>
-			<result name="register_account_failure">temp.jsp</result>
+			<result name="register_account_failure">register.jsp</result>
 		</action>
 		
 		<action name="homepager_loadData" class="homepagerAction" method="loadData">
@@ -117,6 +116,8 @@
 		
 		<action name="contact_*" class="contactAction" method="{1}">
 			<result name="load_success">menus/contactus.jsp</result>
+			<result name="submit_message_success">menus/contactus.jsp</result>
+			<result name="submit_message_failure">menus/contactus.jsp</result>
 		</action>
 		
 		<action name="switch" class="switchLanguageAction">

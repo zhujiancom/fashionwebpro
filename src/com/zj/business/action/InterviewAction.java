@@ -8,7 +8,6 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
-import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -79,15 +78,15 @@ public class InterviewAction extends BaseAction {
 				isAddVideo = true;
 				String fileType = getExtention(videoFileFileName);
 				String videoName = UUID.randomUUID().toString();
-				videourl = fileUploadPath+interview.getInterviewtype()+"/"+videoName+fileType;
+				videourl = fileUploadPath+interview.getInterviewtype()+File.separator+videoName+fileType;
 				interview.setInterviewurl(getWebRootPath()+videourl);
 			}
 			if(posterFile != null){
 				isAddPoster = true;
 				String fileType = getExtention(posterFileFileName);
 				String posterFileName =UUID.randomUUID().toString();
-				posterurl = fileUploadPath+interview.getInterviewtype()+"/"+posterFileName+fileType;
-				posterThumbnailUrl = fileUploadPath+interview.getInterviewtype()+"/"+posterFileName+CommonConstant.ThumbnailSuffix+ fileType;
+				posterurl = fileUploadPath+interview.getInterviewtype()+File.separator+posterFileName+fileType;
+				posterThumbnailUrl = fileUploadPath+interview.getInterviewtype()+File.separator+posterFileName+CommonConstant.ThumbnailSuffix+ fileType;
 				interview.setPoster(getWebRootPath()+posterurl);
 			}
 			interview.setCreater(((SysUser)session.get(GlobalParam.LOGIN_USER_SESSION)).getEname());
@@ -117,7 +116,7 @@ public class InterviewAction extends BaseAction {
 		}catch(ServiceException se){
 			se.printStackTrace();
 			log.debug("create interview error!",se);
-			getValueStack().set("msg", "create Interview ["+interview.getInterviewEname()+"] Failure! ");
+			getValueStack().set("msg", "create Interview ["+interview.getInterviewEname()+"] Failure, root cause : "+se.getMessage());
 			return "save_failure";
 		}catch(UploadFileException ue){
 			ue.printStackTrace();
@@ -128,7 +127,7 @@ public class InterviewAction extends BaseAction {
 		catch(Exception e){
 			e.printStackTrace();
 			log.debug(e);
-			getValueStack().set("msg", "create Interview ["+interview.getInterviewEname()+"] Failed, root cause is "+e.getMessage());
+			getValueStack().set("msg", "create Interview ["+interview.getInterviewEname()+"] Failed, root cause : "+e.getMessage());
 			return "save_failure";
 		}
 	}
@@ -273,7 +272,7 @@ public class InterviewAction extends BaseAction {
 		}catch(ServiceException se){
 			se.printStackTrace();
 			log.debug("update interview error!", se);
-			getValueStack().set("msg", "update interview ["+interview.getInterviewEname()+"] failure!");
+			getValueStack().set("msg", "update interview ["+interview.getInterviewEname()+"] failure, root cause : "+se.getMessage());
 		}catch(UploadFileException ue){
 			ue.printStackTrace();
 			log.debug("upload attachments error!",ue);
@@ -291,9 +290,9 @@ public class InterviewAction extends BaseAction {
 		Language language = Language.getInstance();
 		try {
 			List<Interview> interviews = interviewService.getInterviewsByDesingerAndType(designer.getDesignerId(), type);
-			String basePath = getBasePath() + ServletActionContext.getRequest().getContextPath();
+			String basePath = getBasePath();
 			XmlParse parse = new InterviewPlayList(interviews);
-			String outputfile = basePath+"/frontend/menus/designer/playlist.xml";
+			String outputfile = basePath+"frontend"+File.separator+"menus"+File.separator+"designer"+File.separator+"playlist.xml";
 			parse.generateXMLFile(outputfile);
 			Interview i = interviews.get(0);
 			InterviewVO ivo = VOFactory.getObserverVO(InterviewVO.class, i);

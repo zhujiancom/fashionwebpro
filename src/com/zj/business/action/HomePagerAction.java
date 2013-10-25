@@ -22,15 +22,12 @@ import org.springframework.stereotype.Component;
 
 import com.ckfinder.connector.utils.ImageUtils;
 import com.zj.bigdefine.CommonConstant;
-import com.zj.bigdefine.GlobalParam;
 import com.zj.business.observer.Language;
 import com.zj.business.observer.LanguageType;
-import com.zj.business.po.Account;
 import com.zj.business.po.Designer;
 import com.zj.business.po.HomePager;
 import com.zj.business.po.Lookbook;
 import com.zj.business.po.News;
-import com.zj.business.service.IAccountService;
 import com.zj.business.service.IDesignerService;
 import com.zj.business.service.IHomePagerService;
 import com.zj.business.service.ILookbookService;
@@ -57,12 +54,9 @@ public class HomePagerAction extends BaseAction {
 	
 	private List<Designer> designerlist;
 	private Long featuredDesignerId;
-	private String accountname;
 	private List<News> newslist;
 	private List<Lookbook> lookbooklist;
 	
-	@Resource
-	private IAccountService accountService;
 	@Resource
 	private IHomePagerService homepagerService;
 	@Resource
@@ -187,10 +181,6 @@ public class HomePagerAction extends BaseAction {
 		try {
 			LanguageType type = getLanguageType();
 	        Language language = Language.getInstance();
-			if(accountname != null){
-				Account account = accountService.getAccount(accountname);
-				session.put(GlobalParam.LOGIN_ACCOUNT_SESSION, account);
-			}
 			HomePager homepager = homepagerService.get(HomePager.class, 1L);
 			//load designer
 			Set<Designer> designers = homepager.getDesigners();
@@ -372,14 +362,6 @@ public class HomePagerAction extends BaseAction {
 
 	public void setImageFilesFileName(String[] imageFilesFileName) {
 		this.imageFilesFileName = imageFilesFileName;
-	}
-
-	public String getAccountname() {
-		return accountname;
-	}
-
-	public void setAccountname(String accountname) {
-		this.accountname = accountname;
 	}
 
 	public File getVideoFile() {

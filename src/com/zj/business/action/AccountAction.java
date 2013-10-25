@@ -4,17 +4,18 @@ import java.io.File;
 import java.util.Date;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts2.ServletActionContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
 
 import com.zj.bigdefine.GlobalParam;
 import com.zj.business.po.Account;
 import com.zj.business.service.IAccountService;
 import com.zj.common.exception.ServiceException;
-import com.zj.common.exception.UploadFileException;
-import com.zj.common.log.Log;
 import com.zj.common.utils.JSONUtil;
 import com.zj.common.utils.PageInfo;
 import com.zj.common.utils.StringUtil;
@@ -28,10 +29,13 @@ public class AccountAction extends BaseAction {
 	 * 
 	 */
 	private static final long serialVersionUID = 2886485568925326220L;
-
+	
+	private static final Log log = LogFactory.getLog(AccountAction.class);
+	private String referer;
 	private Account account;
 	@Resource
 	private IAccountService accountService;
+	
 	// parameters from flexgird
 	private int rp; // page size
 	private int page; // page num
@@ -48,66 +52,6 @@ public class AccountAction extends BaseAction {
 	private String imageFileFileName;  //文件名 + FileName (固定写法)
 	// image upload relative params
 	
-	public Account getAccount() {
-		return account;
-	}
-	public void setAccount(Account account) {
-		this.account = account;
-	}
-	public int getRp() {
-		return rp;
-	}
-	public void setRp(int rp) {
-		this.rp = rp;
-	}
-	public int getPage() {
-		return page;
-	}
-	public void setPage(int page) {
-		this.page = page;
-	}
-	public String getQuery() {
-		return query;
-	}
-	public void setQuery(String query) {
-		this.query = query;
-	}
-	public String getQtype() {
-		return qtype;
-	}
-	public void setQtype(String qtype) {
-		this.qtype = qtype;
-	}
-	public String getIds() {
-		return ids;
-	}
-	public void setIds(String ids) {
-		this.ids = ids;
-	}
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public File getImageFile() {
-		return imageFile;
-	}
-	public void setImageFile(File imageFile) {
-		this.imageFile = imageFile;
-	}
-	public String getImageFileContentType() {
-		return imageFileContentType;
-	}
-	public void setImageFileContentType(String imageFileContentType) {
-		this.imageFileContentType = imageFileContentType;
-	}
-	public String getImageFileFileName() {
-		return imageFileFileName;
-	}
-	public void setImageFileFileName(String imageFileFileName) {
-		this.imageFileFileName = imageFileFileName;
-	}
 	/**
 	 * 
 	 *
@@ -125,6 +69,9 @@ public class AccountAction extends BaseAction {
 	 * @return
 	 */
 	public String login(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		String ref = request.getHeader("referer");
+		setReferer(ref);
 		Account login_account;
 		try{
 			login_account = accountService.login(account);
@@ -136,6 +83,7 @@ public class AccountAction extends BaseAction {
 				getValueStack().set("loginMsg","The Account has been disabled, please reEnable !");
 				return "login_failure";
 			}
+			session.put(GlobalParam.LOGIN_ACCOUNT_SESSION, login_account);
 			return "login_success";
 		}catch(ServiceException e){
 			getValueStack().set("loginMsg","Login Failure!");
@@ -144,6 +92,9 @@ public class AccountAction extends BaseAction {
 	}
 	
 	public String logout(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		String ref = request.getHeader("referer");
+		setReferer(ref);
 		session.remove(GlobalParam.LOGIN_ACCOUNT_SESSION);
 		return "logout_success";
 	}
@@ -224,13 +175,9 @@ public class AccountAction extends BaseAction {
 		} catch (Exception e) {
 			String msg = "Delete Users Failure !";
 			String json = JSONUtil.stringToJson(msg);
+			log.debug(e.getMessage());
 			sendJSONdata(json);
-			Log.debug(AccountAction.class, e.getMessage());
 		}
-	}
-	
-	public String registerForward(){
-		return "forward_success";
 	}
 	
 	/**
@@ -250,47 +197,21 @@ public class AccountAction extends BaseAction {
 	 * @return
 	 */
 	public String registerAccount(){
-		String imgUrl = "";
-		boolean isAddImg = false;
 		try{
-			if(imageFileFileName != null && !"".equals(imageFileFileName)){
-				isAddImg = true;
-				String imageFileName = new Date().getTime()+getExtention(imageFileFileName);
-				imgUrl = "upload/headImg/account/"+imageFileName;
-				account.setHeaderImgUrl(imgUrl);
-			}
 			account.setCreateTime(new Date());
 			accountService.insert(account);
-			if(isAddImg){
-				String absoluteUrl = getBasePath()+imgUrl;
-				File destFile = new File(absoluteUrl);
-				if(!destFile.getParentFile().exists()){
-					destFile.getParentFile().mkdirs();
-				}
-				copyByChannel(imageFile,destFile);
-			}
 			getValueStack().set("msg", "register account ["+account.getAccountname()+"] successfully!");
+			session.put(GlobalParam.LOGIN_ACCOUNT_SESSION, account);
 			return "register_account_successful";
 		}catch(ServiceException se){
 			se.printStackTrace();
-			Log.debug(AccountAction.class, se.getMessage());
-			getValueStack().set("msg", "register account ["+account.getAccountname()+"] Failure! ");
-			return "register_account_failure";
-		}catch(UploadFileException ue){
-			ue.printStackTrace();
-			Log.debug(AccountAction.class, ue.getMessage());
+			log.debug(se.getMessage());
 			getValueStack().set("msg", "register account ["+account.getAccountname()+"] Failure! ");
 			return "register_account_failure";
 		}
 		catch(Exception e){
 			getValueStack().set("msg", "register account ["+account.getAccountname()+"] Failure! ");
-			Log.debug(AccountAction.class, e.getMessage());
-			if(!"".equals(imgUrl)){
-				File destFile = new File(imgUrl);
-				if(destFile.exists()){
-					destFile.delete();
-				}
-			}
+			log.debug(e.getMessage());
 			return "register_account_failure";
 		}
 	}
@@ -317,8 +238,77 @@ public class AccountAction extends BaseAction {
 			json = JSONUtil.stringToJson(String.valueOf(isUnique));
 		} catch (Exception e) {
 			e.printStackTrace();
-			Log.debug(AccountAction.class, e.getMessage());
+			log.debug(e.getMessage());
 		}
 		sendJSONdata(json);
+	}
+	
+	public Account getAccount() {
+		return account;
+	}
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+	public int getRp() {
+		return rp;
+	}
+	public void setRp(int rp) {
+		this.rp = rp;
+	}
+	public int getPage() {
+		return page;
+	}
+	public void setPage(int page) {
+		this.page = page;
+	}
+	public String getQuery() {
+		return query;
+	}
+	public void setQuery(String query) {
+		this.query = query;
+	}
+	public String getQtype() {
+		return qtype;
+	}
+	public void setQtype(String qtype) {
+		this.qtype = qtype;
+	}
+	public String getIds() {
+		return ids;
+	}
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public File getImageFile() {
+		return imageFile;
+	}
+	public void setImageFile(File imageFile) {
+		this.imageFile = imageFile;
+	}
+	public String getImageFileContentType() {
+		return imageFileContentType;
+	}
+	public void setImageFileContentType(String imageFileContentType) {
+		this.imageFileContentType = imageFileContentType;
+	}
+	public String getImageFileFileName() {
+		return imageFileFileName;
+	}
+	public void setImageFileFileName(String imageFileFileName) {
+		this.imageFileFileName = imageFileFileName;
+	}
+
+	public String getReferer() {
+		return referer;
+	}
+
+	public void setReferer(String referer) {
+		this.referer = referer;
 	}
 }

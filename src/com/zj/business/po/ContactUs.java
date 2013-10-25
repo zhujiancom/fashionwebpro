@@ -12,7 +12,6 @@ import javax.persistence.Table;
 
 import com.zj.bigdefine.GlobalParam;
 import com.zj.common.annotation.JsonData;
-import com.zj.common.annotation.UpdateColumn;
 import com.zj.core.po.AbstractEntity;
 @Entity
 @Table(name="BUS_CONTACT" , catalog = GlobalParam.CATALOG_DB)
@@ -24,14 +23,11 @@ public class ContactUs extends AbstractEntity implements Serializable{
 	 */
 	private static final long serialVersionUID = -4632904242206674299L;
 	private long contactId;
-	@UpdateColumn
 	private String contactName;
-	@UpdateColumn
 	private String email;
-	@UpdateColumn
 	private String Tel;
-	@UpdateColumn
 	private String address;
+	private String message;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY, generator = "commSEQ")
@@ -74,6 +70,13 @@ public class ContactUs extends AbstractEntity implements Serializable{
 	}
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	@Column(name="CONTACT_MESSAGE",length=1000)
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
 	}
 	@Override
 	public String toString() {

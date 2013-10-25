@@ -3,24 +3,31 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
+<%@ taglib uri="/struts-tags" prefix="s"%>
 
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link href="<%=basePath%>frontend/css/footer.css" type="text/css" rel="stylesheet"/>
 
-  	<div style="width:895px;height:50px;margin:0 auto;padding:0;position:relative;">
-        <div id="information">
-        	<ul>
-                <li>Contact us</li>
-                <li>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
-                <li>Site Map</li>
-                <li>&nbsp;&nbsp;|</li>
-                <li style="font-size:16px">Legal&nbsp;&nbsp;Statement</li>
-                <li>|&nbsp;&nbsp;</li>
-                <li>Links</li>
-            </ul>
-        </div>
+  	<div id="footerWrapper">
+    	<hr />
+        <ul class="list_commons">
+        	<li><a href="#"><s:text name="footer.aboutus"/></a></li>
+        	<li><a href="#"><s:text name="footer.sitemap"/></a></li>
+            <li><a href="#"><s:text name="footer.legalStatement"/></a></li>
+        	<li style="text-align:center"><a href="#"><s:text name="footer.links"/></a></li>
+            <li>
+            	<ul class="list_common_sub">
+                	<li><a href="#"><img src="<%=basePath %>frontend/images/icons/facebook.png" /></a></li>
+                    <li><a href="#"><img src="<%=basePath %>frontend/images/icons/twitter.png" /></a></li>
+                    <li><a href="#"><img src="<%=basePath %>frontend/images/icons/academia.png" /></a></li>
+                    <li><a href="#"><img src="<%=basePath %>frontend/images/icons/weibo.png" /></a></li>
+                    <li><a href="#"><img src="<%=basePath %>frontend/images/icons/weixin.png" /></a></li>
+                </ul>
+            </li>
+        </ul>
+        <div style="clear:both;"></div>
         <br />
-        <div id="copyright">
-        	<span>©&nbsp;&nbsp;2013&nbsp;&nbsp;University&nbsp;&nbsp;of&nbsp;&nbsp;Hong Kong.&nbsp;&nbsp;All&nbsp;&nbsp;rights&nbsp;&nbsp;reserved</span><span>©&nbsp;&nbsp;2013&nbsp;&nbsp;University&nbsp;&nbsp;of&nbsp;&nbsp;Hong&nbsp;&nbsp;Kong</span>
-        </div>
-  	</div>
+        <p class="copyright"><s:text name="footer.copyright1"/></p>
+        <br />
+        <p class="copyright">©  <s:text name="footer.copyright2"/></p>
+    </div>

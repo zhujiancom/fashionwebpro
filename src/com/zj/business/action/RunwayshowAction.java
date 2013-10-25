@@ -8,7 +8,6 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
-import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -114,7 +113,7 @@ public class RunwayshowAction extends BaseAction {
 		}catch(ServiceException se){
 			se.printStackTrace();
 			log.debug("create runwayshow error!",se);
-			getValueStack().set("msg", "create RunwayShow ["+runwayshow.getRunwayshowEname()+"] Failure! ");
+			getValueStack().set("msg", "create RunwayShow ["+runwayshow.getRunwayshowEname()+"] Failure, root cause : "+se.getMessage());
 			return "save_failure";
 		}catch(UploadFileException ue){
 			ue.printStackTrace();
@@ -259,7 +258,7 @@ public class RunwayshowAction extends BaseAction {
 		}catch(ServiceException se){
 			se.printStackTrace();
 			log.debug("update runwayshow error!",se);
-			getValueStack().set("msg", "update runwayshow ["+runwayshow.getRunwayshowEname()+"] failure!");
+			getValueStack().set("msg", "update runwayshow ["+runwayshow.getRunwayshowEname()+"] failure, root cause : "+se.getMessage());
 		}catch(UploadFileException ue){
 			ue.printStackTrace();
 			log.debug("upload attachments error!", ue);
@@ -278,9 +277,9 @@ public class RunwayshowAction extends BaseAction {
 		Language language = Language.getInstance();
 		try{
 			List<Runwayshow> runwayshows = runwayshowService.getRunwayShowByBrand(brand.getBrandid());
-			String basePath = getBasePath() + ServletActionContext.getRequest().getContextPath();;
+			String basePath = getBasePath();
 			XmlParse parse = new RunwayshowPlayList(runwayshows);
-			String outputfile = basePath+"/frontend/menus/brand/playlist.xml";
+			String outputfile = basePath+"frontend"+File.separator+"menus"+File.separator+"brand"+File.separator+"playlist.xml";
 			parse.generateXMLFile(outputfile);
 			Runwayshow show = runwayshows.get(0);
 			RunwayshowVO rvo = VOFactory.getObserverVO(RunwayshowVO.class, show);

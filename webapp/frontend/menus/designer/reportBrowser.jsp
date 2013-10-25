@@ -75,9 +75,11 @@ String basePath = serverPath + path + "/";
 			    	<s:iterator value="reportvolist" var="reportvo">
 	                	<li>
 	                		<div class="item">
-				            	<div class="imgLiquidFill imgLuid pic">
-				                	<img src="<%=basePath %><s:property value='#reportvo.thumbnail'/>" />
-				                </div>
+	                			<s:if test="#reportvo.thumbnail != null">
+	                				<div class="imgLiquidFill imgLuid pic">
+					                	<img src="<%=basePath %><s:property value='#reportvo.thumbnail'/>" alt="<s:property value='#reportvo.thumbnail'/>"/>
+					                </div>
+	                			</s:if>
 				            	<div class="preview">
 				                	<p class="pretitle"><a href="report_showDetail.action?report.reportid=<s:property value='#reportvo.id'/>"><s:property value='#reportvo.title'/></a></p>
 				                	<p class="precontent"><s:property value='#reportvo.preview'/></p>

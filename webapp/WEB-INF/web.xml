@@ -64,6 +64,10 @@
 	<!-- <url-pattern>*.jsp</url-pattern> -->
 	<!-- </filter-mapping> -->
 	
+<!--	<welcome-file-list>-->
+<!--		<welcome-file>index.jsp</welcome-file>-->
+<!--	</welcome-file-list>-->
+	
 	<!-- i18nFilter for struts2 -->
 	<filter>
 		<filter-name>i18nFilter</filter-name>
@@ -98,6 +102,20 @@
 		<filter-name>EncodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+
+	<filter>
+		 <filter-name>UrlRewriteFilter</filter-name>
+		 <filter-class>
+		   org.tuckey.web.filters.urlrewrite.UrlRewriteFilter
+		 </filter-class>
+	</filter>
+	 
+	 <filter-mapping>
+		 <filter-name>UrlRewriteFilter</filter-name>
+		 <url-pattern>/*</url-pattern>
+		 <dispatcher>REQUEST</dispatcher>  
+		 <dispatcher>FORWARD</dispatcher>
+	 </filter-mapping>
 
 	<servlet>
 		<servlet-name>ConnectorServlet</servlet-name>
@@ -134,10 +152,6 @@
 		<url-pattern>/ckfinder/core/connector/java/connector.java</url-pattern>
 	</filter-mapping>
 
-	<welcome-file-list>
-		<welcome-file>frontend/index.jsp</welcome-file>
-	</welcome-file-list>
-
 	<!-- 404错误页面的配置 -->
 	<error-page>
 		<error-code>404</error-code>
@@ -164,10 +178,16 @@
 	<filter-mapping>
 		<filter-name>struts2</filter-name>
 		<url-pattern>*.action</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		 <dispatcher>FORWARD</dispatcher>  
+		  <dispatcher>INCLUDE </dispatcher>    
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>struts2</filter-name>
 		<url-pattern>*.jsp</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		 <dispatcher>FORWARD</dispatcher>  
+		  <dispatcher>INCLUDE </dispatcher>    
 	</filter-mapping>
 <!--	<filter>-->
 <!--		<filter-name>struts-cleanup</filter-name>-->

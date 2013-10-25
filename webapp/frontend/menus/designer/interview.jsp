@@ -4,7 +4,7 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
 <%@ taglib uri="/struts-tags" prefix="s" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML>
 <html>
   <head>
 	<link href="<%=basePath%>frontend/css/video.css" rel="stylesheet" />
@@ -22,25 +22,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body oncontextmenu="return false" onselectstart="return false">
-  	<div id="wrapper">
+  	<div >
   		 <div id="mainwrapper">
     		<div id="videowrapper">
 	        	<div id="osmplayer"></div>
         		<video src="<s:property value='interviewvo.videoUrl'/>" poster="<s:property value='interviewvo.posterthumnail'/>"></video>
-<%--        		<h2 id="introduction"><s:text name="introduction" /></h2>--%>
-<%--	        	<div id="intro">--%>
-<%--		        	<div class="msg_caption">--%>
-<%--		           	 <span class="up imgLiquidFill imgLiquid" >--%>
-<%--		             <img src="images/up-arrow-circle-hi.png" />--%>
-<%--		             </span>--%>
-<%--		        	</div>--%>
-<%--	            	<textarea id="comment"><s:property value="interviewvo.introduction"/></textarea>--%>
-<%--	              	<div class="msg_caption">--%>
-<%--	            		<span class="down imgLiquidFill imgLiquid">--%>
-<%--	                		<img src="images/down-arrow-circle-hi.png" />--%>
-<%--	                	</span>--%>
-<%--	        	  	</div>--%>
-<%--	       		</div>--%>
     		</div>
 		</div>
   	</div>
@@ -53,26 +39,5 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    });
 	  });
 	</script>
-	<!-- This is for text scroll -->
-	<script type="text/javascript">
-	    $(function(){
-		    var $comment = $('#comment');//获取评论框
-		    $('.up').click(function(){ //向上按钮绑定单击事件
-			   if(!$comment.is(":animated")){//判定是否处于<a href='http://www.21edu8.com/pcnet/3d/' target='_blank'><u>动画</u></a>
-					$comment.animate({ scrollTop  : "-=50" } , 400);
-				}
-			});
-			$('.down').click(function(){//向下按钮绑定单击事件
-			   if(!$comment.is(":animated")){
-					$comment.animate({ scrollTop  : "+=50" } , 400);
-				}
-			});
-		});
-	    
-	    $(document).ready(function() {
-			$(".imgLiquidFill").imgLiquid();
-
-		});
-	 </script>
   </body>
 </html>

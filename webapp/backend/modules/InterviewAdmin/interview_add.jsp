@@ -53,7 +53,7 @@
 				<div class="rowElem">
 					<label><h4>Interivew Type:</h4></label>
 					<div class="bfh-selectbox">
-					  <input type="hidden" name="interview.interviewtype" value="">
+					  <input type="hidden" name="interview.interviewtype" value="video">
 					  <a class="bfh-selectbox-toggle" role="button" data-toggle="bfh-selectbox" href="#">
 					    <span class="bfh-selectbox-option input-medium" data-option="video">Video</span>
 					    <b class="caret"></b>

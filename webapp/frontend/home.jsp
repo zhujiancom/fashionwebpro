@@ -10,37 +10,42 @@ String basePath = serverPath + path + "/";
   <head>
     
     <title>HOMEPAGE</title>
-    
+    <link rel="icon" type="image/png" href="<%=basePath %>favicon.ico" />
     <link rel="stylesheet" href="<%=basePath %>frontend/javascript/jquery-plugin/flexslider/flexslider.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="<%=basePath %>frontend/css/homepage.css" type="text/css" media="screen" />
 	
-	<script src="<%=basePath %>frontend/javascript/jquery-1.7.2.min.js" type="application/javascript"></script>
+	<script src="<%=basePath %>comm_script/jquery-1.7.2.min.js" type="application/javascript"></script>
+	<script type="text/javascript" 
+			src="<%=basePath%>comm_script/base.js">
+	</script>
   	<script src="<%=basePath %>frontend/javascript/jquery-plugin/imgLiquid/imgLiquid.js" type="application/javascript"></script>
 	<script src="<%=basePath %>frontend/javascript/jquery-plugin/flexslider/jquery.flexslider-min.js" type="application/javascript"></script>
 	<script type="text/javascript"
+			src="<%=basePath%>comm_script/dialog/lhgdialog.min.js">
+	</script>
+	<script type="text/javascript"
 			src="<%=basePath %>ckeditor/ckeditor.js">
 	</script>
-	<script type="application/javascript">
-			var editor = null;
-			$(window).load(function() {
-				$('.flexslider').flexslider({
-				  animation: "slide"
-				});
-			  });
-			  
-			  $(document).ready(function() {
-				  $(".imgLiquidFill").imgLiquid({
-					fill:true,
-					horizontalAlign:"center",
-					verticalAlign:"top"  
-				  });
-				  
-					//ckeditor
-				editor = CKEDITOR.replace("designerProfile",{
-					customConfig:"<%=basePath%>/ckeditor/homepage_config.js"
-				});
-			  });
-		</script>
+	
+	<style type="text/css">
+		#lookbookImgsContainer{
+			width:895px;
+			position:relative;
+			padding:5px;
+		}
+		
+		#lookbookImgsContainer ul{
+			width:895px;
+		}
+		#lookbookImgsContainer ul li{
+			line-height:228px;
+			list-style: none;
+			float:left;
+			padding-right:15px;
+		}
+		
+	</style>
+	
   </head>
   
   <body>
@@ -100,20 +105,57 @@ String basePath = serverPath + path + "/";
           <div id="main_bottom" style="margin-top:2px;height:600px;">
           	<h3><a href="#"><s:text name="collection"/></a></h3>
             <hr />
-            <s:iterator value="homevo.lookbookVOs" var="lookbookvo">
-            	<h4><a href="#"><s:property value="#lookbookvo.name"/></a></h4>
-            	<table width="895px">
-	            <tr align="center" valign="middle">
-	            	<s:iterator value="#lookbookvo.images" var="image">
-	            		<td><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="<%=basePath %><s:property value='#image'/>"/></div></td>
-	            	</s:iterator>
-	            </tr>
-	            </table>
-            </s:iterator>
+			<s:iterator value="homevo.lookbookVOs" var="lookbookvo">
+				<h4><a href="#"><s:property value="#lookbookvo.name"/></a></h4>
+				<div>
+					<div id="lookbookImgsContainer">
+						<ul>
+							<s:set var="length" value="#lookbookvo.images.size"/>
+							<s:if test="#length > 5">
+								<s:iterator value="#lookbookvo.images" var="image" begin="0" end="4">
+									<li><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="<%=basePath %><s:property value='#image'/>"/></div></li>
+								</s:iterator>
+							</s:if>
+							<s:else>
+								<s:iterator value="#lookbookvo.images" var="image">
+									<li><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="<%=basePath %><s:property value='#image'/>"/></div></li>
+								</s:iterator>
+							</s:else>
+						</ul>
+						<div style="clear:both"></div>
+					</div>
+				</div>
+			</s:iterator>
           </div>
         </div>
         <div>
         <jsp:include page="footer.jsp"></jsp:include>
         </div>
+        <script type="application/javascript">
+			var editor = null;
+			$(window).load(function() {
+				$('.flexslider').flexslider({
+				  animation: "slide"
+				});
+			  });
+			  
+			  $(document).ready(function() {
+				  $(".imgLiquidFill").imgLiquid({
+					fill:true,
+					horizontalAlign:"center",
+					verticalAlign:"top"  
+				  });
+				  
+					//ckeditor
+				 editor = CKEDITOR.replace("designerProfile",{
+					customConfig:"<%=basePath%>/ckeditor/homepage_config.js"
+				 });
+				 
+				var msg = "${msg}";
+				if(msg != ""){
+					feedbackInfo(msg,"TIPS");
+				}
+			  });
+		</script>
   </body>
 </html>

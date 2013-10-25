@@ -64,6 +64,7 @@ public class Account extends AbstractEntity implements Serializable {
 	private String headerImgUrl;
 	private Integer loginCount = 0;
 	private Date lastLoginTime;
+	private int isReceiveNewsletter = 1;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY, generator = "commSEQ")
@@ -216,9 +217,18 @@ public class Account extends AbstractEntity implements Serializable {
 		this.ispaid = ispaid;
 	}
 	
+	@Column(name = "RECEIVENEWSLETTER", precision = 1, columnDefinition = "int(1) DEFAULT 1")
+	public int getIsReceiveNewsletter() {
+		return isReceiveNewsletter;
+	}
+	public void setIsReceiveNewsletter(int isReceiveNewsletter) {
+		this.isReceiveNewsletter = isReceiveNewsletter;
+	}
+	
 	@Override
 	public String toString() {
 		return "Account [ename=" + ename + ", accountname=" + accountname
 				+ ", email=" + email + ", isEnable=" + isEnable + "]";
 	}
+	
 }

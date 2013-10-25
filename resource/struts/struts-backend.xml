@@ -4,8 +4,10 @@
 	<include file="struts/struts-common.xml"></include>
 	
 	<package name="backend" extends="common" namespace="/backend">
+		<global-results>
+			<result name="input">/WEB-INF/error/uploadFailed.jsp</result>
+		</global-results>
 		<interceptors>
-			<interceptor name="onlineUserStatistic" class="com.zj.core.control.struts.intercept.OnlineUserStatistic"/>
 			<interceptor name="sessionTimeout" class="com.zj.common.interceptor.BackSessionInterceptor"/>
 		</interceptors>
 		
@@ -109,7 +111,10 @@
 			<!-- Action for editorial -->
 		<action name="editorial_*" class="editorialAction" method="{1}">
 			<interceptor-ref name="sessionTimeout"/>
-			<interceptor-ref name="fileUploadStack"/>
+			<interceptor-ref name="fileUploadStack">
+				<param name="allowedTypes">image/bmp,image/png,image/gif,image/jpeg</param>
+				<param name="maximumSize">2000000</param>
+			</interceptor-ref>
 			<interceptor-ref name="defaultStack"/>
 			<result name="load_style_success">index.jsp</result>
 			<result name="load_style_failure">index.jsp</result>

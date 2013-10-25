@@ -240,6 +240,9 @@ public class JSONUtil {
 			if(value.indexOf('\\') != -1){
 				value = value.replace('\\', '/');
 			}
+			if(value.indexOf('\"') != -1){
+				value = value.replace('\"', '\'');
+			}
 			json.append("\"").append(value).append("\"");
 		}else if(object instanceof Integer || object instanceof Double || object instanceof Long){
 			json.append(object.toString());
