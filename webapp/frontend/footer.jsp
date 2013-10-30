@@ -5,15 +5,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 %>
 <%@ taglib uri="/struts-tags" prefix="s"%>
 
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link href="<%=basePath%>frontend/css/footer.css" type="text/css" rel="stylesheet"/>
+<%--	<script type="text/javascript"--%>
+<%--			src="<%=basePath%>comm_script/dialog/lhgdialog.min.js">--%>
+<%--	</script>--%>
 
   	<div id="footerWrapper">
     	<hr />
         <ul class="list_commons">
         	<li><a href="#"><s:text name="footer.aboutus"/></a></li>
         	<li><a href="#"><s:text name="footer.sitemap"/></a></li>
-            <li><a href="#"><s:text name="footer.legalStatement"/></a></li>
+            <li><a href="javascript:void(0);" id="legalstmt"><s:text name="footer.legalStatement"/></a></li>
         	<li style="text-align:center"><a href="#"><s:text name="footer.links"/></a></li>
             <li>
             	<ul class="list_common_sub">
@@ -30,4 +32,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <p class="copyright"><s:text name="footer.copyright1"/></p>
         <br />
         <p class="copyright">©  <s:text name="footer.copyright2"/></p>
+        
+        <script type="text/javascript">
+        $(document).ready(function(){
+        	$("#legalstmt").click(function(){
+        		$.dialog({
+        			title : "<s:text name='footer.legalStatement'/>",
+        			content : 'url:footer_getLegalStatement.action',
+        			width : 420,
+        			height : 500,
+        			lock : true,
+        			fixed : true,
+        			ok:function(){
+        				return true;
+        			}
+        		});
+        	});
+        });
+        </script>
     </div>

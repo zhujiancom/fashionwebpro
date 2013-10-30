@@ -4,15 +4,13 @@
 	<include file="struts/struts-common.xml"></include>
 	
 	<package name="backend" extends="common" namespace="/backend">
-		<global-results>
-			<result name="input">/WEB-INF/error/uploadFailed.jsp</result>
-		</global-results>
 		<interceptors>
 			<interceptor name="sessionTimeout" class="com.zj.common.interceptor.BackSessionInterceptor"/>
 		</interceptors>
 		
 		<global-results>  
             <result name="login">index.jsp</result>  
+            <result name="input">/WEB-INF/error/uploadFailed.jsp</result>
         </global-results>  
 		
 		<action name="baseaction_*" class="baseAction" method="{1}"></action>

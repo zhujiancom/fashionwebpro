@@ -23,6 +23,9 @@ public class HomepagerVO extends AbstractVO {
 	private String videoUrl;
 	private List<String> imageUrls;
 	
+	private String legalStatement;
+	private String aboutus;
+	
 	public HomepagerVO(){}
 	
 	public HomepagerVO(DesignerVO featuredDesignerVO,List<DesignerVO> designerVOs,List<LookbookVO> lookbookVOs,String videoUrl,List<String> imageUrls){
@@ -129,6 +132,22 @@ public class HomepagerVO extends AbstractVO {
 
 	public void setLookbooks(List<Lookbook> lookbooks) {
 		this.lookbooks = lookbooks;
+	}
+
+	public String getLegalStatement() {
+		return legalStatement;
+	}
+
+	public void setLegalStatement(String legalStatement) {
+		this.legalStatement = legalStatement;
+	}
+
+	public String getAboutus() {
+		return aboutus;
+	}
+
+	public void setAboutus(String aboutus) {
+		this.aboutus = aboutus;
 	}
 
 }

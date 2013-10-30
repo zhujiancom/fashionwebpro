@@ -37,7 +37,7 @@ String basePath = serverPath + path + "/";
                    				<td class="lookbookstyle"><a class="simple-ajax-popup" href="<%=basePath %><s:property value='#image'/>"><img class="imgstyle" src="<%=basePath %><s:property value='#image'/>" /></a></td>
                    			</s:else>
                         </s:iterator>
-<%--		        	</table>--%>
+		        	</table>
 		        </s:iterator>
 			</div>
 			<div class="holder"></div>

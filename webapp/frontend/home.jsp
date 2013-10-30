@@ -13,6 +13,7 @@ String basePath = serverPath + path + "/";
     <link rel="icon" type="image/png" href="<%=basePath %>favicon.ico" />
     <link rel="stylesheet" href="<%=basePath %>frontend/javascript/jquery-plugin/flexslider/flexslider.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="<%=basePath %>frontend/css/homepage.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="<%=basePath%>frontend/javascript/jquery-plugin/magnific-popup/magnific-popup.css"/>
 	
 	<script src="<%=basePath %>comm_script/jquery-1.7.2.min.js" type="application/javascript"></script>
 	<script type="text/javascript" 
@@ -21,11 +22,12 @@ String basePath = serverPath + path + "/";
   	<script src="<%=basePath %>frontend/javascript/jquery-plugin/imgLiquid/imgLiquid.js" type="application/javascript"></script>
 	<script src="<%=basePath %>frontend/javascript/jquery-plugin/flexslider/jquery.flexslider-min.js" type="application/javascript"></script>
 	<script type="text/javascript"
-			src="<%=basePath%>comm_script/dialog/lhgdialog.min.js">
+			src="<%=basePath%>comm_script/dialog/lhgdialog.min.js?self=true&skin=chrome">
 	</script>
 	<script type="text/javascript"
 			src="<%=basePath %>ckeditor/ckeditor.js">
 	</script>
+	<script src="<%=basePath%>frontend/javascript/jquery-plugin/magnific-popup/jquery.magnific-popup.js" type="text/javascript"></script>
 	
 	<style type="text/css">
 		#lookbookImgsContainer{
@@ -108,19 +110,32 @@ String basePath = serverPath + path + "/";
 			<s:iterator value="homevo.lookbookVOs" var="lookbookvo">
 				<h4><a href="#"><s:property value="#lookbookvo.name"/></a></h4>
 				<div>
-					<div id="lookbookImgsContainer">
+<%--					<div id="lookbookImgsContainer">--%>
+<%--						<ul>--%>
+<%--							<s:set var="length" value="#lookbookvo.images.size"/>--%>
+<%--							<s:if test="#length > 5">--%>
+<%--								<s:iterator value="#lookbookvo.images" var="image" begin="0" end="4">--%>
+<%--									<li><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="<%=basePath %><s:property value='#image'/>"/></div></li>--%>
+<%--								</s:iterator>--%>
+<%--							</s:if>--%>
+<%--							<s:else>--%>
+<%--								<s:iterator value="#lookbookvo.images" var="image">--%>
+<%--									<li><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="<%=basePath %><s:property value='#image'/>"/></div></li>--%>
+<%--								</s:iterator>--%>
+<%--							</s:else>--%>
+<%--						</ul>--%>
+<%--						<div style="clear:both"></div>--%>
+<%--					</div>--%>
+					<div id="lookbookImgsContainer" class="popup-gallery">
 						<ul>
-							<s:set var="length" value="#lookbookvo.images.size"/>
-							<s:if test="#length > 5">
-								<s:iterator value="#lookbookvo.images" var="image" begin="0" end="4">
-									<li><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="<%=basePath %><s:property value='#image'/>"/></div></li>
-								</s:iterator>
-							</s:if>
-							<s:else>
-								<s:iterator value="#lookbookvo.images" var="image">
-									<li><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="<%=basePath %><s:property value='#image'/>"/></div></li>
-								</s:iterator>
-							</s:else>
+							<s:iterator value="#lookbookvo.images" var="image" status="serial">
+								<s:if test="#serial.count > 5">
+									<li style="display:none;"><div class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><a href="<%=basePath %><s:property value='#image'/>"><img src="<%=basePath %><s:property value='#image'/>"/></a></div></li>
+								</s:if>
+								<s:else>
+									<li><div class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><a href="<%=basePath %><s:property value='#image'/>"><img src="<%=basePath %><s:property value='#image'/>"/></a></div></li>
+								</s:else>
+							</s:iterator>
 						</ul>
 						<div style="clear:both"></div>
 					</div>
@@ -155,6 +170,26 @@ String basePath = serverPath + path + "/";
 				if(msg != ""){
 					feedbackInfo(msg,"TIPS");
 				}
+
+				$('.popup-gallery').each(function(){
+					$(this).magnificPopup({
+			          	delegate: 'a',
+			          	type: 'image',
+			          	tLoading: 'Loading image #%curr%...',
+			          	mainClass: 'mfp-img-mobile',
+			          	gallery: {
+			           		enabled: true,
+			            	navigateByImgClick: true,
+			            	preload: [0,1] // Will preload 0 - before current, and 1 after the current image
+			          	},
+			          	image: {
+			            	tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
+			            	titleSrc: function(item) {
+			              		return item.el.attr('title');
+			            	}
+			          	}
+			     	});
+				});
 			  });
 		</script>
   </body>

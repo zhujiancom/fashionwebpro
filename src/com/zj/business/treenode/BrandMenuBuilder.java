@@ -60,11 +60,11 @@ public class BrandMenuBuilder implements IMenuBuilder {
 //			String videoAttr = "href='interview_showInterviews.action?designer.designerId="
 //					+ designer.getId() + "&type=video' target='mainPanel'";
 			
-			String videoAttr = "href='interview/videos/"+designer.getId()+"' target='mainPanel'";
+			String videoAttr = "href='interview/video/"+designer.getId()+"' target='mainPanel'";
 			videoItem.setAttributes(videoAttr);
 //			String audioAttr = "href='interview_showInterviews.action?designer.designerId="
 //					+ designer.getId() + "&type=audio' target='mainPanel'";
-			String audioAttr = "href='interview/audios/"+designer.getId()+"' target='mainPanel'";
+			String audioAttr = "href='interview/audio/"+designer.getId()+"' target='mainPanel'";
 
 			audioItem.setAttributes(audioAttr);
 //			String reportAttr = "href='report_showReports.action?designer.designerId="

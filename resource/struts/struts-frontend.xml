@@ -123,5 +123,7 @@
 		<action name="switch" class="switchLanguageAction">
 			<result name="success" type="redirect">${referer}</result>
 		</action>
+		
+		<action name="footer_*" class="footerAction"></action>
 	</package>
 </struts>
