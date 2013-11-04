@@ -6,24 +6,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <%@ taglib uri="/struts-tags" prefix="s"%>
 
 	<link href="<%=basePath%>frontend/css/footer.css" type="text/css" rel="stylesheet"/>
-<%--	<script type="text/javascript"--%>
-<%--			src="<%=basePath%>comm_script/dialog/lhgdialog.min.js">--%>
-<%--	</script>--%>
 
   	<div id="footerWrapper">
     	<hr />
         <ul class="list_commons">
-        	<li><a href="#"><s:text name="footer.aboutus"/></a></li>
-        	<li><a href="#"><s:text name="footer.sitemap"/></a></li>
+        	<li><a href="javascript:void(0);" id="aboutus"><s:text name="footer.aboutus"/></a></li>
+        	<li><a href="javascript:void(0);"><s:text name="footer.sitemap"/></a></li>
             <li><a href="javascript:void(0);" id="legalstmt"><s:text name="footer.legalStatement"/></a></li>
-        	<li style="text-align:center"><a href="#"><s:text name="footer.links"/></a></li>
+        	<li style="text-align:center"><a href="javascript:void(0);"><s:text name="footer.links"/></a></li>
             <li>
             	<ul class="list_common_sub">
-                	<li><a href="#"><img src="<%=basePath %>frontend/images/icons/facebook.png" /></a></li>
-                    <li><a href="#"><img src="<%=basePath %>frontend/images/icons/twitter.png" /></a></li>
-                    <li><a href="#"><img src="<%=basePath %>frontend/images/icons/academia.png" /></a></li>
-                    <li><a href="#"><img src="<%=basePath %>frontend/images/icons/weibo.png" /></a></li>
-                    <li><a href="#"><img src="<%=basePath %>frontend/images/icons/weixin.png" /></a></li>
+                	<li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/facebook.png" /></a></li>
+                    <li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/twitter.png" /></a></li>
+                    <li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/academia.png" /></a></li>
+                    <li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/weibo.png" /></a></li>
+                    <li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/weixin.png" /></a></li>
                 </ul>
             </li>
         </ul>
@@ -38,7 +35,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	$("#legalstmt").click(function(){
         		$.dialog({
         			title : "<s:text name='footer.legalStatement'/>",
-        			content : 'url:footer_getLegalStatement.action',
+        			content : "url:footer_getFooterInfo.action?type=legalstatement",
+        			width : 420,
+        			height : 500,
+        			lock : true,
+        			fixed : true,
+        			ok:function(){
+        				return true;
+        			}
+        		});
+        	});
+        	$("#aboutus").click(function(){
+        		$.dialog({
+        			title : "<s:text name='footer.aboutus'/>",
+        			content : "url:footer_getFooterInfo.action?type=aboutus",
         			width : 420,
         			height : 500,
         			lock : true,

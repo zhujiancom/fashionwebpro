@@ -279,12 +279,13 @@ public class RunwayshowAction extends BaseAction {
 			List<Runwayshow> runwayshows = runwayshowService.getRunwayShowByBrand(brand.getBrandid());
 			String basePath = getBasePath();
 			XmlParse parse = new RunwayshowPlayList(runwayshows);
-			String outputfile = basePath+"frontend"+File.separator+"menus"+File.separator+"brand"+File.separator+"playlist.xml";
+			String outputfile = basePath+"frontend"+File.separator+"menus"+File.separator+"brand"+File.separator+brand.getBrandid()+File.separator+"playlist.xml";
 			parse.generateXMLFile(outputfile);
 			Runwayshow show = runwayshows.get(0);
 			RunwayshowVO rvo = VOFactory.getObserverVO(RunwayshowVO.class, show);
 			language.setLanguage(getLanguageType());
 			getValueStack().set("runwayshowvo", rvo);
+			getValueStack().set("brandId",brand.getBrandid());
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		} 

@@ -9,13 +9,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>backend/">
     
-    <title>Designer</title>
-    
     <link rel="stylesheet" href="<%=basePath %>comm_script/jquery-plugin/flexigrid/css/flexigrid-style.css" type="text/css"/>
     <link rel="stylesheet" href="<%=basePath %>comm_script/jquery-plugin/flexigrid/css/flexigrid.pack.css" type="text/css"/>
     
     <script type="text/javascript"
-			src="<%=basePath%>comm_script/jquery-1.6.2.min.js">
+			src="<%=basePath%>comm_script/jquery-1.7.2.min.js">
 	</script>
 	<script type="text/javascript"
 			src="<%=basePath%>comm_script/jquery.cookie.js">

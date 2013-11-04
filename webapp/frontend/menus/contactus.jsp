@@ -30,24 +30,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  	<jsp:include page="/frontend/header.jsp"></jsp:include>
 		<div id="form_wrap">
 			<form action="contact_submitMsg.action" method="post">
-				<h1>Contact form</h1>
+				<h1><s:text name="contact.title"/></h1>
 				<p> </p>
-				<p>Submit your query via the form below and the relevant person will be in touch at the earliest opportunity.</p>
+				<p><s:text name="contact.tips"/></p>
 				<p></p>
 				<div class="main_wrapper">
 					<p class="requirednote">
 						<span class="required">*</span>
-						required field(s)
+						<s:text name="contact.required"/>
 					</p>
 					<ul>
 						<li>
 							<label><s:text name="contact.name"/><span class="required">*</span></label>
-							<div class="desc">Please enter your name</div>
+							<div class="desc"><s:text name="contact.tips.typename"/></div>
 							<input type="text" class="input_type_text" name="contactus.contactName"/>
 						</li>
 						<li>
 							<label><s:text name="contact.email"/><span class="required">*</span></label>
-							<div class="desc">Enter the email address you would like us to contact you on.</div>
+							<div class="desc"><s:text name="contact.tips.typeemail"/></div>
 							<input type="text" class="input_type_text" name="contactus.email"/>
 						</li>
 						<li>

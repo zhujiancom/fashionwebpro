@@ -28,6 +28,7 @@ public class ContactUs extends AbstractEntity implements Serializable{
 	private String Tel;
 	private String address;
 	private String message;
+	private boolean isHandled;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY, generator = "commSEQ")
@@ -77,6 +78,14 @@ public class ContactUs extends AbstractEntity implements Serializable{
 	}
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	@Column(nullable=false,name="IS_HANDLED",columnDefinition="tinyint(1) default 0")
+	@JsonData
+	public boolean isHandled() {
+		return isHandled;
+	}
+	public void setHandled(boolean isHandled) {
+		this.isHandled = isHandled;
 	}
 	@Override
 	public String toString() {

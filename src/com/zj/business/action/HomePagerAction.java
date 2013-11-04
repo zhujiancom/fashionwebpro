@@ -85,6 +85,11 @@ public class HomePagerAction extends BaseAction {
 	public String modify(){
 		try {
 			HomePager homepager = ehCacheService.getHomepagerCache().get(1L);
+			log.debug("homepage object from cache is : "+homepager);
+			if(homepager == null){
+				homepager = homepagerService.get(HomePager.class, 1L);
+				log.debug("homepage object from database is : "+homepager);
+			}
 			String oldVideoUrl = homepager.getVideoUrl();
 			String imageDir = homepager.getImageDir();
 			if(StringUtil.isEmpty(imageDir)){
@@ -130,6 +135,8 @@ public class HomePagerAction extends BaseAction {
 				homepager.setLookbooks(lookbooks);
 			}
 			homepagerService.merge(homepager);
+			
+			homepager = homepagerService.get(HomePager.class, 1L);
 			
 			ehCacheService.getHomepagerCache().put(1L, homepager);
 			
@@ -181,7 +188,12 @@ public class HomePagerAction extends BaseAction {
 		try {
 			LanguageType type = getLanguageType();
 	        Language language = Language.getInstance();
-			HomePager homepager = homepagerService.get(HomePager.class, 1L);
+	        HomePager homepager = ehCacheService.getHomepagerCache().get(1L);
+	        log.debug("homepage object from cache is : "+homepager);
+	        if(homepager == null){
+	        	homepager = homepagerService.get(HomePager.class, 1L);
+	        	log.debug("homepage object from database is : "+homepager);
+	        }
 			//load designer
 			Set<Designer> designers = homepager.getDesigners();
 			List<DesignerVO> designerVOs = new LinkedList<DesignerVO>();
@@ -252,7 +264,12 @@ public class HomePagerAction extends BaseAction {
 
 	public String loadDataForBackend(){
 		try {
-			HomePager homepager = homepagerService.get(HomePager.class, 1L);
+			HomePager homepager = ehCacheService.getHomepagerCache().get(1L);
+			log.debug("homepage object from cache is : "+homepager);
+	        if(homepager == null){
+	        	homepager = homepagerService.get(HomePager.class, 1L);
+	        	log.debug("homepage object from database is : "+homepager);
+	        }
 			HomepagerVO vo = VOFactory.getObserverVO(HomepagerVO.class);
 			//load featured designer
 			if(homepager.getFeaturedDesigner() != null){

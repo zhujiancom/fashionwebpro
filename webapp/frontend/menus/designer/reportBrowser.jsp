@@ -82,7 +82,15 @@ String basePath = serverPath + path + "/";
 	                			</s:if>
 				            	<div class="preview">
 				                	<p class="pretitle"><a href="report_showDetail.action?report.reportid=<s:property value='#reportvo.id'/>"><s:property value='#reportvo.title'/></a></p>
-				                	<p class="precontent"><s:property value='#reportvo.preview'/></p>
+				                	<p class="precontent">
+				                		<s:set name="preview" value="#reportvo.preview"/>
+				                		<s:if test="%{#preview.length()>180}">
+				                			<s:property value="#preview.substring(0,180)+'...'"/>
+				                		</s:if>
+				                		<s:else>
+				                			<s:property value="#preview"/>
+				                		</s:else>
+				                	</p>
 				                </div>
 				            </div>
 	                	</li>

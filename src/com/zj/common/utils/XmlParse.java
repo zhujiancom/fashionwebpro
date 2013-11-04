@@ -25,7 +25,8 @@ public abstract class XmlParse {
 		try {
 			Document doc = generateDocument();
 			File playlist = new File(outputfile);
-			if(!playlist.exists()){
+			if(!playlist.getParentFile().exists() || !playlist.exists()){
+				playlist.getParentFile().mkdirs();
 				playlist.createNewFile();
 			}
 			fos = new FileOutputStream(playlist);

@@ -34,7 +34,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	<script type="text/javascript">
 	  $(function() {
 	    $("video").osmplayer({
-		  playlist:'<%=basePath%>frontend/menus/brand/playlist.xml',
+		  playlist:'<%=basePath%>frontend/menus/brand/${brandId}/playlist.xml',
 	      width: '80%',
 	      height: '500px'
 	    });

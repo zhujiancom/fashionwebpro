@@ -1,7 +1,6 @@
 package com.zj.business.po;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -34,10 +33,6 @@ public class HomePager implements Serializable {
 	private String videoUrl;
 	private String poster;
 	private Set<Lookbook> lookbooks;
-	private Blob legalStatementCH;
-	private Blob legalStatementEN;
-	private Blob aboutusCH;
-	private Blob aboutusEN;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY, generator = "commSEQ")
@@ -100,34 +95,10 @@ public class HomePager implements Serializable {
 	public void setFeaturedDesigner(Long featuredDesigner) {
 		this.featuredDesigner = featuredDesigner;
 	}
-	
-	@Column(name="LEGAL_STATEMENT_CH", columnDefinition="blob")
-	public Blob getLegalStatementCH() {
-		return legalStatementCH;
-	}
-	public void setLegalStatementCH(Blob legalStatementCH) {
-		this.legalStatementCH = legalStatementCH;
-	}
-	@Column(name="LEGAL_STATEMENT_EN", columnDefinition="blob")
-	public Blob getLegalStatementEN() {
-		return legalStatementEN;
-	}
-	public void setLegalStatementEN(Blob legalStatementEN) {
-		this.legalStatementEN = legalStatementEN;
-	}
-	@Column(name="ABOUTUS_CH", columnDefinition="blob")
-	public Blob getAboutusCH() {
-		return aboutusCH;
-	}
-	public void setAboutusCH(Blob aboutusCH) {
-		this.aboutusCH = aboutusCH;
-	}
-	@Column(name="ABOUTUS_EN", columnDefinition="blob")
-	public Blob getAboutusEN() {
-		return aboutusEN;
-	}
-	public void setAboutusEN(Blob aboutusEN) {
-		this.aboutusEN = aboutusEN;
+	@Override
+	public String toString() {
+		return "HomePager [imageDir=" + imageDir + ", videoUrl=" + videoUrl
+				+ ", poster=" + poster + "]";
 	}
 	
 }

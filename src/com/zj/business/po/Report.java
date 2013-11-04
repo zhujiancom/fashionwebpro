@@ -24,7 +24,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.zj.bigdefine.GlobalParam;
 import com.zj.common.annotation.JsonData;
-import com.zj.common.annotation.UpdateColumn;
 import com.zj.core.po.AbstractEntity;
 @Entity
 @Table(name="BUS_REPORT" , catalog = GlobalParam.CATALOG_DB)
@@ -37,21 +36,13 @@ public class Report extends AbstractEntity implements Serializable {
 	private static final long serialVersionUID = -98381480647776861L;
 
 	private long reportid;
-	@UpdateColumn
 	private String reportCname;
-	@UpdateColumn
 	private String reportEname;
-	@UpdateColumn(filterColumn=true)
 	private String reportimg;
-	@UpdateColumn
 	private String interviewer;
-	@UpdateColumn
 	private Date reportdate;
-	@UpdateColumn
 	private String reportCcontent;
-	@UpdateColumn
 	private String reportEcontent;
-	@UpdateColumn
 	private Designer designer;
 	
 	private Blob detailContentCH;

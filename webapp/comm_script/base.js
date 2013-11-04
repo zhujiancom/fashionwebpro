@@ -2692,7 +2692,20 @@ function disable(itemid,url) {
 		}
 	});
 };
-
+function handleMsg(url,itemid){
+	$.ajax({
+		type : 'POST',
+		url : url,
+		data : {
+			id : itemid
+		},
+		dataType : 'json',
+		success : function(data) {
+			feedbackInfo(data.msg, "TIPS");
+			$("#ContactGrid").flexReload();
+		}
+	});
+}
 function delItem(ids,url,flexTableName,winFrame){
 	$.ajax({
 		type:'POST',

@@ -85,7 +85,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</ul>
 		</div>
 		<div id="headercenter">
-			<img src="images/HOME-PAGE-5.png" id="title" name="Contemporary Fashion Designers' Archive" alt="Contemporary Fashion Designers' Archive">
+			<img src="<%=basePath %>frontend/images/HOME-PAGE-5.png" id="title" name="Contemporary Fashion Designers' Archive" alt="Contemporary Fashion Designers' Archive">
 		</div>
 		<div id="headerbottom">
 			<ul id="menus">

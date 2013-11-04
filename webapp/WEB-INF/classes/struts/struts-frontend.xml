@@ -124,6 +124,8 @@
 			<result name="success" type="redirect">${referer}</result>
 		</action>
 		
-		<action name="footer_*" class="footerAction"></action>
+		<action name="footer_*" class="footerAction" method="{1}">
+			<result name="load_success">footer/${type}.jsp</result>
+		</action>
 	</package>
 </struts>

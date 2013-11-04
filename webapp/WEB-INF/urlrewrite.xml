@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
+        "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">      
+ 
+<urlrewrite>
+    <rule>
+          <from>^/$</from>
+              <to type="forward">/frontend/homepager_loadData.action</to>
+    </rule>
+    <rule>
+          <from>^/switchLang/([a-z]+_[A-Z]+)$</from>
+              <to type="forward">/frontend/switch.action?request_locale=$1</to>
+    </rule>
+    <rule>
+          <from>^/register$</from>
+              <to type="forward">/frontend/register.jsp</to>
+    </rule>
+    <rule>
+          <from>^/logout$</from>
+              <to type="forward">/frontend/account_logout.action</to>
+    </rule>
+    <rule>
+          <from>^/designer$</from>
+              <to type="forward">/frontend/designer_loadAll.action</to>
+    </rule>
+    <rule>
+          <from>^/brand$</from>
+              <to type="forward">/frontend/brand_loadAll.action</to>
+    </rule>
+    <rule>
+          <from>^/report$</from>
+              <to type="forward">/frontend/report_loadReportsByOrder.action</to>
+    </rule>
+    <rule>
+          <from>^/search$</from>
+              <to type="forward">/frontend/menus/search/search.jsp</to>
+    </rule>
+    <rule>
+          <from>^/contactus$</from>
+              <to type="forward">/frontend/menus/contactus.jsp</to>
+    </rule>
+    <!-- designer module -->
+    <rule>
+          <from>^/designer/main/([0-9]+).html$</from>
+              <to type="forward">/frontend/menus/designer/main.jsp?designerId=$1</to>
+    </rule>
+    <rule>
+          <from>^/frontend/designer/([0-9]+).html$</from>
+              <to type="forward">/frontend/designer_showProfile.action?designer.designerId=$1</to>
+    </rule>
+    <rule>
+          <from>^/frontend/brand/brand_([0-9]+).html$</from>
+              <to type="forward">/frontend/brand_showBrandInfo.action?brand.brandid=$1</to>
+    </rule>
+    <rule>
+          <from>^/frontend/interview/([video|audio]+)/([0-9]+)$</from>
+              <to type="forward">/frontend/interview_showInterviews.action?designer.designerId=$2&amp;type=$1</to>
+    </rule>
+    <rule>
+          <from>^/frontend/reports/([0-9]+)$</from>
+              <to type="forward">/frontend/report_showReports.action?designer.designerId=$1</to>
+    </rule>
+    <rule>
+          <from>^/frontend/collections/([0-9]+)/lookbooks/$</from>
+              <to type="forward">/frontend/lookbook_showByBrand.action?brand.brandid=$1</to>
+    </rule>
+    <rule>
+          <from>^/frontend/collections/([0-9]+)/editorials/$</from>
+              <to type="forward">/frontend/editorial_showByBrand.action?brand.brandid=$1</to>
+    </rule>
+    <rule>
+          <from>^/frontend/collections/([0-9]+)/runwayshows/$</from>
+              <to type="forward">/frontend/runwayshow_showByBrand.action?brand.brandid=$1</to>
+    </rule>
+    
+    <!-- brand module -->
+    <rule>
+          <from>^/brand/main/([0-9]+).html$</from>
+              <to type="forward">/frontend/menus/brand/main.jsp?brandId=$1</to>
+    </rule>
+</urlrewrite>

@@ -10,7 +10,7 @@ String basePath = serverPath + path + "/";
   <head>
 	<link href="<%=basePath%>frontend/css/editorial.css" rel="stylesheet" />
 	<link href="<%=basePath%>frontend/javascript/jquery-plugin/jpages/jPages.css" rel="stylesheet"/>
-	<link rel="stylesheet" href="<%=basePath%>frontend/javascript/jquery-plugin/magnific-popup/magnific-popup.css"/>
+	<link href="<%=basePath%>frontend/javascript/jquery-plugin/magnific-popup/magnific-popup.css" rel="stylesheet" />
 	<script src="<%=basePath%>comm_script/jquery-1.7.2.min.js" type="application/javascript"></script>
 	<script src="<%=basePath%>frontend/javascript/jquery-plugin/magnific-popup/jquery.magnific-popup.js" type="text/javascript"></script> 
 	<script src="<%=basePath%>frontend/javascript/jquery-plugin/jpages/jPages.js" type="application/javascript"></script>

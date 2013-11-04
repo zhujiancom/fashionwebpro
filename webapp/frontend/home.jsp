@@ -71,19 +71,19 @@ String basePath = serverPath + path + "/";
                     <tr align="center" valign="middle">
                     	<td>
                         	<div class="imgLiquidFill imgLuid">
-                            	<a href="menus/designer/main.jsp?designerId=<s:property value='homevo.featuredDesignerVO.designer.designerId'/>"><img src="<%=basePath %><s:property value='homevo.featuredDesignerVO.thumbnailUrl'/>"  /></a>
+                            	<a href="../designer/main/<s:property value="homevo.featuredDesignerVO.designer.designerId"/>.html"><img src="<%=basePath %><s:property value='homevo.featuredDesignerVO.thumbnailUrl'/>"  /></a>
                              </div>
                          </td>
-                        <td><a href="menus/designer/main.jsp?designerId=<s:property value='homevo.featuredDesignerVO.designer.designerId'/>" ><s:property value="homevo.featuredDesignerVO.name"/></a></td>
+                        <td><a href="../designer/main/<s:property value="homevo.featuredDesignerVO.designer.designerId"/>.html"><s:property value="homevo.featuredDesignerVO.name"/></a></td>
                     </tr>
                     <s:iterator value="homevo.designerVOs" var="designervo">
                     	 <tr align="center" valign="middle">
 	                    	<td>
 	                        	<div class="imgLiquidFill imgLuid">
-	                            	<a href="menus/designer/main.jsp?designerId=<s:property value='#designervo.designer.designerId'/>"><img src="<%=basePath %><s:property value='#designervo.thumbnailUrl'/>"  /></a>
+	                            	<a href="../designer/main/<s:property value='#designervo.designer.designerId'/>.html"><img src="<%=basePath %><s:property value='#designervo.thumbnailUrl'/>"  /></a>
 	                             </div>
 	                         </td>
-	                        <td><a href="menus/designer/main.jsp?designerId=<s:property value='#designervo.designer.designerId'/>" ><s:property value="#designervo.name"/></a></td>
+	                        <td><a href="../designer/main/<s:property value='#designervo.designer.designerId'/>.html" ><s:property value="#designervo.name"/></a></td>
 	                    </tr>
                     </s:iterator>
                 </table>
@@ -105,27 +105,11 @@ String basePath = serverPath + path + "/";
             </div>
           </div>
           <div id="main_bottom" style="margin-top:2px;height:600px;">
-          	<h3><a href="#"><s:text name="collection"/></a></h3>
+          	<h3><a href="javascript:void(0);"><s:text name="collection"/></a></h3>
             <hr />
 			<s:iterator value="homevo.lookbookVOs" var="lookbookvo">
-				<h4><a href="#"><s:property value="#lookbookvo.name"/></a></h4>
+				<h4><a href="javascript:void(0);"><s:property value="#lookbookvo.name"/></a></h4>
 				<div>
-<%--					<div id="lookbookImgsContainer">--%>
-<%--						<ul>--%>
-<%--							<s:set var="length" value="#lookbookvo.images.size"/>--%>
-<%--							<s:if test="#length > 5">--%>
-<%--								<s:iterator value="#lookbookvo.images" var="image" begin="0" end="4">--%>
-<%--									<li><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="<%=basePath %><s:property value='#image'/>"/></div></li>--%>
-<%--								</s:iterator>--%>
-<%--							</s:if>--%>
-<%--							<s:else>--%>
-<%--								<s:iterator value="#lookbookvo.images" var="image">--%>
-<%--									<li><div  class="imgLiquidFill imgLuid" style="width:146px; height:220px; padding:5px;"><img src="<%=basePath %><s:property value='#image'/>"/></div></li>--%>
-<%--								</s:iterator>--%>
-<%--							</s:else>--%>
-<%--						</ul>--%>
-<%--						<div style="clear:both"></div>--%>
-<%--					</div>--%>
 					<div id="lookbookImgsContainer" class="popup-gallery">
 						<ul>
 							<s:iterator value="#lookbookvo.images" var="image" status="serial">
@@ -171,25 +155,33 @@ String basePath = serverPath + path + "/";
 					feedbackInfo(msg,"TIPS");
 				}
 
-				$('.popup-gallery').each(function(){
-					$(this).magnificPopup({
-			          	delegate: 'a',
-			          	type: 'image',
-			          	tLoading: 'Loading image #%curr%...',
-			          	mainClass: 'mfp-img-mobile',
-			          	gallery: {
-			           		enabled: true,
-			            	navigateByImgClick: true,
-			            	preload: [0,1] // Will preload 0 - before current, and 1 after the current image
-			          	},
-			          	image: {
-			            	tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
-			            	titleSrc: function(item) {
-			              		return item.el.attr('title');
-			            	}
-			          	}
-			     	});
-				});
+				var loginuser = "${session.login_account_session.accountId}";
+					$('.popup-gallery').each(function(){
+						if(loginuser != 0){
+							$(this).magnificPopup({
+			          			delegate: 'a',
+			          			type: 'image',
+			          			tLoading: 'Loading image #%curr%...',
+			          			mainClass: 'mfp-img-mobile',
+			          			gallery: {
+			           				enabled: true,
+			            			navigateByImgClick: true,
+			            			preload: [0,1] // Will preload 0 - before current, and 1 after the current image
+			          			},
+			          			image: {
+			            			tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
+			            			titleSrc: function(item) {
+			              				return item.el.attr('title');
+			            			}
+			          			}
+			     			});
+						}else{
+							$("a",this).click(function(event){
+								feedbackInfo("login to watch more!","TIPS");
+								event.preventDefault();
+							});
+						}
+					});
 			  });
 		</script>
   </body>

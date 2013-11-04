@@ -194,12 +194,11 @@
 		
 		<!-- Contact us Action -->
 		<action name="contact_*" class="contactAction" method="{1}">
-<!--			<interceptor-ref name="sessionTimeout"/>-->
-			<interceptor-ref name="fileUploadStack"/>
-			<interceptor-ref name="defaultStack"/>
-			<result name="save_success">modules/ConcernUs/index.jsp</result>
-			<result name="save_failure">modules/ConcernUs/index.jsp</result>
-			<result name="modify_forward_successful">modules/ConcernUs/modify.jsp</result>
+			<result name="show_msg">modules/ContactUs/message.jsp</result>	
+		</action>
+		
+		<action name="footer_*" class="footerAction" method="{1}">
+			<result name="save_success">modules/FooterAdmin/footer.jsp</result>
 		</action>
 	</package>
 </struts>

@@ -36,14 +36,10 @@ public class Editorial extends AbstractEntity implements Serializable {
 	private static final long serialVersionUID = -456427999128756362L;
 
 	private long editorialid;
-	@UpdateColumn
 	private String editorialCname;
-	@UpdateColumn
 	private String editorialEname;
 	private String imgs;
-	@UpdateColumn
 	private Date editdate;
-	@UpdateColumn
 	private Brand brand;
 	
 	@Id

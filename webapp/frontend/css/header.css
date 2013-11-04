@@ -8,6 +8,10 @@ a:link{
 	text-decoration: none;
 	color: inherit;
 }
+a:visited{
+	text-decoration: none;
+	color: #FFFFFF;
+}
 
 a:hover{
 	text-decoration:underline;

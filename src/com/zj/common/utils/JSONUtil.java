@@ -250,6 +250,9 @@ public class JSONUtil {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String date = sdf.format(object);
 			json.append("\"").append(date).append("\"");
+		}else if(object instanceof Boolean){
+			String value = object.toString();
+			json.append("\"").append(value).append("\"");
 		}else{
 			json.append(beanToJson(object));
 		}

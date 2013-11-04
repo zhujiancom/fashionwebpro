@@ -12,14 +12,42 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <title>My JSP 'profile.jsp' starting page</title>
     
 	
-	<link href="css/lookbook.css" rel="stylesheet" />
-	<link href="javascript/jquery-plugin/jpages/jPages.css" rel="stylesheet"/>
-	<script src="javascript/jquery-1.7.2.min.js" type="application/javascript"></script>
-	<link rel="stylesheet" href="javascript/jquery-plugin/magnific-popup/magnific-popup.css"/> 
-	<script src="javascript/jquery-plugin/magnific-popup/jquery.magnific-popup.js" type="text/javascript"></script> 
-	<script src="javascript/jquery-plugin/jpages/jPages.js" type="application/javascript"></script>
+	<link href="<%=basePath%>frontend/css/lookbook.css" rel="stylesheet" />
+	<link href="<%=basePath%>frontend/javascript/jquery-plugin/jpages/jPages.css" rel="stylesheet"/>
+	<link href="<%=basePath%>frontend/javascript/jquery-plugin/magnific-popup/magnific-popup.css" rel="stylesheet" />
+	<script src="<%=basePath%>comm_script/jquery-1.7.2.min.js" type="application/javascript"></script>
+	<script src="<%=basePath%>frontend/javascript/jquery-plugin/magnific-popup/jquery.magnific-popup.js" type="text/javascript"></script> 
+	<script src="<%=basePath%>frontend/javascript/jquery-plugin/jpages/jPages.js" type="application/javascript"></script>
 	
-	<script type="text/javascript">
+  </head>
+  
+  <body  oncontextmenu="return false" onselectstart="return false">
+  	<div id="wrapper">
+  		<div id="mainwrapper">
+		    <div id="content">
+		    	<s:iterator value="lookbooklist" var="lookbookvo" >
+		        	<table class="tablestyle popup-gallery">
+		        		<tr>
+		            		<td colspan="4" class="titlestyle"><s:property value="#lookbookvo.name"/></td>
+			            </tr>
+			            <tr>
+			            	<td colspan="4" style="height:10px"><hr /></td>
+			            </tr>
+                   		<s:iterator value="#lookbookvo.images" var="image" status="serial">
+                   			<s:if test="#serial.count > 4">
+                   			<td class="lookbookstyle"><a style="display:none;" class="simple-ajax-popup" href="<%=basePath %><s:property value='#image'/>"><img class="imgstyle" src="<%=basePath %><s:property value='#image'/>" /></a></td>
+                   			</s:if>
+                   			<s:else>
+                   				<td class="lookbookstyle"><a class="simple-ajax-popup" href="<%=basePath %><s:property value='#image'/>"><img class="imgstyle" src="<%=basePath %><s:property value='#image'/>" /></a></td>
+                   			</s:else>
+                        </s:iterator>
+		        	</table>
+		        </s:iterator>
+			</div>
+			<div class="holder"></div>
+		</div>
+  	</div>
+  	<script type="text/javascript">
 		$(document).ready(function(){
 			$('.popup-gallery').each(function(){
 				$(this).magnificPopup({
@@ -57,70 +85,5 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
    	 		});
 		});
 	</script>
-	
-	<style type="text/css">
-		.holder {
-		  margin: 15px 0;
-		}
-		
-		.holder a {
-		  font-size: 12px;
-		  cursor: pointer;
-		  margin: 0 5px;
-		  color: #333;
-		}
-		
-		.holder a:hover {
-		  background-color: #222;
-		  color: #fff;
-		}
-		
-		.holder a.jp-previous { margin-right: 15px; }
-		.holder a.jp-next { margin-left: 15px; }
-		
-		.holder a.jp-current, a.jp-current:hover {
-		  color: #FF4242;
-		  font-weight: bold;
-		}
-		
-		.holder a.jp-disabled, a.jp-disabled:hover {
-		  color: #bbb;
-		}
-		
-		.holder a.jp-current, a.jp-current:hover,
-		.holder a.jp-disabled, a.jp-disabled:hover {
-		  cursor: default;
-		  background: none;
-		}
-	</style>
-
-  </head>
-  
-  <body  oncontextmenu="return false" onselectstart="return false">
-  	<div id="wrapper">
-  		<div id="mainwrapper">
-		    <div id="content">
-		    	<s:iterator value="lookbooklist" var="lookbookvo" >
-		        	<table class="tablestyle popup-gallery">
-		        		<tr>
-		            		<td colspan="4" class="titlestyle"><s:property value="#lookbookvo.title"/></td>
-			            </tr>
-			            <tr>
-			            	<td colspan="4" style="height:10px"><hr /></td>
-			            </tr>
-                   		<s:iterator value="#lookbookvo.images" var="image" status="serial">
-                   			<s:if test="#serial.count > 4">
-                   			<td class="lookbookstyle"><a style="display:none;" class="simple-ajax-popup" href="<%=basePath %><s:property value='#image'/>"><img class="imgstyle" src="<%=basePath %><s:property value='#image'/>" /></a></td>
-                   			</s:if>
-                   			<s:else>
-                   				<td class="lookbookstyle"><a class="simple-ajax-popup" href="<%=basePath %><s:property value='#image'/>"><img class="imgstyle" src="<%=basePath %><s:property value='#image'/>" /></a></td>
-                   			</s:else>
-                        </s:iterator>
-		        	</table>
-		        </s:iterator>
-			</div>
-			<div class="holder"></div>
-		</div>
-  	</div>
   </body>
 </html>
