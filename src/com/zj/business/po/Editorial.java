@@ -23,7 +23,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.zj.bigdefine.GlobalParam;
 import com.zj.common.annotation.JsonData;
-import com.zj.common.annotation.UpdateColumn;
 import com.zj.core.po.AbstractEntity;
 @Entity
 @Table(name="BUS_EDITORIAL" , catalog = GlobalParam.CATALOG_DB)

@@ -3,8 +3,6 @@ package com.zj.business.service;
 import java.util.List;
 
 import com.zj.business.po.Designer;
-import com.zj.business.treenode.IMenuBuilder;
-import com.zj.business.treenode.Menu;
 import com.zj.common.exception.ServiceException;
 import com.zj.common.utils.PageInfo;
 import com.zj.core.service.ICommonService;
