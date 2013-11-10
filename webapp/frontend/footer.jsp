@@ -6,7 +6,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <%@ taglib uri="/struts-tags" prefix="s"%>
 
 	<link href="<%=basePath%>frontend/css/footer.css" type="text/css" rel="stylesheet"/>
-
+	<style type="text/css">
+		img{
+			border:none;
+		}
+	</style>
+	
   	<div id="footerWrapper">
     	<hr />
         <ul class="list_commons">
@@ -16,11 +21,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	<li style="text-align:center"><a href="javascript:void(0);"><s:text name="footer.links"/></a></li>
             <li>
             	<ul class="list_common_sub">
-                	<li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/facebook.png" /></a></li>
-                    <li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/twitter.png" /></a></li>
-                    <li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/academia.png" /></a></li>
-                    <li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/weibo.png" /></a></li>
-                    <li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/weixin.png" /></a></li>
+                    <li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/16x16/facebook.png" /></a></li>
+                    <li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/16x16/twitter.png" /></a></li>
+                    <li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/16x16/academia.png" /></a></li>
+                    <li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/16x16/weibo.png" /></a></li>
+                    <li><a href="javascript:void(0);"><img src="<%=basePath %>frontend/images/icons/16x16/weixin.png" /></a></li>
                 </ul>
             </li>
         </ul>
@@ -29,15 +34,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <p class="copyright"><s:text name="footer.copyright1"/></p>
         <br />
         <p class="copyright">©  <s:text name="footer.copyright2"/></p>
-        
+        <script type="text/javascript"
+			src="<%=basePath%>comm_script/dialog/lhgdialog.min.js?self=true&skin=chrome">
+		</script>
         <script type="text/javascript">
         $(document).ready(function(){
         	$("#legalstmt").click(function(){
         		$.dialog({
         			title : "<s:text name='footer.legalStatement'/>",
-        			content : "url:footer_getFooterInfo.action?type=legalstatement",
-        			width : 420,
-        			height : 500,
+        			content : "url:<%=basePath%>frontend/footer_getFooterInfo.action?type=legalstatement",
+        			width : 780,
+        			height : 540,
         			lock : true,
         			fixed : true,
         			ok:function(){
@@ -48,9 +55,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	$("#aboutus").click(function(){
         		$.dialog({
         			title : "<s:text name='footer.aboutus'/>",
-        			content : "url:footer_getFooterInfo.action?type=aboutus",
-        			width : 420,
-        			height : 500,
+        			content : "url:<%=basePath%>frontend/footer_getFooterInfo.action?type=aboutus",
+        			width : 780,
+        			height : 540,
         			lock : true,
         			fixed : true,
         			ok:function(){

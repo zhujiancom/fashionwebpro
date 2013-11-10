@@ -70,7 +70,7 @@ public class DesignerMenuBuilder implements IMenuBuilder {
 		audioItem.setAttributes(audioAttr);
 		menu.addItem(audioItem);
 		MenuItem pressreportItem = new MenuItem(
-				MenuVO.menuMap.get(CommonConstant.PRESSROPORTS));
+				MenuVO.menuMap.get(CommonConstant.PRESSREPORTS));
 //		String reportAttr = "href='report_showReports.action?designer.designerId="
 //				+ designer.getId() + "' target='mainPanel'";
 		String reportAttr = "href='reports/"+designer.getId()+"' target='mainPanel'";

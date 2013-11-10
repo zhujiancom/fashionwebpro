@@ -46,6 +46,9 @@ public class RunwayshowAction extends BaseAction {
 	private IRunwayshowService runwayshowService;
 	@Value("#{envConfig['upload.runwayshow.dir']}")
 	private String fileUploadPath;
+	@Resource
+	private Language language;
+	
 	private int rp; // page size
 	private int page; // page num
 	private String ids; // users id which need to be deleted
@@ -274,7 +277,7 @@ public class RunwayshowAction extends BaseAction {
 	
 	//below methods for frontend
 	public String showByBrand(){
-		Language language = Language.getInstance();
+//		Language language = Language.getInstance();
 		try{
 			List<Runwayshow> runwayshows = runwayshowService.getRunwayShowByBrand(brand.getBrandid());
 			String basePath = getBasePath();

@@ -1,0 +1,77 @@
+@charset "utf-8";
+/* CSS Document */
+
+*{
+	margin:0;
+	padding: 0;
+}
+
+a:link{
+	text-decoration: none;
+	color: inherit;
+}
+
+a:hover{
+	text-decoration:underline;
+	color:#FF0;
+}
+
+a:visited{
+	color:#000;
+}
+
+.login a:visited{
+	color:#0CF;
+	text-decoration:none;
+}
+
+.list_common{
+	list-style: none;
+	color: #FFFFFF;
+	font-size: 11px;
+	font-weight: bold;
+	font-family: Arial,"Microsoft YaHei","微软雅黑","Verdana",sans-serif,STXihei,"华文细黑";
+	letter-spacing: 1px;
+	float: left;
+	display: block;
+}	
+#main{
+	margin:0 auto;
+	height: auto;
+	width:895px;
+}
+
+#contents{
+	width:635px;
+	height:auto;
+	margin-left:130px;
+}
+.item{
+	border:1px solid #CCC;
+	padding:10px;
+	width:635px;
+	height:80px;;
+}
+.item2{
+	border:1px solid #CCC;
+	padding:10px;
+	width:635px;
+	height:auto;;
+}
+.pic{
+	float:left;
+	margin-right:10px;
+	height:80px;
+	width:80px;
+}
+
+.pretitle{
+	font-family:Arial,"Microsoft YaHei","微软雅黑","Verdana",sans-serif,STXihei,"华文细黑";
+	font-weight:bold;
+	font-size:16px;
+}
+
+.precontent{
+	font-family:Arial,"Microsoft YaHei","微软雅黑","Verdana",sans-serif,STXihei,"华文细黑";
+	font-size:16px;
+}

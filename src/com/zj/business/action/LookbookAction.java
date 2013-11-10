@@ -43,6 +43,8 @@ public class LookbookAction extends BaseAction {
 	private ILookbookService lookbookService;
 	@Value("#{envConfig['upload.lookbook.dir']}")
 	private String fileUploadPath;
+	@Resource
+	private Language language;
 	
 	private int rp; // page size
 	private int page; // page num
@@ -171,7 +173,7 @@ public class LookbookAction extends BaseAction {
 	
 	//below methods for frontend
 	public String showByBrand(){
-		Language language = Language.getInstance();
+//		Language language = Language.getInstance();
 		try {
 			List<Lookbook> lookbooks = lookbookService.getLookbookByBrand(brand.getBrandid());
 			List<LookbookVO> vos = new ArrayList<LookbookVO>();

@@ -41,15 +41,16 @@ public class ContactUsAction extends BaseAction {
 	}
 	
 	public String submitMsg(){
+		String msg = "";
 		try {
 			contactService.insert(contactus);
-			getValueStack().set("msg", "create Message Successfully! we will reply your feedback asap ");
-			return "submit_message_success";
+			msg = getText("contact.message.result.success");
 		} catch (ServiceException e) {
 			e.printStackTrace();
-			getValueStack().set("msg", "create Message Failure! Please redo it!");
-			return "submit_message_failure";
+			msg = getText("contact.message.result.failure");
 		}
+		getValueStack().set("msg", msg);
+		return "submit_message";
 	}
 	
 	public String showMsg(){

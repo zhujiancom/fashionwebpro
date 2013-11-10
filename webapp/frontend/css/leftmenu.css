@@ -9,6 +9,11 @@
 	padding: 0;
 }
 
+body {
+	font-size: 62.5%;
+	font-family: "Trebuchet MS", "Arial", "Helvetica", "Verdana", "sans-serif";
+}
+
 a:link{
 	text-decoration: none;
 	color: inherit;

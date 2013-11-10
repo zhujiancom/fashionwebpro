@@ -17,9 +17,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <script type="text/javascript" 
 			src="<%=basePath%>comm_script/base.js">
 	</script>
-    <script type="text/javascript"
-			src="<%=basePath%>comm_script/dialog/lhgdialog.min.js">
-	</script>
   	
     <title>Contact US</title>
 
@@ -42,12 +39,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<ul>
 						<li>
 							<label><s:text name="contact.name"/><span class="required">*</span></label>
-							<div class="desc"><s:text name="contact.tips.typename"/></div>
+<%--							<div class="desc"><s:text name="contact.tips.typename"/></div>--%>
 							<input type="text" class="input_type_text" name="contactus.contactName"/>
 						</li>
 						<li>
 							<label><s:text name="contact.email"/><span class="required">*</span></label>
-							<div class="desc"><s:text name="contact.tips.typeemail"/></div>
+<%--							<div class="desc"><s:text name="contact.tips.typeemail"/></div>--%>
 							<input type="text" class="input_type_text" name="contactus.email"/>
 						</li>
 						<li>

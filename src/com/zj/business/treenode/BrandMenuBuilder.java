@@ -55,7 +55,7 @@ public class BrandMenuBuilder implements IMenuBuilder {
 		MenuItem audioItem = new MenuItem(
 				MenuVO.menuMap.get(CommonConstant.AUDIOS));
 		MenuItem pressreportItem = new MenuItem(
-				MenuVO.menuMap.get(CommonConstant.PRESSROPORTS));
+				MenuVO.menuMap.get(CommonConstant.PRESSREPORTS));
 		if (designer != null) {
 //			String videoAttr = "href='interview_showInterviews.action?designer.designerId="
 //					+ designer.getId() + "&type=video' target='mainPanel'";

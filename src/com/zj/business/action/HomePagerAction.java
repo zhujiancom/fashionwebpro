@@ -67,6 +67,8 @@ public class HomePagerAction extends BaseAction {
 	private EHCacheService ehCacheService;
 	@Value("#{envConfig['upload.homepage.dir']}")
 	private String fileUploadPath;
+	@Resource
+	private Language language;
 	
 	
 	//multiple file upload
@@ -187,7 +189,7 @@ public class HomePagerAction extends BaseAction {
 	public String loadData(){
 		try {
 			LanguageType type = getLanguageType();
-	        Language language = Language.getInstance();
+//	        Language language = Language.getInstance();
 	        HomePager homepager = ehCacheService.getHomepagerCache().get(1L);
 	        log.debug("homepage object from cache is : "+homepager);
 	        if(homepager == null){
@@ -435,9 +437,5 @@ public class HomePagerAction extends BaseAction {
 
 	public void setFeaturedDesignerId(Long featuredDesignerId) {
 		this.featuredDesignerId = featuredDesignerId;
-	}
-	public static void main(String[] args){
-		String str = "test_thumbnail.jpg";
-		System.out.println(str.matches("[^(_thumbnail]"));
 	}
 }

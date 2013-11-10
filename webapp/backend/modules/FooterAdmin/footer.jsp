@@ -3,7 +3,7 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-
+<%@ taglib uri="/struts-tags" prefix="s" %>
 <!DOCTYPE HTML>
 <html>
   <head>
@@ -27,35 +27,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<form action="footer_save.action" method="post">
+  		<input type="hidden" name="footer.footerId" value="1"/>
   		<div >
   			<label>
 				<h4>About us (EN):</h4>
 			</label>
-			<textarea name="footer.aboutus_EN"></textarea>
+			<textarea name="footer.aboutus_EN"><s:property  value="footer.aboutus_EN"/></textarea>
   		</div>
   		<div >
   			<label>
 				<h4>About us (CH):</h4>
 			</label>
-			<textarea name="footer.aboutus_CH"></textarea>
+			<textarea name="footer.aboutus_CH"><s:property  value="footer.aboutus_CH"/></textarea>
   		</div>
   		<div >
   			<label>
 				<h4>LegalStatement (EN):</h4>
 			</label>
-			<textarea name="footer.legalstmt_EN"></textarea>
+			<textarea name="footer.legalstmt_EN"><s:property  value="footer.legalstmt_EN"/></textarea>
   		</div>
   		<div >
   			<label>
 				<h4>LegalStatement (CH):</h4>
 			</label>
-			<textarea name="footer.legalstmt_CH"></textarea>
+			<textarea name="footer.legalstmt_CH" ><s:property  value="footer.legalstmt_CH"/></textarea>
   		</div>
   		<div >
   			<label>
 				<h4>Links:</h4>
 			</label>
-			<textarea name="footer.links"></textarea>
+			<textarea name="footer.links" ><s:property  value="footer.links"/></textarea>
   		</div>
   		<div class="rowElem"
 			style="float: right; position: relative; right: 20px;">

@@ -198,7 +198,11 @@
 		</action>
 		
 		<action name="footer_*" class="footerAction" method="{1}">
-			<result name="save_success">modules/FooterAdmin/footer.jsp</result>
+			<result name="load_success">modules/FooterAdmin/footer.jsp</result>
+			<result name="save_success" type="redirectAction">
+				<param name="actionName">footer_loadFooterInfoForBackend</param>
+				<param name="namespace">/backend</param>
+			</result>
 		</action>
 	</package>
 </struts>

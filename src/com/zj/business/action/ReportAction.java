@@ -45,6 +45,8 @@ public class ReportAction extends BaseAction {
 	private IReportService reportService;
 	@Value("#{envConfig['upload.report.dir']}")
 	private String fileUploadPath;
+	@Resource
+	private Language language;
 	
 	private int rp; // page size
 	private int page; // page num
@@ -55,6 +57,7 @@ public class ReportAction extends BaseAction {
 	private File imageFile;
 	private String imageFileContentType;
 	private String imageFileFileName;
+	private String showpage;
 	
 	public String save(){
 		String imgUrl = "";
@@ -188,7 +191,7 @@ public class ReportAction extends BaseAction {
 	}
 	// below methods are using in frontend
 	public String showReports(){
-		Language language = Language.getInstance();
+//		Language language = Language.getInstance();
 		try {
 			List<Report> reports = reportService.getReportsByDesinger(designer.getDesignerId());
 			List<ReportVO> reportlist = new ArrayList<ReportVO>();
@@ -249,7 +252,7 @@ public class ReportAction extends BaseAction {
 	
 	/////////////////////////////////////////////// new function ////////////////////////////////////////
 	public String showDetail(){
-		Language language = Language.getInstance();
+//		Language language = Language.getInstance();
 		try {
 			Report dbreport = reportService.get(Report.class, report.getReportid());
 			ReportVO vo = VOFactory.getObserverVO(ReportVO.class, dbreport);
@@ -264,7 +267,7 @@ public class ReportAction extends BaseAction {
 		}
 	}
 	public String showPreItem(){
-		Language language = Language.getInstance();
+//		Language language = Language.getInstance();
 		try {
 			Report preReport = reportService.getPreReport(report.getReportid());
 			ReportVO vo =  VOFactory.getObserverVO(ReportVO.class, preReport);
@@ -289,7 +292,7 @@ public class ReportAction extends BaseAction {
 	}
 	
 	public String showNextItem(){
-		Language language = Language.getInstance();
+//		Language language = Language.getInstance();
 		try {
 			Report preReport = reportService.getNextReport(report.getReportid());
 			ReportVO vo =  VOFactory.getObserverVO(ReportVO.class, preReport);
@@ -315,7 +318,7 @@ public class ReportAction extends BaseAction {
 /////////////////////////////////////////////// new function ////////////////////////////////////////
 	
 	public String loadReportsByOrder(){
-		Language language = Language.getInstance();
+//		Language language = Language.getInstance();
 		try {
 			List<Report> repotrs = reportService.loadAllReportsByDESC();
 			List<ReportVO> vos = new LinkedList<ReportVO>();
@@ -419,5 +422,13 @@ public class ReportAction extends BaseAction {
 
 	public void setImageFileFileName(String imageFileFileName) {
 		this.imageFileFileName = imageFileFileName;
+	}
+
+	public String getShowpage() {
+		return showpage;
+	}
+
+	public void setShowpage(String showpage) {
+		this.showpage = showpage;
 	}
 }

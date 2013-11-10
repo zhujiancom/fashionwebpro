@@ -69,9 +69,7 @@ public class AccountAction extends BaseAction {
 	 * @return
 	 */
 	public String login(){
-		HttpServletRequest request = ServletActionContext.getRequest();
-		String ref = request.getHeader("referer");
-		setReferer(ref);
+//		HttpServletRequest request = ServletActionContext.getRequest();
 		Account login_account;
 		try{
 			login_account = accountService.login(account);
@@ -234,7 +232,12 @@ public class AccountAction extends BaseAction {
 	public void uniqueAccountCheck(){
 		String json = "false";
 		try {
-			Boolean isUnique = accountService.uniquenessCheck(Account.class, "accountname", account.getAccountname());
+			Boolean isAccountNameUnique = accountService.uniquenessCheck(Account.class, "accountname", account.getAccountname());
+			Boolean isEmailUnique = accountService.uniquenessCheck(Account.class, "email", account.getEmail());
+			Boolean isUnique = false;
+			if(isAccountNameUnique && isEmailUnique){
+				isUnique = true;
+			}
 			json = JSONUtil.stringToJson(String.valueOf(isUnique));
 		} catch (Exception e) {
 			e.printStackTrace();

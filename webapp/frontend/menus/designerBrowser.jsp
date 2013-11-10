@@ -19,9 +19,6 @@ String basePath = serverPath + path + "/";
 	<script src="javascript/jquery-plugin/imgLiquid/imgLiquid.js" type="application/javascript"></script>
 	<script src="javascript/jquery-plugin/jpages/jPages.js" type="application/javascript"></script>
 	<script src="javascript/jquery-plugin/listnav/jquery.listnav-2.1.js" type="application/javascript"></script>
-	<script type="text/javascript"
-			src="<%=basePath%>comm_script/dialog/lhgdialog.min.js">
-	</script>
 	
 	
 	<script type="text/javascript">

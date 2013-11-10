@@ -4,12 +4,6 @@
 	margin:0;
 	padding:0;
 }
-#wrapper{
-	height:100%;
-	width:900px;
-	margin:0 auto;
-}
-
 #footerWrapper{
 	margin:0 auto;
 	margin-top:5px;
@@ -78,6 +72,10 @@
 	float:left;
 	width:150px;
 	padding:5px;
+}
+
+.list_commons li a{
+	color:#000000;
 }
 
 .list_common_sub{

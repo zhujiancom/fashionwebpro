@@ -55,6 +55,8 @@ public class BrandAction extends BaseAction {
 	private IBrandService brandService;
 	@Value("#{envConfig['upload.brand.dir']}")
 	private String fileUploadPath;
+	@Resource
+	private Language language;
 	
 	private String errorMsg;
 	private int rp; // page size
@@ -263,7 +265,7 @@ public class BrandAction extends BaseAction {
 	 */
 	public String loadAll() {
 		try {
-			Language language = Language.getInstance();
+//			Language language = Language.getInstance();
 			List<Brand> brands = brandService.getAll(Brand.class);
 			List<BrandVO> brandvos = new ArrayList<BrandVO>();
 			for (Brand b : brands) {
@@ -277,6 +279,9 @@ public class BrandAction extends BaseAction {
 		} catch (ServiceException e) {
 			e.printStackTrace();
 			return "serviceException";
+		} catch(Exception e){
+			log.info("Server Error",e);
+			return "exception";
 		}
 	}
 
@@ -285,7 +290,7 @@ public class BrandAction extends BaseAction {
 	 * @return
 	 */
 	public String loadMenu(){
-        Language language = Language.getInstance();
+//        Language language = Language.getInstance();
 		Long brandId = brand.getBrandid();
 		try{
 			Brand b = brandService.get(Brand.class, brandId);
@@ -308,12 +313,15 @@ public class BrandAction extends BaseAction {
 		}catch (ServiceException e) {
 			e.printStackTrace();
 			return "serviceException";
+		}catch (Exception e){
+			log.error("Server Error",e);
+			return "exception";
 		}
 		return "loadMenu_success";
 	}
 
 	public String showBrandInfo() {
-        Language language = Language.getInstance();
+//        Language language = Language.getInstance();
 		try {
 			Long id = brand.getBrandid();
 			Brand b = brandService.get(Brand.class, id);
@@ -323,36 +331,17 @@ public class BrandAction extends BaseAction {
 			getValueStack().set("brandvo", bvo);
 			return "load_brand_success";
 		} catch (ServiceException e) {
-			e.printStackTrace();
+			log.warn("show Brand Detail error", e);
 			getValueStack().set("msg",
 					"forward brand info page error,because " + e.getMessage());
+			return "load_brand_failure";
+		} catch(Exception e){
+			log.error("Server Error", e);
 			return "load_brand_failure";
 		}
 	}
 
 	public String loadBrandByStyle() {
-//		String language = "en_US";
-//		Object sessionLocale = session.get("WW_TRANS_I18N_LOCALE");
-//		if (sessionLocale != null && sessionLocale instanceof Locale) {
-//			Locale locale = (Locale) sessionLocale;
-//			language = locale.getLanguage() + "_" + locale.getCountry();
-//		}
-//		try {
-//			styleobj = styleService.get(Style.class, styleobj.getStyleid());
-//			Set<Brand> brands = styleobj.getBrands();
-//			List<BrandVO> brandvos = new ArrayList<BrandVO>();
-//			for (Brand b : brands) {
-//				BrandVO bvo = new BrandVO(b);
-//				bvo.process(language);
-//				brandvos.add(bvo);
-//			}
-//			getValueStack().set("brandlist", brandvos);
-//			return "load_success";
-//		} catch (ServiceException e) {
-//			e.printStackTrace();
-//			getValueStack().set("msg", e.getMessage());
-//			return "load_failure";
-//		}
 		return "load_failure";
 	}
 

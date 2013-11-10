@@ -2,6 +2,8 @@ package com.zj.business.action;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -21,24 +23,46 @@ public class FooterAction extends BaseAction {
 	 * 
 	 */
 	private static final long serialVersionUID = 159219890483524436L;
+	private static final Log log = LogFactory.getLog(FooterAction.class);
 	private Footer footer;
 	private String type;
 	@Resource
 	private IFooterService footerService;
+	@Resource
+	private Language language;
 	
 	public String save(){
 		try {
-			footerService.insert(footer);
+			footerService.update(footer);
 		} catch (ServiceException e) {
-			// TODO Auto-generated catch block
+			log.debug("update footer info error",e);
 			e.printStackTrace();
 		}
 		return "save_success";
 	}
 	
+	public String loadFooterInfoForBackend(){
+		Footer f = null;
+		try {
+			f = footerService.get(Footer.class, 1L);
+		} catch (ServiceException e) {
+			log.info("add a new Footer info!");
+			f = new Footer(1L);
+			try {
+				footerService.insert(f);
+			} catch (ServiceException e1) {
+				log.debug("add new footer info error",e1);
+				f = new Footer(1L);
+			}
+		}finally{
+			getValueStack().set("footer", f);
+		}
+		return "load_success";
+	}
+	
 	public String getFooterInfo(){
 		LanguageType type = getLanguageType();
-        Language language = Language.getInstance();
+//        Language language = Language.getInstance();
 		try {
 			Footer f = footerService.get(Footer.class, 1L);
 			FooterVO vo = VOFactory.getObserverVO(FooterVO.class,f);
@@ -46,7 +70,7 @@ public class FooterAction extends BaseAction {
 			language.setLanguage(type);
 			getValueStack().set("footervo",vo);
 		} catch (ServiceException e) {
-			e.printStackTrace();
+			log.warn("accquire Footer info in frontend error!",e);
 		}
 		return "load_success";
 	}

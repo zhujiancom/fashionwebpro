@@ -32,6 +32,22 @@
               <to type="forward">/frontend/report_loadReportsByOrder.action</to>
     </rule>
     <rule>
+          <from>^/report/([0-9]+).html$</from>
+              <to type="forward">/frontend/report_showDetail.action?report.reportid=$1&amp;showpage=withHeader</to>
+    </rule>
+    <rule>
+          <from>^/report/pre_([0-9]+).html$</from>
+              <to type="forward">/frontend/report_showPreItem.action?report.reportid=$1&amp;showpage=withHeader</to>
+    </rule>
+    <rule>
+          <from>^/report/next_([0-9]+).html$</from>
+              <to type="forward">/frontend/report_showPreItem.action?report.reportid=$1&amp;showpage=withHeader</to>
+    </rule>
+    <rule>
+          <from>^/report/([0-9]+).html$</from>
+              <to type="forward">/frontend/report_showNextItem.action?report.reportid=$1&amp;showpage=withHeader</to>
+    </rule>
+    <rule>
           <from>^/search$</from>
               <to type="forward">/frontend/menus/search/search.jsp</to>
     </rule>
@@ -61,6 +77,18 @@
               <to type="forward">/frontend/report_showReports.action?designer.designerId=$1</to>
     </rule>
     <rule>
+          <from>^/designer/report/([0-9]+).html$</from>
+              <to type="forward">/frontend/report_showDetail.action?report.reportid=$1&amp;showpage=withNoHeader</to>
+    </rule>
+    <rule>
+          <from>^/designer/report/pre_([0-9]+).html$</from>
+              <to type="forward">/frontend/report_showPreItem.action?report.reportid=$1&amp;showpage=withNoHeader</to>
+    </rule>
+    <rule>
+          <from>^/designer/report/next_([0-9]+).html$</from>
+              <to type="forward">/frontend/report_showNextItem.action?report.reportid=$1&amp;showpage=withNoHeader</to>
+    </rule>
+    <rule>
           <from>^/frontend/collections/([0-9]+)/lookbooks/$</from>
               <to type="forward">/frontend/lookbook_showByBrand.action?brand.brandid=$1</to>
     </rule>
@@ -77,5 +105,10 @@
     <rule>
           <from>^/brand/main/([0-9]+).html$</from>
               <to type="forward">/frontend/menus/brand/main.jsp?brandId=$1</to>
+    </rule>
+    
+    <rule>
+          <from>^/login$</from>
+              <to type="forward">/frontend/account_login.action</to>
     </rule>
 </urlrewrite>

@@ -10,6 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <base href="<%=basePath%>frontend/">
     
     <title><s:text name="account.tab.title"/></title>
+    <link href="<%=basePath %>comm_style/base.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="<%=basePath %>comm_script/jqtransform/jqtransform.css" type="text/css"></link>
 	<link href="<%=basePath %>comm_style/inputStyle.css" rel="stylesheet" type="text/css" />
     <script src="<%=basePath %>comm_script/jquery-1.7.2.min.js" type="application/javascript"></script>
@@ -34,7 +35,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		postion:relative;
     		top:5px;
     		float:left;
-    		width:400px;
+    		width:700px;
     	}
     	
     	.rowElem input{
@@ -42,9 +43,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	
     	#formPanel{
     		float:left;
-    		width:520px;
+    		width:720px;
     		margin:0;
     		padding:10px;
+    		overflow:auto;
     	}
     	#formPanel h1{
     		margin-bottom:20px;
@@ -84,7 +86,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<form id="fm" action="account_registerAccount.action" method="post">
 					<div class="rowElem">
 			   			<label><s:text name="account.email"/></label>
-			   			<input name="account.email"  type="text" class="require" rex="^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$|^(\s{0})$"/>
+			   			<input name="account.email"  type="text" class="require unique" rex="^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$|^(\s{0})$" action="account_uniqueAccountCheck.action"/>
 			    	</div>
 		   	 		<div class="rowElem">
 			   			<label><s:text name="account.name"/></label>
@@ -98,16 +100,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    			<label><s:text name="account.retype.password"/></label>
 		    			<input name="confirm" id="confirmpswd" rex="\w{6,}" type="password"/>
 		    		</div>
-			    	<div class="rowElem">
-			   			<label><s:text name="account.career"/></label>
-			   			<select name="account.career" referenceKey="CAREER"
-								style="width: 116px;">
-						</select>
-			    	</div>
-			    	<div class="rowElem">
-			   			<label><s:text name="account.knowapproach"/></label>
-			   			<input name="account.knowapproach"  type="text" />
-			    	</div>
+<%--			    	<div class="rowElem">--%>
+<%--			   			<label><s:text name="account.career"/></label>--%>
+<%--			   			<select name="account.career" referenceKey="CAREER"--%>
+<%--								style="width: 116px;">--%>
+<%--						</select>--%>
+<%--			    	</div>--%>
+<%--			    	<div class="rowElem">--%>
+<%--			   			<label><s:text name="account.knowapproach"/></label>--%>
+<%--			   			<input name="account.knowapproach"  type="text" />--%>
+<%--			    	</div>--%>
 			    	<div class="rowElem">
 						<label><s:text name="account.newsletter"/></label>
 						<input type="radio" name="account.isReceiveNewsletter" value="1" checked="checked" />
@@ -123,7 +125,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    	</form>
 			</div>
 	   	 	<div id="iamgePanel">
-	   	 		<img src="images/registerbg.jpg"/>
+<%--	   	 		<img src="images/registerbg.jpg"/>--%>
 	   	 	</div>
 	    </div>
 	    <jsp:include page="/frontend/footer.jsp"></jsp:include>

@@ -11,6 +11,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     <title>Brand Browser</title>
     <link rel="icon" type="image/png" href="<%=basePath %>favicon.ico" />
+    <link href="<%=basePath %>comm_style/base.css" rel="stylesheet" type="text/css" />
     <script src="<%=basePath %>comm_script/jquery-1.7.2.min.js" type="text/javascript"></script> 
     <script src="<%=basePath %>frontend/javascript/jquery-plugin/magnific-popup/jquery.magnific-popup.js" type="text/javascript"></script> 
     

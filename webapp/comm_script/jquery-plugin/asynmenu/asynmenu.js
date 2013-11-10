@@ -26,8 +26,6 @@
 				if($.browser.opera){ // browser compatible
 					$(t).css('visibility','hidden');
 				}
-//				alert(typeof p.userId);
-//				alert(typeof p.parentId);
 				if(typeof p.userId == "string"){
 					p.userId = parseInt(p.userId);
 				}

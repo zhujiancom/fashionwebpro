@@ -27,4 +27,5 @@ CKEDITOR.editorConfig = function( config ) {
 //	config.extraPlugins = "ajax";
 	config.toolbarCanCollapse = true;
 	config.toolbarStartupExpanded = false;
+	config.title = false;
 };

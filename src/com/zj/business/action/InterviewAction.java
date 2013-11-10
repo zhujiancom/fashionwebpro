@@ -46,6 +46,8 @@ public class InterviewAction extends BaseAction {
 	private IInterviewService interviewService;
 	@Value("#{envConfig['upload.interview.dir']}")
 	private String fileUploadPath;
+	@Resource
+	private Language language;
 	
 	private int rp; // page size
 	private int page; // page num
@@ -287,7 +289,7 @@ public class InterviewAction extends BaseAction {
 	}
 	
 	public String showInterviews(){
-		Language language = Language.getInstance();
+//		Language language = Language.getInstance();
 		try {
 			List<Interview> interviews = interviewService.getInterviewsByDesingerAndType(designer.getDesignerId(), type);
 			String basePath = getBasePath();

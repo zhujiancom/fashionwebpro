@@ -53,6 +53,8 @@ public class DesignerAction extends BaseAction {
 	@Resource
 	private IDesignerService designerService;
 	@Value("#{envConfig['upload.designer.dir']}")
+	@Resource
+	private Language language;
 	private String fileUploadPath;
 	private String errorMsg;
 	private int rp; // page size
@@ -285,7 +287,6 @@ public class DesignerAction extends BaseAction {
 	
 	// below methods all requests from frontend
 	public String loadAll(){
-        Language language = Language.getInstance();
 		try {
 			List<Designer> designers = designerService.getAll(Designer.class);
 			List<DesignerVO> designervos = new ArrayList<DesignerVO>();
@@ -300,11 +301,13 @@ public class DesignerAction extends BaseAction {
 		} catch (ServiceException e) {
 			e.printStackTrace();
 			return "serviceException";
+		} catch (Exception e){
+			log.error("Server Error",e);
+			return "exception";
 		}
 	}
 	
 	public String showProfile(){
-        Language language = Language.getInstance();
 		try {
 			Long id = designer.getDesignerId();
 			Designer d = designerService.get(Designer.class,id);
@@ -314,14 +317,16 @@ public class DesignerAction extends BaseAction {
 			getValueStack().set("designervo",dvo);
 			return "load_profile_success";
 		} catch (ServiceException e) {
-			e.printStackTrace();
+			log.error("Service Error",e);
 			getValueStack().set("msg","forward profile page error,because "+e.getMessage());
 			return "load_profile_failure";
+		} catch(Exception e){
+			log.error("Server Error",e);
+			return "exception";
 		}
 	}
 	
 	public String loadMenu(){
-        Language language = Language.getInstance();
 		long designerId = designer.getDesignerId();
 		try {
 			Designer d = designerService.get(Designer.class,designerId);
@@ -346,7 +351,11 @@ public class DesignerAction extends BaseAction {
 			getValueStack().set("designervo", dvo);
 			getValueStack().set("menutree", menuTree);
 		} catch (ServiceException e) {
+			log.error("Service Error",e);
 			return "serviceException";
+		} catch(Exception e){
+			log.error("Server Error",e);
+			return "exception";
 		}
 		return "loadMenu_success";
 	}

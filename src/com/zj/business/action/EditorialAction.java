@@ -44,7 +44,8 @@ public class EditorialAction extends BaseAction {
 	private IEditorialService editorialService;
 	@Value("#{envConfig['upload.editorial.dir']}")
 	private String fileUploadPath;
-	
+	@Resource
+	private Language language;
 	private int rp; // page size
 	private int page; // page num
 	private String ids; // users id which need to be deleted
@@ -173,7 +174,7 @@ public class EditorialAction extends BaseAction {
 	
 	//below methods for frontend
 	public String showByBrand(){
-		Language language = Language.getInstance();
+//		Language language = Language.getInstance();
 		try {
 			List<Editorial> editorials = editorialService.getEditorialByBrand(brand.getBrandid());
 			List<EditorialVO> vos = new LinkedList<EditorialVO>();
@@ -185,7 +186,11 @@ public class EditorialAction extends BaseAction {
 			language.setLanguage(getLanguageType());
 			getValueStack().set("editoriallist",vos);
 		} catch (ServiceException e) {
-			e.printStackTrace();
+			log.error("Service Error",e);
+			return "serviceException";
+		} catch(Exception e){
+			log.error("Server Error",e);
+			return "exception";
 		}
 		return "load_editorial_success";
 	}

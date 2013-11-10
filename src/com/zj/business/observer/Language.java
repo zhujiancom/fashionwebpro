@@ -1,23 +1,20 @@
 package com.zj.business.observer;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
+@Service("language")
+@Scope("prototype")
 public class Language {
-	public static Language language;
-	private Vector<LanguageObserver> obs;
+	private List<LanguageObserver> obs;
 	private LanguageType languageType;
 
-	private Language() {
-		obs = new Vector<LanguageObserver>();
+	public Language() {
+		obs = new LinkedList<LanguageObserver>();
 	};
-
-	public synchronized static Language getInstance() {
-		if (language == null) {
-			language = new Language();
-		}
-		return language;
-	}
 
 	public void setLanguage(LanguageType languageType) {
 		this.languageType = languageType;

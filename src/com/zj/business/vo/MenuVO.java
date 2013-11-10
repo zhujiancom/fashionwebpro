@@ -6,10 +6,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.zj.bigdefine.CommonConstant;
-import com.zj.business.observer.LanguageObserver;
 import com.zj.business.observer.LanguageType;
 
-public class MenuVO extends AbstractVO implements LanguageObserver {
+public class MenuVO extends AbstractVO{
 	public static Map<String, String> menuMap;
 
 	public MenuVO() {
@@ -22,7 +21,7 @@ public class MenuVO extends AbstractVO implements LanguageObserver {
 		menuMap.put(CommonConstant.INTERVIEWS, "采访");
 		menuMap.put(CommonConstant.VIDEOS, "视频");
 		menuMap.put(CommonConstant.AUDIOS, "音频");
-		menuMap.put(CommonConstant.PRESSROPORTS, "文字采访");
+		menuMap.put(CommonConstant.PRESSREPORTS, "文字采访");
 		menuMap.put(CommonConstant.COLLECTIONS, "作品");
 		menuMap.put(CommonConstant.LOOKBOOK_IMAGES, "硬照");
 		menuMap.put(CommonConstant.EDITORIAL_IMAGES, "广告画");

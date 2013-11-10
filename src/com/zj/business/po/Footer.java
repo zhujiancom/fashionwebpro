@@ -6,8 +6,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
@@ -26,8 +24,17 @@ public class Footer {
     private Blob legalstmt_CH;
     private String links;
     
-    @Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY, generator = "commSEQ")
+    public Footer() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+    
+	public Footer(long footerId) {
+		super();
+		this.footerId = footerId;
+	}
+
+	@Id
 	@Column(name="FOOTER_ID", nullable=false)
 	public long getFooterId() {
 		return footerId;
