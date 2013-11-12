@@ -21,7 +21,7 @@ public class Language {
 		notifyObservers();
 	}
 
-	public void addObserver(LanguageObserver vo) {
+	public synchronized void addObserver(LanguageObserver vo) {
 		if (vo == null) {
 			throw new NullPointerException("vo is null");
 		}
@@ -30,7 +30,7 @@ public class Language {
 		}
 	}
 
-	public void notifyObservers() {
+	public synchronized void notifyObservers() {
 		for (LanguageObserver vo : obs) {
 			vo.process(languageType);
 		}
